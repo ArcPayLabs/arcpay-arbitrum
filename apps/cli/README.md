@@ -21,6 +21,10 @@ arcpay-arbitrum privacy-guide
 arcpay-arbitrum invoice-guide
 arcpay-arbitrum x402-guide
 arcpay-arbitrum execution-handoff
+arcpay-arbitrum gmx-plan
+arcpay-arbitrum zerodev-policy
+arcpay-arbitrum dune-spec
+arcpay-arbitrum fhenix-boundary
 arcpay-arbitrum demo-path
 arcpay-arbitrum smoke
 arcpay-arbitrum mcp-config

@@ -77,7 +77,7 @@ async function checkContracts(): Promise<RuntimeCheck> {
       "Arbitrum contracts",
       missing.length ? "degraded" : "ok",
       missing.length ? `${missing.length} contracts missing bytecode` : `${codeResults.length} contracts deployed`,
-      missing.map((item) => item.name).join(", ") || "Registry, policy, order book, cards, privacy, invoices, risk, reputation",
+      missing.map((item) => item.name).join(", ") || "Registry, identity, policy, order book, execution router, cards, privacy, invoices, risk, reputation",
     );
   } catch (error) {
     return check("Arbitrum contracts", "down", "Contract bytecode check failed", errorMessage(error));

@@ -78,6 +78,19 @@ const reputationAbi = [
   "function reputations(bytes32 agentId) view returns (uint256 reviewCount,uint256 totalScore,uint256 completedCount,uint256 disputeCount,uint256 lastUpdatedAt)",
   "function reputationScore(bytes32 agentId) view returns (uint256)",
 ];
+const identityAbi = [
+  "event AgentIdentityRegistered(uint256 indexed tokenId,bytes32 indexed agentId,address indexed owner,string metadataUri,string serviceEndpoint,string trustModel)",
+  "event AgentIdentityUpdated(uint256 indexed tokenId,string metadataUri,string serviceEndpoint,string trustModel,bool active)",
+  "event ReputationNonceAdvanced(uint256 indexed tokenId,uint256 reputationNonce)",
+  "function identities(uint256 tokenId) view returns (uint256 tokenId,bytes32 agentId,address owner,string metadataUri,string serviceEndpoint,string trustModel,bool active,uint256 reputationNonce,uint256 createdAt,uint256 updatedAt)",
+];
+const executionAbi = [
+  "event ExecutionIntentProposed(bytes32 indexed intentId,bytes32 indexed agentId,address indexed operator,uint8 adapter,address target,uint256 maxValueWei,bytes32 calldataHash,string policyUri)",
+  "event ExecutionIntentApproved(bytes32 indexed intentId,string evidenceUri)",
+  "event ExecutionIntentExecuted(bytes32 indexed intentId,bytes32 txHashOrReceiptHash,string evidenceUri)",
+  "event ExecutionIntentCancelled(bytes32 indexed intentId,string reason)",
+  "function intents(bytes32 intentId) view returns (bytes32 intentId,bytes32 agentId,address operator,uint8 adapter,address target,uint256 maxValueWei,bytes32 calldataHash,string policyUri,string evidenceUri,uint8 status,uint256 createdAt,uint256 updatedAt)",
+];
 
 const sources = [
   { key: "agents", address: deployment.contracts.AgentRegistry, abi: registryAbi, contractName: "AgentRegistry" },
@@ -90,6 +103,8 @@ const sources = [
   { key: "invoice", address: deployment.contracts.AgentInvoiceBook, abi: invoiceAbi, contractName: "AgentInvoiceBook" },
   { key: "risk", address: deployment.contracts.ArbitrumAgentRiskOracle, abi: riskAbi, contractName: "ArbitrumAgentRiskOracle" },
   { key: "reputation", address: deployment.contracts.AgentReputationBook, abi: reputationAbi, contractName: "AgentReputationBook" },
+  { key: "identity", address: deployment.contracts.AgentIdentity8004, abi: identityAbi, contractName: "AgentIdentity8004" },
+  { key: "execution", address: deployment.contracts.ArbitrumExecutionRouter, abi: executionAbi, contractName: "ArbitrumExecutionRouter" },
 ].filter((source) => Boolean(source.address)).map((source) => ({ ...source, contract: new Contract(source.address, source.abi, provider) }));
 
 let checkpoint = readCheckpoint();
@@ -176,6 +191,8 @@ async function eventToRecord(source, event) {
   if (source.key === "invoice") return invoiceRecord(source.contract, base);
   if (source.key === "risk") return riskRecord(source.contract, base);
   if (source.key === "reputation") return reputationRecord(source.contract, base);
+  if (source.key === "identity") return identityRecord(source.contract, base);
+  if (source.key === "execution") return executionRecord(source.contract, base);
   return fallbackRecord(base);
 }
 
@@ -362,6 +379,47 @@ async function reputationRecord(contract, base) {
   };
 }
 
+async function identityRecord(contract, base) {
+  const tokenId = base.args.tokenId;
+  let identity;
+  try {
+    if (tokenId !== undefined) identity = await contract.identities(tokenId);
+  } catch {
+    identity = null;
+  }
+  const owner = identity?.owner ?? base.args.owner;
+  const agentId = identity?.agentId ?? base.args.agentId;
+  return {
+    ...base,
+    owner: ownerFor(owner),
+    type: "identity",
+    title: agentId ? `${base.eventName} ${short(agentId)}` : base.eventName,
+    status: identity?.active === false ? "inactive" : eventStatus(base.eventName),
+    amount: tokenId !== undefined ? `token ${tokenId.toString()}` : undefined,
+  };
+}
+
+async function executionRecord(contract, base) {
+  const intentId = base.args.intentId;
+  let intent;
+  try {
+    if (intentId) intent = await contract.intents(intentId);
+  } catch {
+    intent = null;
+  }
+  const operator = intent?.operator ?? base.args.operator;
+  const value = intent?.maxValueWei ?? base.args.maxValueWei;
+  const status = intent?.status !== undefined ? EXECUTION_STATUS[Number(intent.status)] ?? eventStatus(base.eventName) : eventStatus(base.eventName);
+  return {
+    ...base,
+    owner: ownerFor(operator),
+    type: "execution",
+    title: intentId ? `${base.eventName} ${short(intentId)}` : base.eventName,
+    status,
+    amount: value !== undefined ? `${formatEther(value)} ETH` : undefined,
+  };
+}
+
 function fallbackRecord(base) {
   return {
     ...base,
@@ -461,3 +519,4 @@ function logJson(value, stream = "log") {
 
 const ORDER_STATUS = ["pending", "accepted", "processing", "fulfilled", "settled", "refunded", "failed"];
 const INVOICE_STATUS = ["pending", "paid", "cancelled"];
+const EXECUTION_STATUS = ["proposed", "approved", "executed", "cancelled"];

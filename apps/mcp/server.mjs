@@ -154,6 +154,8 @@ server.tool("execution_handoff", "Return an Arbitrum execution handoff payload f
           policy: deployment.contracts.TreasuryPolicy,
           privacyVault: deployment.contracts.ArbitrumPrivacyVault,
           reputation: deployment.contracts.AgentReputationBook,
+          identity8004: deployment.contracts.AgentIdentity8004,
+          executionRouter: deployment.contracts.ArbitrumExecutionRouter,
         },
         setup: [
           "Register or select an ArcPay agent identity.",
@@ -166,6 +168,104 @@ server.tool("execution_handoff", "Return an Arbitrum execution handoff payload f
     }],
   };
 });
+
+server.tool("gmx_execution_plan", "Create a policy-bounded GMX execution plan for an Arbitrum agent before any trade or hedge is signed.", {
+  market: z.string().optional(),
+  collateral: z.string().optional(),
+  sizeUsd: z.string().optional(),
+  maxLeverage: z.string().optional(),
+}, async ({ market = "ETH/USD", collateral = "USDC", sizeUsd = "25", maxLeverage = "1.2x" }) => {
+  const deployment = readDeployment();
+  return {
+    content: [{
+      type: "text",
+      text: JSON.stringify({
+        protocol: "arcpay-gmx-execution-plan",
+        chain: "arbitrum-sepolia",
+        venue: "GMX",
+        market,
+        collateral,
+        sizeUsd,
+        maxLeverage,
+        controls: {
+          requireArcPayPolicy: true,
+          requireExecutionRouterIntent: true,
+          requireOperatorApprovalForLeverage: true,
+          requireArbiscanTxHash: true,
+          requireDuneEvidenceLink: true,
+        },
+        contracts: {
+          executionRouter: deployment.contracts.ArbitrumExecutionRouter,
+          policy: deployment.contracts.TreasuryPolicy,
+          orderBook: deployment.contracts.AgentOrderBook,
+        },
+      }, null, 2),
+    }],
+  };
+});
+
+server.tool("zerodev_session_policy", "Return a ZeroDev smart-account session policy for bounded ArcPay agent actions.", {
+  agentSlug: z.string().optional(),
+  budgetEth: z.string().optional(),
+  expiresInMinutes: z.number().optional(),
+}, async ({ agentSlug = "treasury-router", budgetEth = "0.02", expiresInMinutes = 60 }) => {
+  const deployment = readDeployment();
+  return {
+    content: [{
+      type: "text",
+      text: JSON.stringify({
+        protocol: "arcpay-zerodev-session-policy",
+        chain: "arbitrum-sepolia",
+        agentSlug,
+        accountAbstraction: "ZeroDev",
+        sessionScope: {
+          allowedContracts: [
+            deployment.contracts.AgentOrderBook,
+            deployment.contracts.TreasuryPolicy,
+            deployment.contracts.ArbitrumExecutionRouter,
+            deployment.contracts.ArbitrumPrivacyVault,
+          ],
+          maxBudgetEth: budgetEth,
+          expiresInMinutes,
+          blockedActions: ["unbounded leverage", "unknown target contract", "execution without evidence URI"],
+        },
+      }, null, 2),
+    }],
+  };
+});
+
+server.tool("dune_evidence_spec", "Return the Dune dashboard/query schema ArcPay expects for public Arbitrum proof analytics.", {}, async () => ({
+  content: [{
+    type: "text",
+    text: JSON.stringify({
+      protocol: "arcpay-dune-evidence",
+      chain: "arbitrum-sepolia",
+      eventFamilies: [
+        "AgentIdentityRegistered",
+        "AgentRegistered",
+        "OrderCreated/OrderStatusChanged/OrderFulfilled",
+        "ExecutionIntentProposed/Approved/Executed",
+        "SpendRecorded",
+        "Privacy intent events",
+        "ReputationRecorded",
+      ],
+      dashboardCards: ["active agents", "x402 order volume", "execution intents by adapter", "policy approvals", "privacy intent lifecycle", "reputation scores"],
+    }, null, 2),
+  }],
+}));
+
+server.tool("fhenix_privacy_boundary", "Return the Fhenix confidential-compute boundary for ArcPay private treasury metadata.", {}, async () => ({
+  content: [{
+    type: "text",
+    text: JSON.stringify({
+      protocol: "arcpay-fhenix-privacy-boundary",
+      chain: "arbitrum",
+      privateInputs: ["counterparty notes", "agent prompt fragments", "risk memo", "invoice memo", "treasury strategy rationale"],
+      publicOutputs: ["commitment", "nullifier", "evidence URI", "execution intent id", "Arbiscan tx hash"],
+      boundary: "ArcPay PrivacyVault handles commitment/nullifier settlement; Fhenix is the confidential-compute adapter for encrypted policy and risk computation.",
+    }, null, 2),
+  }],
+}));
 
 server.tool("demo_path", "Return the operator demo path for ArcPay Arbitrum.", {}, async () => ({
   content: [{

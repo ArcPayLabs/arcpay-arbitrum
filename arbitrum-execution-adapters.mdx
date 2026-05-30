@@ -3,16 +3,17 @@ title: "Arbitrum Execution Adapters"
 description: "How ArcPay prepares policy-bound Arbitrum execution through GMX, Stylus, ZeroDev, Dune evidence, Robinhood Chain, or manual signer flows."
 ---
 
-ArcPay Arbitrum uses execution adapters instead of giving an agent unrestricted wallet control.
+ArcPay Arbitrum uses execution adapters instead of giving an agent unrestricted wallet control. The core primitive is `ArbitrumExecutionRouter`, which stores a policy-bound execution intent before any external adapter action is claimed as complete.
 
 The product keeps the core control layer inside ArcPay: wallet identity, agent registry, x402 payment requirements, escrowed orders, policies, privacy intents, invoices, reputation, and audit records. Execution adapters are the surfaces that can perform or prove work after the policy gate passes.
 
 ## Supported Adapter Paths
 
-- **GMX execution intents** for policy-approved trading, hedging, or route preparation.
-- **Stylus policy module path** for a Rust/WASM policy verifier that mirrors the Solidity policy model.
-- **ZeroDev smart accounts** for session-key and paymaster-style agent onboarding.
-- **Dune evidence** for public analytics and proof dashboards.
+- **GMX execution intents** for policy-approved trading, hedging, or route preparation. ArcPay stores market, collateral, budget, calldata hash, and evidence URI before execution is considered valid.
+- **Stylus policy module path** for a Rust/WASM policy verifier that can mirror or extend the Solidity `TreasuryPolicy` checks.
+- **ZeroDev smart accounts** for bounded session-key agent actions. ArcPay outputs allowed contracts, max budget, expiry, and blocked actions.
+- **Dune evidence** for public analytics and proof dashboards using ArcPay contract events.
+- **Fhenix privacy boundary** for confidential treasury metadata computation while ArcPay keeps settlement commitments and nullifiers on Arbitrum.
 - **Robinhood Chain path** for an optional Arbitrum ecosystem deployment target.
 - **Manual signer** for operator-controlled execution when no external adapter is enabled.
 
@@ -22,8 +23,10 @@ The product keeps the core control layer inside ArcPay: wallet identity, agent r
 2. Open ArcPay `/execution`.
 3. Set strategy, adapter, budget, allowed assets, risk limit, x402 resource, and execution address.
 4. Copy the generated handoff payload.
-5. Execute only after policy approval and budget checks.
-6. Attach Arbiscan tx hash, x402 verification, Dune query link, or signed result evidence before marking work complete.
+5. Propose the intent on `ArbitrumExecutionRouter`.
+6. Approve it with a Dune/query/policy evidence URI.
+7. Execute only after policy approval and budget checks.
+8. Record the Arbiscan tx hash or receipt hash back on `ArbitrumExecutionRouter`.
 
 ## Handoff Payload
 
@@ -33,7 +36,7 @@ ArcPay generates an agent-readable payload containing:
 - Selected adapter and execution address placeholder.
 - GMX, Stylus, ZeroDev, Dune, Robinhood Chain, or manual signer allowlist.
 - ArcPay x402 protected resource URL.
-- AgentRegistry, AgentOrderBook, TreasuryPolicy, PrivacyVault, and ReputationBook addresses.
+- AgentRegistry, AgentIdentity8004, AgentOrderBook, TreasuryPolicy, PrivacyVault, ReputationBook, and ArbitrumExecutionRouter addresses.
 - Budget and asset constraints.
 - Operator approval and leverage restrictions.
 - Evidence requirement before any fill, yield move, or paid work is marked complete.
@@ -41,9 +44,11 @@ ArcPay generates an agent-readable payload containing:
 ## What Is Live Now
 
 - Execution handoff and evidence page in the app.
+- On-chain execution intent contract with propose, approve, execute, and cancel lifecycle.
 - Payload copy/export.
 - Local and Supabase-backed audit record when a handoff is saved.
 - Developer tool output through `/api/developer/tools/execution_handoff`.
+- Developer tools for `gmx_execution_plan`, `zerodev_session_policy`, `dune_evidence_spec`, and `fhenix_privacy_boundary`.
 - CLI/MCP command surfaces for agent and developer setup.
 
 ## Safety Model

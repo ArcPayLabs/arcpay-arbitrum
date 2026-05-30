@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { Bot, CheckCircle2, ClipboardCopy, DatabaseZap, KeyRound, Route as RouteIcon, ShieldCheck, WalletCards, Workflow } from "lucide-react";
 import { PageHeader } from "@/components/app/PageHeader";
 import { StatCard } from "@/components/primitives/StatCard";
-import { CONTRACTS, shortAddress, writeRecord } from "@arbitrum/lib/arbitrum";
+import { CONTRACTS, EXECUTION_ADAPTERS, executionRouterContract, hashText, shortAddress, toWei, txUrl, writeRecord } from "@arbitrum/lib/arbitrum";
 
 export const Route = { options: { component: ExecutionRoute } };
 
@@ -21,6 +21,11 @@ type Handoff = {
   assets: string;
   x402Resource: string;
   developerToolUrl: string;
+  targetContract: string;
+  calldataSummary: string;
+  policyUri: string;
+  evidenceUri: string;
+  txHashOrReceipt: string;
 };
 
 const DEFAULT_FORM: Handoff = {
@@ -36,6 +41,11 @@ const DEFAULT_FORM: Handoff = {
   assets: "ETH, USDC, WETH",
   x402Resource: "https://arbitrum-x402.20.208.46.195.nip.io/agent/research-agent/work",
   developerToolUrl: "https://arcpay-arbitrum.vercel.app/api/developer/tools/execution_handoff",
+  targetContract: "0x0000000000000000000000000000000000000000",
+  calldataSummary: "GMX ETH/USDC route, ZeroDev session key, or Stylus policy check payload",
+  policyUri: "ipfs://arcpay-arbitrum/policies/treasury-router",
+  evidenceUri: "dune://arcpay-arbitrum/execution-evidence",
+  txHashOrReceipt: "",
 };
 
 const SETUP_STEPS = [
@@ -55,6 +65,7 @@ const INTEGRATIONS = [
 
 function ExecutionRoute() {
   const [form, setForm] = useState<Handoff>(DEFAULT_FORM);
+  const [intentId, setIntentId] = useState("");
   const [message, setMessage] = useState("Create an Arbitrum execution handoff. ArcPay keeps policy, x402, audit, privacy, and evidence records.");
 
   const payload = useMemo(() => ({
@@ -90,29 +101,85 @@ function ExecutionRoute() {
       policy: CONTRACTS.TreasuryPolicy,
       privacyVault: CONTRACTS.ArbitrumPrivacyVault,
       reputation: CONTRACTS.AgentReputationBook,
+      identity8004: CONTRACTS.AgentIdentity8004,
+      executionRouter: CONTRACTS.ArbitrumExecutionRouter,
     },
   }), [form]);
 
-  function saveHandoff() {
+  async function proposeIntent() {
+    const contract = await executionRouterContract() as any;
+    const adapter = adapterId(form.primaryVenue);
+    const tx = await contract.proposeIntent(
+      hashText(form.agentSlug),
+      adapter,
+      form.targetContract,
+      toWei(form.budgetEth),
+      hashText(form.calldataSummary),
+      form.policyUri,
+    );
+    const receipt = await tx.wait();
+    const event = receipt?.logs
+      .map((log: any) => {
+        try {
+          return contract.interface.parseLog(log);
+        } catch {
+          return null;
+        }
+      })
+      .find((parsed: any) => parsed?.name === "ExecutionIntentProposed");
+    const nextIntentId = event?.args?.intentId ? String(event.args.intentId) : "";
+    setIntentId(nextIntentId);
     writeRecord({
       id: crypto.randomUUID(),
       type: "audit",
       title: `Arbitrum execution ${form.strategyName}`,
-      status: "execution_handoff_ready",
+      status: "execution_intent_proposed",
       amount: `${form.budgetEth} ETH budget`,
+      txHash: tx.hash,
     });
-    setMessage("Execution handoff saved. It is ready for policy review, x402 order creation, and evidence-gated execution.");
+    setMessage(`Execution intent proposed: ${nextIntentId || tx.hash}`);
   }
 
-  function saveEvidence() {
+  async function approveIntent() {
+    if (!intentId) {
+      setMessage("Create or paste an execution intent id before approval.");
+      return;
+    }
+    const contract = await executionRouterContract() as any;
+    const tx = await contract.approveIntent(intentId, form.evidenceUri);
+    await tx.wait();
+    writeRecord({
+      id: crypto.randomUUID(),
+      type: "audit",
+      title: `Approved execution ${form.primaryVenue}`,
+      status: "execution_intent_approved",
+      amount: `${form.budgetEth} ETH budget`,
+      txHash: tx.hash,
+    });
+    setMessage(`Execution intent approved: ${txUrl(tx.hash)}`);
+  }
+
+  async function recordExecution() {
+    if (!intentId) {
+      setMessage("Create or paste an execution intent id before recording execution.");
+      return;
+    }
+    if (!form.txHashOrReceipt) {
+      setMessage("Add an Arbiscan tx hash or receipt hash before recording execution.");
+      return;
+    }
+    const contract = await executionRouterContract() as any;
+    const tx = await contract.recordExecution(intentId, hashText(form.txHashOrReceipt), form.evidenceUri);
+    await tx.wait();
     writeRecord({
       id: crypto.randomUUID(),
       type: "audit",
       title: `Execution evidence ${form.primaryVenue}`,
-      status: form.executionAddress ? "execution_evidence_ready" : "execution_address_missing",
+      status: "execution_recorded",
       amount: `${form.budgetEth} ETH budget`,
+      txHash: tx.hash,
     });
-    setMessage(form.executionAddress ? "Evidence record saved. Attach Arbiscan tx hashes, x402 responses, or Dune links after activity." : "Evidence record saved, but add the signer or smart-account address before claiming execution.");
+    setMessage(`Execution evidence recorded: ${txUrl(tx.hash)}`);
   }
 
   async function copyPayload() {
@@ -126,7 +193,7 @@ function ExecutionRoute() {
         icon={Bot}
         eyebrow="Arbitrum execution"
         title="Agent execution handoff"
-        description="Prepare a safe execution brief for Arbitrum agents and operators: budget, policy, x402 endpoint, venue target, smart-account path, privacy boundary, and evidence requirements."
+        description="Prepare and record policy-approved Arbitrum execution intents for GMX, ZeroDev, Stylus, Dune, Fhenix, Robinhood Chain, or manual signers. ArcPay stores the execution envelope and final evidence on-chain."
         actions={<button type="button" onClick={copyPayload} className="inline-flex items-center gap-2 rounded-full bg-foreground px-4 py-2 text-sm font-semibold text-background"><ClipboardCopy className="h-4 w-4" /> Copy payload</button>}
       />
 
@@ -138,7 +205,7 @@ function ExecutionRoute() {
       </div>
 
       <section className="grid grid-cols-1 gap-4 xl:grid-cols-[0.85fr_1.15fr]">
-        <form className="space-y-4 rounded-3xl border border-border bg-card p-5" onSubmit={(event) => { event.preventDefault(); saveHandoff(); }}>
+        <form className="space-y-4 rounded-3xl border border-border bg-card p-5" onSubmit={(event) => { event.preventDefault(); void proposeIntent(); }}>
           <div>
             <div className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Handoff builder</div>
             <h2 className="mt-2 text-2xl font-semibold tracking-tight">Arbitrum strategy envelope</h2>
@@ -154,9 +221,14 @@ function ExecutionRoute() {
               )}
             </label>
           ))}
+          <label className="block">
+            <span className="text-sm font-medium">Execution intent id</span>
+            <input className="mt-1.5 h-11 w-full rounded-xl border border-border bg-background px-3 text-sm" value={intentId} onChange={(event) => setIntentId(event.target.value)} placeholder="0x... after proposeIntent" />
+          </label>
           <div className="flex flex-wrap gap-2">
-            <button className="h-12 rounded-xl bg-primary px-5 font-semibold text-primary-foreground" type="submit">Save execution handoff</button>
-            <button className="h-12 rounded-xl border border-border px-5 font-semibold" type="button" onClick={saveEvidence}>Save evidence record</button>
+            <button className="h-12 rounded-xl bg-primary px-5 font-semibold text-primary-foreground" type="submit">Propose on-chain intent</button>
+            <button className="h-12 rounded-xl border border-border px-5 font-semibold" type="button" onClick={() => void approveIntent()}>Approve intent</button>
+            <button className="h-12 rounded-xl border border-border px-5 font-semibold" type="button" onClick={() => void recordExecution()}>Record execution</button>
           </div>
           <div className="rounded-xl border border-border bg-muted p-3 text-sm text-muted-foreground">{message}</div>
         </form>
@@ -210,4 +282,15 @@ function ExecutionRoute() {
 
 function labelFor(key: string) {
   return key.replace(/([A-Z])/g, " $1").replace(/^./, (letter) => letter.toUpperCase());
+}
+
+function adapterId(value: string) {
+  const normalized = value.toLowerCase();
+  if (normalized.includes("zerodev")) return EXECUTION_ADAPTERS.ZeroDev;
+  if (normalized.includes("stylus")) return EXECUTION_ADAPTERS.Stylus;
+  if (normalized.includes("dune")) return EXECUTION_ADAPTERS.Dune;
+  if (normalized.includes("fhenix")) return EXECUTION_ADAPTERS.Fhenix;
+  if (normalized.includes("robinhood")) return EXECUTION_ADAPTERS.RobinhoodChain;
+  if (normalized.includes("manual")) return EXECUTION_ADAPTERS.Manual;
+  return EXECUTION_ADAPTERS.GMX;
 }

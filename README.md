@@ -20,7 +20,8 @@ The x402 starter kit under `starter-kits/arbitrum-x402-agent` is separately lice
 - ETH and USDC invoices.
 - USDC agent spend cards.
 - Reputation, audit, and usage analytics.
-- Arbitrum execution adapters for GMX, Stylus, ZeroDev, Dune evidence, Robinhood Chain path, and manual signer flows.
+- ERC-8004-style agent identity records.
+- Arbitrum execution router for GMX, Stylus, ZeroDev, Dune evidence, Fhenix privacy boundary, Robinhood Chain path, and manual signer flows.
 - CLI, MCP, OpenAPI, hosted developer tools, and a reusable x402 starter kit.
 
 ## Network
@@ -47,6 +48,8 @@ The x402 starter kit under `starter-kits/arbitrum-x402-agent` is separately lice
 | `AgentSpendCardVault.sol` | USDC-backed virtual spend cards for agent budgets. |
 | `ArbitrumPrivacyVault.sol` | Commitment-based payment intents with encrypted memo URIs and nullifier release. |
 | `AgentReputationBook.sol` | Order-backed score, review, and dispute evidence for service agents. |
+| `AgentIdentity8004.sol` | ERC-8004-style identity record for agent metadata, endpoint, trust model, active state, and reputation nonce. |
+| `ArbitrumExecutionRouter.sol` | On-chain execution intent lifecycle for GMX, ZeroDev, Stylus, Dune, Fhenix, Robinhood Chain, and manual evidence. |
 
 ## Local Setup
 
@@ -78,6 +81,10 @@ npm run arcpay -- agent-id research-agent
 npm run arcpay -- privacy-guide
 npm run arcpay -- x402-guide
 npm run arcpay -- execution-handoff
+npm run arcpay -- gmx-plan
+npm run arcpay -- zerodev-policy
+npm run arcpay -- dune-spec
+npm run arcpay -- fhenix-boundary
 npm run arcpay -- demo-path
 npm run arcpay -- mcp-config
 ```
@@ -91,6 +98,8 @@ npm install -g @arcpaylabs/arbitrum-x402-agent-starter
 
 arcpay-arbitrum contracts
 arcpay-arbitrum execution-handoff
+arcpay-arbitrum gmx-plan
+arcpay-arbitrum zerodev-policy
 arcpay-arbitrum-mcp
 arcpay-arbitrum-x402-agent quote research-agent
 ```
@@ -199,7 +208,7 @@ Important files:
 | `/agents` | Register and load Arbitrum agent services from `AgentRegistry`. |
 | `/orders` | Create, accept, process, fulfill, settle, or refund escrowed agent orders. |
 | `/x402` | Quote HTTP 402 payment requirements, create an escrowed order, verify, fulfill, and unlock paid agent work. |
-| `/execution` | Generate a policy-bound Arbitrum execution handoff payload. |
+| `/execution` | Propose, approve, and record policy-bound Arbitrum execution intents for GMX, ZeroDev, Stylus, Dune, Fhenix, Robinhood Chain, or manual signers. |
 | `/cards` | Create USDC-backed agent spend cards with limits and freeze controls. |
 | `/policies` | Set hourly/daily/weekly limits, approval threshold, UTC-hour windows, emergency pause, and agent allowlist. |
 | `/privacy` | Create and release commitment-based USDC/ETH payment intents with encrypted metadata and nullifiers. |

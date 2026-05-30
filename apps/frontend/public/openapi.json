@@ -485,6 +485,10 @@
                 "invoice_guide",
                 "x402_guide",
                 "execution_handoff",
+                "gmx_execution_plan",
+                "zerodev_session_policy",
+                "dune_evidence_spec",
+                "fhenix_privacy_boundary",
                 "starter_kit",
                 "roadmap"
               ]

@@ -50,6 +50,14 @@ async function main() {
   const reputationBook = await AgentReputationBook.deploy(await orderBook.getAddress(), nextTx());
   await reputationBook.waitForDeployment();
 
+  const AgentIdentity8004 = await ethers.getContractFactory("AgentIdentity8004");
+  const agentIdentity8004 = await AgentIdentity8004.deploy(nextTx());
+  await agentIdentity8004.waitForDeployment();
+
+  const ArbitrumExecutionRouter = await ethers.getContractFactory("ArbitrumExecutionRouter");
+  const executionRouter = await ArbitrumExecutionRouter.deploy(nextTx());
+  await executionRouter.waitForDeployment();
+
   const MockERC20 = await ethers.getContractFactory("MockERC20");
   const mockUsdc = await MockERC20.deploy(nextTx());
   await mockUsdc.waitForDeployment();
@@ -88,6 +96,8 @@ async function main() {
       ArbitrumPrivacyVault: await privacyVault.getAddress(),
       AgentInvoiceBook: await invoiceBook.getAddress(),
       AgentReputationBook: await reputationBook.getAddress(),
+      AgentIdentity8004: await agentIdentity8004.getAddress(),
+      ArbitrumExecutionRouter: await executionRouter.getAddress(),
       MockUSDC: await mockUsdc.getAddress(),
       ...(mockPlatformAddress ? { MockArbitrumAgentPlatform: mockPlatformAddress } : {}),
     },

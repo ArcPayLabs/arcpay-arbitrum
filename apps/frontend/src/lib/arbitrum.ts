@@ -19,6 +19,8 @@ export const CONTRACTS = {
   ArbitrumPrivacyVault: deployedContracts.ArbitrumPrivacyVault ?? NATIVE_TOKEN,
   AgentInvoiceBook: deployedContracts.AgentInvoiceBook ?? NATIVE_TOKEN,
   AgentReputationBook: deployedContracts.AgentReputationBook ?? NATIVE_TOKEN,
+  AgentIdentity8004: deployedContracts.AgentIdentity8004 ?? NATIVE_TOKEN,
+  ArbitrumExecutionRouter: deployedContracts.ArbitrumExecutionRouter ?? NATIVE_TOKEN,
 } as const;
 
 export const DEPTH_CONTRACTS_READY =
@@ -130,6 +132,36 @@ export const REPUTATION_BOOK_ABI = [
   "function reputationScore(bytes32 agentId) view returns (uint256)",
   "event ReputationRecorded(bytes32 indexed reviewId,bytes32 indexed agentId,bytes32 indexed orderId,address reviewer,uint8 score,bool disputed,string evidenceUri)",
 ] as const;
+
+export const AGENT_IDENTITY_8004_ABI = [
+  "function registerIdentity(bytes32 agentId,string metadataUri,string serviceEndpoint,string trustModel) returns (uint256 tokenId)",
+  "function updateIdentity(uint256 tokenId,string metadataUri,string serviceEndpoint,string trustModel,bool active)",
+  "function advanceReputationNonce(uint256 tokenId) returns (uint256 reputationNonce)",
+  "function requireActiveIdentity(bytes32 agentId) view returns (uint256 tokenId,address owner)",
+  "function tokenByAgentId(bytes32 agentId) view returns (uint256)",
+  "function identities(uint256 tokenId) view returns (uint256 tokenId,bytes32 agentId,address owner,string metadataUri,string serviceEndpoint,string trustModel,bool active,uint256 reputationNonce,uint256 createdAt,uint256 updatedAt)",
+  "event AgentIdentityRegistered(uint256 indexed tokenId,bytes32 indexed agentId,address indexed owner,string metadataUri,string serviceEndpoint,string trustModel)",
+] as const;
+
+export const EXECUTION_ROUTER_ABI = [
+  "function proposeIntent(bytes32 agentId,uint8 adapter,address target,uint256 maxValueWei,bytes32 calldataHash,string policyUri) returns (bytes32 intentId)",
+  "function approveIntent(bytes32 intentId,string evidenceUri)",
+  "function recordExecution(bytes32 intentId,bytes32 txHashOrReceiptHash,string evidenceUri)",
+  "function cancelIntent(bytes32 intentId,string reason)",
+  "function getOperatorIntents(address operator) view returns (bytes32[])",
+  "function intents(bytes32 intentId) view returns (bytes32 intentId,bytes32 agentId,address operator,uint8 adapter,address target,uint256 maxValueWei,bytes32 calldataHash,string policyUri,string evidenceUri,uint8 status,uint256 createdAt,uint256 updatedAt)",
+  "event ExecutionIntentProposed(bytes32 indexed intentId,bytes32 indexed agentId,address indexed operator,uint8 adapter,address target,uint256 maxValueWei,bytes32 calldataHash,string policyUri)",
+] as const;
+
+export const EXECUTION_ADAPTERS = {
+  GMX: 0,
+  ZeroDev: 1,
+  Stylus: 2,
+  Dune: 3,
+  Fhenix: 4,
+  RobinhoodChain: 5,
+  Manual: 6,
+} as const;
 
 export const ORDER_STATUS = ["Pending", "Accepted", "Processing", "Fulfilled", "Settled", "Refunded", "Failed"] as const;
 
@@ -290,6 +322,16 @@ export async function invoiceBookContract() {
 export async function reputationBookContract() {
   const signer = await signerProvider();
   return new Contract(CONTRACTS.AgentReputationBook, REPUTATION_BOOK_ABI, signer);
+}
+
+export async function agentIdentity8004Contract() {
+  const signer = await signerProvider();
+  return new Contract(CONTRACTS.AgentIdentity8004, AGENT_IDENTITY_8004_ABI, signer);
+}
+
+export async function executionRouterContract() {
+  const signer = await signerProvider();
+  return new Contract(CONTRACTS.ArbitrumExecutionRouter, EXECUTION_ROUTER_ABI, signer);
 }
 
 export type LocalRecord = {

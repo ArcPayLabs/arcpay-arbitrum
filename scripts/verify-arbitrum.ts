@@ -32,6 +32,8 @@ const verifications: Array<{ name: string; args: unknown[] }> = [
   { name: "ArbitrumPrivacyVault", args: [] },
   { name: "AgentInvoiceBook", args: [] },
   { name: "AgentReputationBook", args: [contracts.AgentOrderBook] },
+  { name: "AgentIdentity8004", args: [] },
+  { name: "ArbitrumExecutionRouter", args: [] },
   { name: "MockUSDC", args: [] },
   { name: "MockArbitrumAgentPlatform", args: [] },
 ];

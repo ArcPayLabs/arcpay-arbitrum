@@ -28,6 +28,10 @@ Commands:
   arcpay-arbitrum invoice-guide          Print invoice settlement guide
   arcpay-arbitrum x402-guide             Print x402 HTTP payment gate guide
   arcpay-arbitrum execution-handoff      Print Arbitrum execution payload template
+  arcpay-arbitrum gmx-plan               Print GMX execution plan template
+  arcpay-arbitrum zerodev-policy         Print ZeroDev session policy template
+  arcpay-arbitrum dune-spec              Print Dune analytics proof schema
+  arcpay-arbitrum fhenix-boundary        Print Fhenix privacy boundary
   arcpay-arbitrum demo-path              Print operator demo steps
   arcpay-arbitrum smoke                  Print smoke-test commands
   arcpay-arbitrum mcp-config             Print MCP host config
@@ -149,6 +153,8 @@ try {
         policy: info.contracts.TreasuryPolicy,
         privacyVault: info.contracts.ArbitrumPrivacyVault,
         reputation: info.contracts.AgentReputationBook,
+        identity8004: info.contracts.AgentIdentity8004,
+        executionRouter: info.contracts.ArbitrumExecutionRouter,
       },
       setup: [
         "Register or select an ArcPay agent identity.",
@@ -157,6 +163,71 @@ try {
         "Execute only after policy approval and budget checks.",
         "Attach Arbiscan tx hash, x402 verification, Dune query link, or signed result evidence before marking the work complete.",
       ],
+    }, null, 2));
+  } else if (command === "gmx-plan") {
+    const info = deployment();
+    console.log(JSON.stringify({
+      protocol: "arcpay-gmx-execution-plan",
+      chain: "arbitrum-sepolia",
+      venue: "GMX",
+      market: args[0] || "ETH/USD",
+      collateral: args[1] || "USDC",
+      sizeUsd: args[2] || "25",
+      maxLeverage: args[3] || "1.2x",
+      controls: {
+        requireArcPayPolicy: true,
+        requireExecutionRouterIntent: true,
+        requireOperatorApprovalForLeverage: true,
+        requireArbiscanTxHash: true,
+        requireDuneEvidenceLink: true,
+      },
+      contracts: {
+        executionRouter: info.contracts.ArbitrumExecutionRouter,
+        policy: info.contracts.TreasuryPolicy,
+        orderBook: info.contracts.AgentOrderBook,
+      },
+    }, null, 2));
+  } else if (command === "zerodev-policy") {
+    const info = deployment();
+    console.log(JSON.stringify({
+      protocol: "arcpay-zerodev-session-policy",
+      chain: "arbitrum-sepolia",
+      agentSlug: args[0] || "treasury-router",
+      accountAbstraction: "ZeroDev",
+      sessionScope: {
+        allowedContracts: [
+          info.contracts.AgentOrderBook,
+          info.contracts.TreasuryPolicy,
+          info.contracts.ArbitrumExecutionRouter,
+          info.contracts.ArbitrumPrivacyVault,
+        ],
+        maxBudgetEth: args[1] || "0.02",
+        expiresInMinutes: Number(args[2] || 60),
+        blockedActions: ["unbounded leverage", "unknown target contract", "execution without evidence URI"],
+      },
+    }, null, 2));
+  } else if (command === "dune-spec") {
+    console.log(JSON.stringify({
+      protocol: "arcpay-dune-evidence",
+      chain: "arbitrum-sepolia",
+      eventFamilies: [
+        "AgentIdentityRegistered",
+        "AgentRegistered",
+        "OrderCreated/OrderStatusChanged/OrderFulfilled",
+        "ExecutionIntentProposed/Approved/Executed",
+        "SpendRecorded",
+        "Privacy intent events",
+        "ReputationRecorded",
+      ],
+      dashboardCards: ["active agents", "x402 order volume", "execution intents by adapter", "policy approvals", "privacy intent lifecycle", "reputation scores"],
+    }, null, 2));
+  } else if (command === "fhenix-boundary") {
+    console.log(JSON.stringify({
+      protocol: "arcpay-fhenix-privacy-boundary",
+      chain: "arbitrum",
+      privateInputs: ["counterparty notes", "agent prompt fragments", "risk memo", "invoice memo", "treasury strategy rationale"],
+      publicOutputs: ["commitment", "nullifier", "evidence URI", "execution intent id", "Arbiscan tx hash"],
+      boundary: "ArcPay PrivacyVault handles commitment/nullifier settlement; Fhenix is the confidential-compute adapter for encrypted policy and risk computation.",
     }, null, 2));
   } else if (command === "demo-path") {
     console.log([

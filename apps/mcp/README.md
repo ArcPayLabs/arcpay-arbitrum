@@ -34,7 +34,11 @@ Restart Claude Desktop after editing the config.
 - `privacy_intent_guide`
 - `invoice_guide`
 - `x402_guide`
-- `Arbitrum execution_handoff`
+- `execution_handoff`
+- `gmx_execution_plan`
+- `zerodev_session_policy`
+- `dune_evidence_spec`
+- `fhenix_privacy_boundary`
 - `demo_path`
 - `smoke_commands`
 

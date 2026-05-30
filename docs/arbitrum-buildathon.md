@@ -18,6 +18,10 @@ Arbitrum as the settlement and evidence layer for agent financial operations:
 - USDC/WETH strategy intents connect agent finance to Arbitrum RWA themes
 - Arbitrum execution-style agent workflows can call ArcPay tools for payment,
   policy, invoices, and reputation
+- ERC-8004-style agent identity records give each service a durable on-chain
+  identity, endpoint, trust model, and reputation nonce
+- GMX, ZeroDev, Dune, Fhenix, Stylus, Robinhood Chain, and manual execution
+  paths all pass through an on-chain `ArbitrumExecutionRouter` intent lifecycle
 - treasury spend policies are enforced before settlement
 - every job creates an auditable order lifecycle
 
@@ -31,6 +35,9 @@ Arbitrum as the settlement and evidence layer for agent financial operations:
 6. Provider accepts, processes, and fulfills the order.
 7. Requester settles the order, releasing funds through `AgentTreasury`.
 8. Dashboard, audit, and proof pages show the order lifecycle and contract events.
+9. Agent owner registers an ERC-8004-style identity in `AgentIdentity8004`.
+10. Operator proposes, approves, and records adapter execution evidence through
+    `ArbitrumExecutionRouter`.
 
 ## Arbitrum Sepolia
 
@@ -54,6 +61,10 @@ Arbitrum as the settlement and evidence layer for agent financial operations:
 - `AgentSpendCardVault.sol`: USDC agent budget cards
 - `ArbitrumPrivacyVault.sol`: commitment-based privacy intents
 - `AgentReputationBook.sol`: order-backed agent reputation
+- `AgentIdentity8004.sol`: ERC-8004-style agent identity metadata, endpoint,
+  trust model, active state, and reputation nonce
+- `ArbitrumExecutionRouter.sol`: on-chain execution evidence lifecycle for GMX,
+  ZeroDev, Stylus, Dune, Fhenix, Robinhood Chain, and manual signers
 - `apps/x402-server`: HTTP 402 quote, verification, fulfillment helper, and unlock surface
 
 ## Deployment
@@ -76,6 +87,8 @@ deployments/arbitrum-sepolia.json
 | `ArbitrumPrivacyVault` | Pending Arbitrum Sepolia deploy |
 | `AgentInvoiceBook` | Pending Arbitrum Sepolia deploy |
 | `AgentReputationBook` | Pending Arbitrum Sepolia deploy |
+| `AgentIdentity8004` | Pending Arbitrum Sepolia deploy |
+| `ArbitrumExecutionRouter` | Pending Arbitrum Sepolia deploy |
 
 ## Judging Alignment
 
@@ -103,3 +116,5 @@ system into a Arbitrum-only testnet app:
 - Arbitrum `createRequest`-compatible risk oracle for agentic policy decisions
 - USDC-backed agent spend cards with limits, balances, spend events, and freeze controls
 - commitment-based private payment intents with encrypted metadata and nullifier release
+- ERC-8004-style agent identities for agent service trust, discovery, and reputation continuity
+- on-chain execution intents for GMX, ZeroDev, Stylus, Dune, Fhenix, Robinhood Chain, and manual signer evidence
