@@ -1,5 +1,5 @@
 import { id, keccak256, toUtf8Bytes } from "ethers";
-import deployment from "../../../../../deployments/arbitrum-sepolia.json";
+import deployment from "../../deployment/arbitrum-sepolia.json";
 
 type ToolResult = {
   contentType: "application/json" | "text/plain";

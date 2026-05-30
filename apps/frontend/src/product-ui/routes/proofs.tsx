@@ -4,7 +4,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { CheckCircle2, ExternalLink } from "lucide-react";
 import { MarketingShell } from "@/components/marketing/MarketingShell";
 import { SectionHeading } from "@/components/primitives/SectionHeading";
-import deployment from "../../../../../deployments/arbitrum-sepolia.json";
+import deployment from "../../deployment/arbitrum-sepolia.json";
 
 export const Route = createFileRoute("/proofs")({
   head: () => ({

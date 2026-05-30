@@ -1,5 +1,5 @@
 import { Contract, Interface, JsonRpcProvider, Wallet, formatEther, id } from "ethers";
-import deployment from "../../../../../deployments/arbitrum-sepolia.json";
+import deployment from "../../deployment/arbitrum-sepolia.json";
 import { trackUsageEvent } from "./usage";
 
 const ZERO = "0x0000000000000000000000000000000000000000";

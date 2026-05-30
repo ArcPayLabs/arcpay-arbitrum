@@ -4,7 +4,7 @@ import Link from "next/link";
 import { BookOpen, Bot, CheckCircle2, Code2, CreditCard, ExternalLink, FileText, Gauge, KeyRound, Lock, Network, RadioTower, ScrollText, ShieldCheck, Terminal, WalletCards, Workflow } from "lucide-react";
 import { MarketingShell } from "@/components/marketing/MarketingShell";
 import { SectionHeading } from "@/components/primitives/SectionHeading";
-import deployment from "../../../../../deployments/arbitrum-sepolia.json";
+import deployment from "../../deployment/arbitrum-sepolia.json";
 
 export const Route = { options: { component: DocsPage } };
 

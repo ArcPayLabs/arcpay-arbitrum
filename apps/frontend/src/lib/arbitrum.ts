@@ -1,5 +1,5 @@
 import { BrowserProvider, Contract, JsonRpcProvider, formatEther, id, keccak256, parseEther, toUtf8Bytes, type Eip1193Provider } from "ethers";
-import deployment from "../../../../deployments/arbitrum-sepolia.json";
+import deployment from "../deployment/arbitrum-sepolia.json";
 
 export const ARBITRUM_CHAIN_ID = 421614;
 export const ARBITRUM_CHAIN_ID_HEX = "0x66eee";

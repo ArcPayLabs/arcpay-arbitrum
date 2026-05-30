@@ -1,5 +1,5 @@
 import { JsonRpcProvider } from "ethers";
-import deployment from "../../../../../deployments/arbitrum-sepolia.json";
+import deployment from "../../deployment/arbitrum-sepolia.json";
 
 type HealthState = "ok" | "degraded" | "down" | "unknown";
 
