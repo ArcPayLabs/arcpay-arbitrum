@@ -1,0 +1,29 @@
+# ArcPay Arbitrum
+
+ArcPay Arbitrum is a wallet-first private treasury OS for autonomous agent businesses on Arbitrum Sepolia.
+
+Use these resources:
+
+- App docs: /docs
+- OpenAPI: /openapi.json
+- x402 health: https://arbitrum-x402.20.208.46.195.nip.io/health
+- x402 demo: https://arbitrum-x402.20.208.46.195.nip.io/x402/demo
+- GitHub: https://github.com/ArcPayLabs/arcpay-arbitrum
+- Ecosystem thesis: /docs/ecosystem-thesis
+- Go to market: /docs/go-to-market
+
+Core flows:
+
+- Register agents with service endpoints, capability tags, and ETH pricing.
+- Sell agent work through x402-style HTTP 402 and escrowed Arbitrum orders.
+- x402 protected resources return `X402-Version`, `X402-Payment-Required`, exact ETH requirements, and unlock after retry with `?orderId=...`, `X-ArcPay-Order-Id`, or `X-Payment`.
+- Export Arbitrum execution handoff payloads from `/execution` so an agent, smart account, or operator signer can use ArcPay policy, x402, escrow, privacy, invoice, and reputation modules without unrestricted treasury authority.
+- Track Arbitrum execution venue evidence across GMX, ZeroDev, Stylus, and Dune after the operator adds the registered Arbitrum execution agent address.
+- Enforce operator policies before treasury execution.
+- Issue ETH or USDC invoices with on-chain status evidence.
+- Create USDC spend cards with top-up, freeze, activate, and spend controls.
+- Use privacy intents for commitment-first payments with encrypted memo URIs and nullifier release.
+- Use the published CLI: `npm install -g @arcpaylabs/arbitrum-cli`.
+- Use the published MCP server: `npm install -g @arcpaylabs/arbitrum-mcp`.
+- Use the published x402 starter: `npm install -g @arcpaylabs/arbitrum-x402-agent-starter`.
+- Use the HTTP developer tools at `/api/developer/tools`.

@@ -1,0 +1,63 @@
+---
+title: "Publish Checklist"
+description: "Release checklist for ArcPay Arbitrum developer packages, MCP, beta launch, and runtime security."
+---
+
+ArcPay Arbitrum has three developer-facing packages published on npm:
+
+| Package | Purpose | Publish directory |
+| --- | --- | --- |
+| `@arcpaylabs/arbitrum-cli` | Local CLI for contract addresses, IDs, guides, and MCP config | `apps/cli` |
+| `@arcpaylabs/arbitrum-mcp` | Local stdio MCP server for Claude Desktop and compatible hosts | `apps/mcp` |
+| `@arcpaylabs/arbitrum-x402-agent-starter` | Starter client for paid Arbitrum x402 agent endpoints | `starter-kits/arbitrum-x402-agent` |
+
+## Pre-Publish Verification
+
+```bash
+npm run audit:runtime
+npm run package:all
+npm run build:frontend
+npm run docs:check
+npm run check:worker
+npm run check:x402
+```
+
+## Published Packages
+
+```bash
+npm view @arcpaylabs/arbitrum-cli version
+npm view @arcpaylabs/arbitrum-mcp version
+npm view @arcpaylabs/arbitrum-x402-agent-starter version
+```
+
+If republishing a new version, run `npm version patch` inside the package folder, then publish from that folder. Do not publish from the repo root.
+
+## Claude Desktop MCP Config
+
+After publishing:
+
+```json
+{
+  "mcpServers": {
+    "arcpay-arbitrum": {
+      "command": "arcpay-arbitrum-mcp"
+    }
+  }
+}
+```
+
+## Beta Launch Checklist
+
+- Create/confirm X account for ArcPay Arbitrum.
+- Create Telegram beta group.
+- Pin `https://arcpay-arbitrum.vercel.app/beta` as the signup link.
+- Share docs: `https://arcpay-arbitrum.vercel.app/docs/overview`.
+- Share status: `https://arcpay-arbitrum.vercel.app/status`.
+- Share x402 demo: `https://arbitrum-x402.20.208.46.195.nip.io/x402/demo`.
+- Invite agent builders to install the CLI/MCP and test paid endpoints.
+
+## Security Boundary
+
+Runtime audit is clean with `npm run audit:runtime`.
+
+The full root audit still reports dev-only Hardhat v2/toolbox dependency findings. Those do not ship in frontend, worker, x402, MCP, or starter-kit runtime packages. A Hardhat v3 migration should be handled separately because it can change deploy/test behavior.

@@ -1,0 +1,53 @@
+---
+title: "Privacy Intents"
+description: "A practical privacy primitive for Arbitrum agent treasury flows."
+---
+
+Arbitrum does not currently ship a native treasury privacy layer. ArcPay adds a builder-usable privacy intent contract for agent payment workflows.
+
+## Privacy Boundary
+
+This is not a full ZK mixer. It provides application-level privacy:
+
+- commitment IDs instead of plain business IDs
+- encrypted memo URI instead of public invoice or contractor metadata
+- recipient hidden until release
+- one-time nullifier release
+- cancellation and refund while unreleased
+- on-chain release evidence for audits
+
+## Solidity Interface
+
+```solidity
+function createNativeIntent(bytes32 commitment, string calldata encryptedMemoUri) external payable;
+function createTokenIntent(bytes32 commitment, address token, uint256 amount, string calldata encryptedMemoUri) external;
+function releaseIntent(bytes32 commitment, bytes32 nullifier, address payable recipient) external;
+function cancelIntent(bytes32 commitment) external;
+```
+
+## Developer Flow
+
+```ts
+const commitment = keccak256(toUtf8Bytes("invoice-42-secret"));
+const nullifier = keccak256(toUtf8Bytes("release-secret-42"));
+
+await privacyVault.createNativeIntent(
+  commitment,
+  "encrypted://memo-or-ipfs-pointer",
+  { value: parseEther("0.01") },
+);
+
+await privacyVault.releaseIntent(commitment, nullifier, recipient);
+```
+
+## Helpers
+
+```bash
+npm run arcpay -- privacy-commit "invoice-42-secret"
+npm run arcpay -- privacy-guide
+npm run arcpay -- privacy-abi
+```
+
+## Product Screen
+
+![ArcPay privacy intents dashboard](./images/privacy.png)

@@ -1,0 +1,39 @@
+{
+  "name": "@arcpaylabs/arbitrum-x402-agent-starter",
+  "version": "0.1.0",
+  "private": false,
+  "description": "Starter client for integrating with ArcPay Arbitrum x402 paid agent endpoints.",
+  "license": "MIT",
+  "type": "module",
+  "author": "Henry Sam Marfo <jasonneil4040@gmail.com>",
+  "homepage": "https://arcpay-arbitrum.vercel.app/docs/x402-agent-payments",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ArcPayLabs/arcpay-arbitrum.git",
+    "directory": "starter-kits/arbitrum-x402-agent"
+  },
+  "bin": {
+    "arcpay-arbitrum-x402-agent": "src/agent-client.mjs"
+  },
+  "files": [
+    "README.md",
+    "LICENSE.md",
+    "src"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "quote": "node src/agent-client.mjs quote research-agent",
+    "locked": "node src/agent-client.mjs locked research-agent",
+    "agent-id": "node src/agent-client.mjs agent-id research-agent",
+    "pack:dry": "npm pack --dry-run"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "ethers": "^6.13.5"
+  },
+  "overrides": {
+    "ws": "^8.20.1"
+  }
+}

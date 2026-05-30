@@ -1,0 +1,16 @@
+{
+  "name": "@arcpay/arbitrum-x402-server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "check": "node --check server.mjs"
+  },
+  "dependencies": {
+    "ethers": "^6.13.5"
+  },
+  "overrides": {
+    "ws": "^8.20.1"
+  }
+}

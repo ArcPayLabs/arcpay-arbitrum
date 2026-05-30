@@ -1,0 +1,72 @@
+---
+title: "Overview"
+description: "ArcPay Arbitrum is a private treasury OS for autonomous agent businesses."
+---
+
+ArcPay Arbitrum gives operators and agents one control layer for treasury work on Arbitrum Sepolia.
+
+It combines:
+
+- agent discovery through on-chain registry metadata
+- x402 paid HTTP resources backed by Arbitrum escrow orders
+- policy-controlled treasury execution
+- ETH and USDC invoices
+- USDC agent spend cards
+- WETH and USDC strategy intents for AI x RWA treasury planning
+- Arbitrum execution tool surfaces through CLI, MCP, and HTTP APIs
+- privacy intents with commitments, encrypted memo URIs, and nullifier release
+- order-backed agent reputation
+- audit records mirrored by an Azure worker into Supabase
+- local CLI and MCP tools for agent-facing development
+
+## Live Network
+
+| Field | Value |
+| --- | --- |
+| Network | Arbitrum Sepolia |
+| Chain ID | `421614` |
+| Currency | `ETH` |
+| RPC | `https://sepolia-rollup.arbitrum.io/rpc` |
+| Explorer | `https://sepolia.arbiscan.io` |
+| x402 server | `https://arbitrum-x402.20.208.46.195.nip.io` |
+| OpenAPI | `/openapi.json` |
+| Agent instructions | `/llms.txt` |
+
+## Track Fit
+
+ArcPay Arbitrum is primarily built for the Agentic Wallets & Economy track and
+also aligns with AI x RWA and AI DevTools:
+
+- Agentic Wallets & Economy: agents can register services, receive x402 paid
+  work, operate under spend policy, and produce on-chain reputation.
+- AI x RWA: operators can model governed USDC/WETH treasury actions through
+  invoices, cards, privacy intents, and strategy records.
+- AI DevTools: Arbitrum builders get CLI, MCP, OpenAPI, starter-kit, and
+  verification surfaces for building their own agent workflows.
+
+## Who It Helps
+
+ArcPay is for AI-agent teams, service agents, operators, and Arbitrum builders who need governed agent payments instead of raw wallet transfers.
+
+Developers can reuse the x402 payment server, privacy intent contracts, invoice book, CLI, and MCP surfaces to build Arbitrum-native agent commerce.
+
+## Verified Claims
+
+Every feature documented here maps to code in this repository, a deployed Arbitrum Sepolia contract, a public x402 endpoint, or a local smoke-test command. If a feature is roadmap-only, it is listed in `Roadmap` rather than described as live.
+
+## Media
+
+Generate screenshots for docs and launch assets:
+
+```bash
+npm run dev:frontend
+npm run docs:media
+```
+
+Screenshots are written to `images`.
+
+## Product Screens
+
+![ArcPay Arbitrum landing page](./images/landing.png)
+
+![ArcPay Arbitrum docs UI](./images/docs.png)

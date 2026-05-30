@@ -1,0 +1,39 @@
+---
+title: "Run Locally"
+description: "Local setup, live smoke tests, and service checks."
+---
+
+## Build
+
+```bash
+npm run build
+npm run build:frontend
+npm test
+```
+
+## x402
+
+```bash
+npm run check:x402
+npm run x402
+```
+
+## Worker
+
+```bash
+npm run check:worker
+npm run worker:once
+npm run worker
+```
+
+## Live Smoke Tests
+
+```bash
+npm run smoke:auth
+npm run smoke:live
+npm run smoke:x402
+```
+
+`smoke:live` requires a funded Arbitrum Sepolia `PRIVATE_KEY`.
+
+`smoke:x402` verifies HTTP 402 quote, on-chain escrow payment, provider fulfillment, resource unlock, and settlement.

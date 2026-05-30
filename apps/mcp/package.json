@@ -1,0 +1,38 @@
+{
+  "name": "@arcpaylabs/arbitrum-mcp",
+  "version": "0.1.0",
+  "private": false,
+  "description": "MCP server for ArcPay Arbitrum contracts, x402, privacy intents, invoices, and demo flows.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Henry Sam Marfo <jasonneil4040@gmail.com>",
+  "homepage": "https://arcpay-arbitrum.vercel.app/docs/mcp",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ArcPayLabs/arcpay-arbitrum.git",
+    "directory": "apps/mcp"
+  },
+  "bin": {
+    "arcpay-arbitrum-mcp": "server.mjs"
+  },
+  "files": [
+    "README.md",
+    "server.mjs",
+    "deployment.json"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "start": "node server.mjs",
+    "pack:dry": "npm pack --dry-run"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.18.2",
+    "ethers": "^6.13.5",
+    "zod": "^3.25.76"
+  },
+  "overrides": {
+    "ws": "^8.20.1"
+  }
+}

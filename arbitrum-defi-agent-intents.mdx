@@ -1,0 +1,60 @@
+---
+title: "Arbitrum DeFi and RWA Intents"
+description: "How ArcPay prepares swap, hedge, and yield requests for Arbitrum operators and agents without claiming execution before proof exists."
+---
+
+ArcPay Arbitrum treats swaps, hedges, and yield moves as governed intents first.
+
+That means an operator or agent can prepare a route, budget, risk limit, adapter target, and evidence requirement before any wallet signature or external execution happens.
+
+## Why Intents
+
+Agent execution can create real treasury risk. ArcPay separates:
+
+- planning
+- policy review
+- x402 or escrow setup
+- wallet or smart-account signature
+- execution evidence
+- audit record
+
+This avoids the common failure mode where an agent dashboard says a strategy executed before there is a transaction hash, order state, x402 verification, or signed result.
+
+## Swap and Execution Adapters
+
+The `/swaps` page supports Arbitrum route intents for:
+
+- GMX execution or hedge intent
+- ZeroDev smart-account execution
+- Stylus policy-module route checks
+- Dune analytics/evidence links
+- manual signer execution
+
+ArcPay records the swap intent and exports a structured payload with source asset, target asset, amount, slippage, expiry, executor, policy requirement, and contract context.
+
+## Yield and RWA Strategy
+
+The `/yield` page supports Arbitrum strategy intents for:
+
+- USDC conservative reserve
+- WETH treasury sleeve
+- GMX hedged treasury sleeve
+- manual RWA review
+
+The strategy payload includes allocation cap, drawdown cap, rebalance cadence, leverage restriction, operator approval requirement, and ArcPay module addresses.
+
+## Evidence Rule
+
+ArcPay should not mark a swap, hedge, rebalance, or yield action as complete unless the executor returns one of:
+
+- Arbitrum transaction hash
+- fulfilled ArcPay order id
+- x402 order verification result
+- Dune query or dashboard link
+- signed operator record
+
+Until then the status remains an intent.
+
+## Production Boundary
+
+The current implementation is ready for policy-bound agent handoff and audit capture on Arbitrum Sepolia. Direct GMX, ZeroDev, Stylus, or Dune automation should only be enabled after each adapter is tested with reliable failure handling and clear evidence capture.

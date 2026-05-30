@@ -1,0 +1,78 @@
+---
+title: "Beta Readiness"
+description: "What is live today, what is private beta ready, and what still needs hardening."
+---
+
+ArcPay Arbitrum is a testnet MVP for operators and builders running agent businesses on Arbitrum. It is not positioned as a throwaway demo: the core flows write to deployed Arbitrum Sepolia contracts, the x402 gateway is live, and the app supports wallet onboarding, workspace setup, policy controls, privacy intents, invoices, cards, audit records, CLI, MCP, and HTTP developer tools.
+
+## Live Today
+
+- Public app: `https://arcpay-arbitrum.vercel.app`
+- Public docs: `https://arcpay-arbitrum.vercel.app/docs/overview`
+- x402 gateway: `https://arbitrum-x402.20.208.46.195.nip.io`
+- OpenAPI: `https://arcpay-arbitrum.vercel.app/openapi.json`
+- Agent context: `https://arcpay-arbitrum.vercel.app/llms.txt`
+- HTTP developer tools: `https://arcpay-arbitrum.vercel.app/api/developer/tools`
+- Hosted MCP bridge: `https://arcpay-arbitrum.vercel.app/api/mcp`
+- Runtime status: `https://arcpay-arbitrum.vercel.app/status`
+- Usage analytics: `https://arcpay-arbitrum.vercel.app/analytics`
+- Beta access: `https://arcpay-arbitrum.vercel.app/beta`
+- Beta admin: `https://arcpay-arbitrum.vercel.app/beta-admin`
+- Developer keys: `https://arcpay-arbitrum.vercel.app/developer-access`
+- Arbitrum Sepolia contracts: registry, order book, treasury policy, spend cards, invoices, privacy vault, operator controls, risk oracle, reputation book
+
+## Private Beta Flow
+
+1. Operator or agent builder requests access at `/beta`.
+2. Operator connects an EVM wallet on Arbitrum Sepolia and creates a workspace.
+3. Operator registers an agent with endpoint, pricing, and capabilities.
+4. Operator sets policy: limits, allowed actions, allowed agent, risk floor, and emergency pause.
+5. Builder or agent calls the x402 gateway, receives HTTP 402 payment requirements, pays through the order book, and unlocks the protected result after fulfillment.
+6. Operator records order-backed reputation after fulfilled or settled work.
+7. Operator uses invoices, USDC cards, privacy intents, and audit exports to manage day-to-day activity.
+
+The `/agents` page now includes a bring-your-own-agent wizard with research, routing, and privacy templates, derived `agentId`, x402 protected URL, and starter snippets.
+
+The beta form writes to `arcpay_arbitrum_beta_signups` when the Supabase migration is applied. Until then, the API falls back to `arcpay_arbitrum_records` so the signup is still captured.
+
+Developer access is handled through hashed `ap_arbitrum_...` keys. Operators create keys from `/developer-access`, external MCP clients send the key as a bearer token to `/api/mcp`, and old keys can be revoked without touching wallet auth.
+
+Usage tracking is Supabase-backed through `arcpay_arbitrum_usage_events`. It records app records, beta signups, developer tool calls, hosted MCP activity, and x402 gateway events without storing request secrets or private keys.
+
+## Developer Onboarding
+
+Builders can onboard their own agents without asking ArcPay to host the agent:
+
+- register the agent slug and endpoint in the app
+- derive `agentId` with the CLI, MCP server, or HTTP tool wrapper
+- expose a paid resource behind the x402 starter kit
+- use ArcPay order escrow for payment state
+- use privacy intents for encrypted memo pointers and delayed recipient disclosure
+- use audit exports and records as proof of activity
+
+## Current Production Boundary
+
+ArcPay is production-shaped but intentionally scoped to Arbitrum Sepolia right now:
+
+- x402 is an ArcPay Arbitrum implementation of the HTTP 402 paid-resource pattern, backed by the deployed ArcPay order book.
+- Privacy is a privacy-intent layer. It hides memo/recipient timing until release and prevents double release with nullifiers, but it is not a full zero-knowledge shielded pool.
+- Swap and yield pages record governed intents until a stable Arbitrum-native router/vault SDK is available for production execution.
+- Local MCP works with stdio hosts such as Claude Desktop and Cursor. Browser/ChatGPT-style usage should use OpenAPI, `llms.txt`, HTTP developer tools, or the hosted MCP-style JSON-RPC bridge.
+
+## Verification Status
+
+Latest local/live checks run successfully:
+
+```bash
+npm run build:frontend
+npm test
+npm run check:worker
+npm run check:x402
+npm run smoke:auth
+npm run smoke:live
+npm run smoke:x402
+```
+
+`smoke:live` writes small Arbitrum Sepolia transactions across registry, policy, orders, cards, privacy intents, invoices, and risk oracle. `smoke:x402` starts the x402 server, registers a fresh agent, returns HTTP 402, creates an on-chain order, fulfills it, unlocks the protected resource, and settles the order.
+
+Run live smoke tests sequentially because they share the funded signer nonce.

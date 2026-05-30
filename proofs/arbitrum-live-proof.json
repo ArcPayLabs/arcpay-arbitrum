@@ -1,0 +1,9 @@
+{
+  "status": "pending",
+  "network": "arbitrum-sepolia",
+  "chainId": 421614,
+  "explorer": "https://sepolia.arbiscan.io",
+  "app": "https://arcpay-arbitrum.vercel.app",
+  "x402Gateway": "https://arbitrum-x402.20.208.46.195.nip.io",
+  "note": "Run npm run deploy:arbitrum, npm run verify:arbitrum, then npm run proof:arbitrum after the funded Arbitrum Sepolia signer is configured."
+}

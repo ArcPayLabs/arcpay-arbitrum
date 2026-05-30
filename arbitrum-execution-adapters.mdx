@@ -1,0 +1,58 @@
+---
+title: "Arbitrum Execution Adapters"
+description: "How ArcPay prepares policy-bound Arbitrum execution through GMX, Stylus, ZeroDev, Dune evidence, Robinhood Chain, or manual signer flows."
+---
+
+ArcPay Arbitrum uses execution adapters instead of giving an agent unrestricted wallet control.
+
+The product keeps the core control layer inside ArcPay: wallet identity, agent registry, x402 payment requirements, escrowed orders, policies, privacy intents, invoices, reputation, and audit records. Execution adapters are the surfaces that can perform or prove work after the policy gate passes.
+
+## Supported Adapter Paths
+
+- **GMX execution intents** for policy-approved trading, hedging, or route preparation.
+- **Stylus policy module path** for a Rust/WASM policy verifier that mirrors the Solidity policy model.
+- **ZeroDev smart accounts** for session-key and paymaster-style agent onboarding.
+- **Dune evidence** for public analytics and proof dashboards.
+- **Robinhood Chain path** for an optional Arbitrum ecosystem deployment target.
+- **Manual signer** for operator-controlled execution when no external adapter is enabled.
+
+## Operator Flow
+
+1. Register or select an ArcPay agent.
+2. Open ArcPay `/execution`.
+3. Set strategy, adapter, budget, allowed assets, risk limit, x402 resource, and execution address.
+4. Copy the generated handoff payload.
+5. Execute only after policy approval and budget checks.
+6. Attach Arbiscan tx hash, x402 verification, Dune query link, or signed result evidence before marking work complete.
+
+## Handoff Payload
+
+ArcPay generates an agent-readable payload containing:
+
+- Arbitrum Sepolia network metadata.
+- Selected adapter and execution address placeholder.
+- GMX, Stylus, ZeroDev, Dune, Robinhood Chain, or manual signer allowlist.
+- ArcPay x402 protected resource URL.
+- AgentRegistry, AgentOrderBook, TreasuryPolicy, PrivacyVault, and ReputationBook addresses.
+- Budget and asset constraints.
+- Operator approval and leverage restrictions.
+- Evidence requirement before any fill, yield move, or paid work is marked complete.
+
+## What Is Live Now
+
+- Execution handoff and evidence page in the app.
+- Payload copy/export.
+- Local and Supabase-backed audit record when a handoff is saved.
+- Developer tool output through `/api/developer/tools/execution_handoff`.
+- CLI/MCP command surfaces for agent and developer setup.
+
+## Safety Model
+
+ArcPay should not grant unrestricted spend authority to any external adapter. Use:
+
+- `TreasuryPolicy` for budgets and policy.
+- `AgentOrderBook` for escrowed work.
+- x402 for paid HTTP resources.
+- `ArbitrumPrivacyVault` for commitment-based payment intents.
+- `AgentReputationBook` for service outcome history.
+- `/audit` and `/status` for evidence.

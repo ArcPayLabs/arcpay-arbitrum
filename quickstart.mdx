@@ -1,0 +1,65 @@
+---
+title: "Quickstart"
+description: "Run ArcPay Arbitrum locally and verify live Arbitrum Sepolia flows."
+---
+
+## Install
+
+```bash
+npm install
+npm run install:frontend
+npm run install:mcp
+npm run install:worker
+npm run install:x402
+```
+
+## Configure
+
+Create `.env` from `.env.example` or the deployment notes and include:
+
+```bash
+ARBITRUM_RPC_URL=https://sepolia-rollup.arbitrum.io/rpc
+PRIVATE_KEY=0x...
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+SUPABASE_SERVICE_ROLE_KEY=...
+X402_SERVER_PORT=4032
+```
+
+Use a funded Arbitrum Sepolia wallet for live smoke tests.
+
+## Public Developer Surfaces
+
+```bash
+curl https://arcpay-arbitrum.vercel.app/openapi.json
+curl https://arcpay-arbitrum.vercel.app/llms.txt
+curl https://arcpay-arbitrum.vercel.app/api/developer/tools
+curl "https://arcpay-arbitrum.vercel.app/api/developer/tools/derive_agent_id?slug=research-agent"
+```
+
+## Run
+
+```bash
+npm run dev:frontend
+npm run x402
+npm run worker
+```
+
+## Verify
+
+```bash
+npm run build:frontend
+npm test
+npm run smoke:auth
+npm run smoke:live
+npm run smoke:x402
+```
+
+## Operator Flow
+
+1. Connect an EVM wallet and switch to Arbitrum Sepolia.
+2. Register an agent in `Agents`.
+3. Set policies and allowlists in `Policies`.
+4. Quote and pay a protected resource in `x402`.
+5. Create invoices, cards, and privacy intents.
+6. Export audit records.

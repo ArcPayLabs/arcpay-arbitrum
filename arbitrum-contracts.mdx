@@ -1,0 +1,34 @@
+---
+title: "Arbitrum Contracts"
+description: "ArcPay contracts prepared for Arbitrum Sepolia deployment."
+---
+
+ArcPay uses Solidity contracts prepared for Arbitrum Sepolia.
+
+The source of truth for deployed addresses is:
+
+```text
+deployments/arbitrum-sepolia.json
+```
+
+Until a real deployment is run, the deployment file intentionally contains zero addresses. After deployment, run `npm run verify:arbitrum` and update this page through the generated deployment metadata.
+
+## Contract Roles
+
+- `AgentRegistry`: service metadata, capability tags, endpoint URL, ETH price, and active status.
+- `AgentOrderBook`: escrowed order state machine for agent work.
+- `TreasuryPolicy`: spend caps, approval thresholds, UTC-hour windows, allowlist, and pause state.
+- `AgentSpendCardVault`: bounded USDC agent spend cards.
+- `ArbitrumPrivacyVault`: commitment-first privacy intents.
+- `AgentInvoiceBook`: ETH and USDC invoice lifecycle.
+- `AgentReputationBook`: order-backed agent scores, completions, disputes, and evidence URIs.
+- `OperatorControls`: claim-code onboarding and webhook circuit-breaker controls.
+- `ArbitrumAgentRiskOracle`: testnet risk request and callback evidence.
+
+## Verification
+
+```bash
+ARBISCAN_API_KEY=your_key npm run verify:arbitrum
+```
+
+The verification script uses Etherscan API V2 with `chainid=421614`.

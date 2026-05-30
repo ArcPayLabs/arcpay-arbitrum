@@ -1,0 +1,42 @@
+---
+title: Runtime Status
+description: Live health checks for ArcPay Arbitrum RPC, contracts, x402, docs, and worker indexing.
+---
+
+ArcPay publishes a runtime status surface so operators and agent builders can verify the system before relying on it.
+
+## App page
+
+Open:
+
+```txt
+https://arcpay-arbitrum.vercel.app/status
+```
+
+The page checks:
+
+- Arbitrum Sepolia RPC and current block
+- deployed contract bytecode for all ArcPay Arbitrum contracts
+- x402 gateway health at `https://arbitrum-x402.20.208.46.195.nip.io/health`
+- Mintlify docs availability under `/docs/overview`
+- latest Supabase record indexed by the worker
+
+## API
+
+```bash
+curl https://arcpay-arbitrum.vercel.app/api/status
+```
+
+The endpoint returns `200` when every check is healthy and `207` when one or more checks are degraded, down, or unknown.
+
+## Worker signal
+
+The worker status is based on the newest row in `arcpay_arbitrum_records`. A fresh event from orders, policies, cards, invoices, privacy, risk, or reputation should move the worker check back to healthy after the worker indexes it.
+
+For a full write-path verification, run:
+
+```bash
+npm run smoke:live
+```
+
+That command performs funded Arbitrum Sepolia writes across the registry, treasury policy, order book, reputation book, operator controls, USDC cards, privacy vault, invoice book, and risk oracle.

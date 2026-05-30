@@ -1,0 +1,36 @@
+{
+  "name": "@arcpaylabs/arbitrum-cli",
+  "version": "0.1.0",
+  "private": false,
+  "description": "Developer CLI for ArcPay Arbitrum contracts, x402, invoices, privacy intents, and MCP setup.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Henry Sam Marfo <jasonneil4040@gmail.com>",
+  "homepage": "https://arcpay-arbitrum.vercel.app/docs/cli",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ArcPayLabs/arcpay-arbitrum.git",
+    "directory": "apps/cli"
+  },
+  "bin": {
+    "arcpay-arbitrum": "arcpay-arbitrum.mjs"
+  },
+  "files": [
+    "README.md",
+    "arcpay-arbitrum.mjs",
+    "deployment.json"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "start": "node arcpay-arbitrum.mjs",
+    "pack:dry": "npm pack --dry-run"
+  },
+  "dependencies": {
+    "ethers": "^6.13.5"
+  },
+  "overrides": {
+    "ws": "^8.20.1"
+  }
+}

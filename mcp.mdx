@@ -1,0 +1,132 @@
+---
+title: "MCP"
+description: "Connect ArcPay Arbitrum to local MCP hosts like Claude Desktop and Cursor."
+---
+
+ArcPay includes a local MCP server at:
+
+```text
+apps/mcp/server.mjs
+```
+
+Install dependencies:
+
+```bash
+npm run install:mcp
+```
+
+Run manually:
+
+```bash
+npm run mcp
+```
+
+For external developers, the MCP package is published on npm:
+
+```bash
+npm install -g @arcpaylabs/arbitrum-mcp
+arcpay-arbitrum-mcp
+```
+
+Generate host config:
+
+```bash
+npm run arcpay -- mcp-config
+```
+
+Claude Desktop can use the published package directly:
+
+```json
+{
+  "mcpServers": {
+    "arcpay-arbitrum": {
+      "command": "arcpay-arbitrum-mcp"
+    }
+  }
+}
+```
+
+## Tools
+
+The MCP server exposes:
+
+- `get_deployment`
+- `derive_agent_id`
+- `derive_invoice_id`
+- `derive_claim_hash`
+- `derive_privacy_commitment`
+- `privacy_intent_guide`
+- `invoice_guide`
+- `x402_guide`
+- `demo_path`
+- `smoke_commands`
+
+## Claude Desktop
+
+Paste the output of `npm run arcpay -- mcp-config` into Claude Desktop's MCP server config, then restart Claude.
+
+The npm package is a local stdio MCP server for hosts that support stdio MCP. ArcPay also exposes a hosted MCP-style JSON-RPC bridge at `/api/mcp` for HTTP clients and browser agents.
+
+## Hosted MCP Bridge
+
+ArcPay also exposes a hosted MCP-style JSON-RPC bridge:
+
+```bash
+curl https://arcpay-arbitrum.vercel.app/api/mcp
+```
+
+List tools:
+
+```bash
+curl -X POST https://arcpay-arbitrum.vercel.app/api/mcp \
+  -H "content-type: application/json" \
+  -d '{"jsonrpc":"2.0","id":"1","method":"tools/list","params":{}}'
+```
+
+Call a tool:
+
+```bash
+curl -X POST https://arcpay-arbitrum.vercel.app/api/mcp \
+  -H "content-type: application/json" \
+  -d '{"jsonrpc":"2.0","id":"2","method":"tools/call","params":{"name":"derive_agent_id","arguments":{"slug":"research-agent"}}}'
+```
+
+If `ARCPAY_MCP_BEARER_TOKEN` is set in the deployment, or if you create a workspace developer key in ArcPay, include:
+
+```bash
+Authorization: Bearer <token>
+```
+
+Developer keys are issued from `/developer-access`. They are stored as hashes, scoped to `mcp:tools`, and can be revoked without rotating the global deployment token.
+
+The hosted bridge only exposes safe developer tools. It does not sign transactions, reveal private keys, or mutate treasury state.
+
+## ChatGPT
+
+Standard ChatGPT web does not directly attach to local stdio MCP servers. For ChatGPT-style usage, use the public `/openapi.json`, `/llms.txt`, and HTTP tool wrapper.
+
+## Perplexity and Browser Agents
+
+Use the public docs, `/llms.txt`, `/openapi.json`, `/api/developer/tools`, and `/api/mcp`. If the agent product supports custom OpenAPI actions, point it at `https://arcpay-arbitrum.vercel.app/openapi.json`.
+
+## HTTP Tool Wrapper
+
+List tools:
+
+```bash
+curl https://arcpay-arbitrum.vercel.app/api/developer/tools
+```
+
+Call a tool:
+
+```bash
+curl -X POST https://arcpay-arbitrum.vercel.app/api/developer/tools \
+  -H "content-type: application/json" \
+  -d '{"tool":"derive_agent_id","args":{"slug":"research-agent"}}'
+```
+
+URL form:
+
+```bash
+curl "https://arcpay-arbitrum.vercel.app/api/developer/tools/derive_agent_id?slug=research-agent"
+```

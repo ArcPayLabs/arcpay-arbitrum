@@ -1,0 +1,88 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "ArcPay Arbitrum",
+  "colors": {
+    "primary": "#ff6b2a",
+    "light": "#fff7ed",
+    "dark": "#101414"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "App",
+        "href": "https://arcpay-arbitrum.vercel.app"
+      },
+      {
+        "label": "GitHub",
+        "href": "https://github.com/ArcPayLabs/arcpay-arbitrum"
+      },
+      {
+        "label": "x402",
+        "href": "https://arbitrum-x402.20.208.46.195.nip.io/x402/demo"
+      }
+    ]
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Start",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "overview",
+              "ecosystem-thesis",
+              "beta-readiness",
+              "quickstart",
+              "verification",
+              "arbitrum-live-proof",
+              "status",
+              "go-to-market",
+              "roadmap"
+            ]
+          },
+          {
+            "group": "Operate",
+            "pages": [
+              "arbitrum-contracts",
+              "x402-agent-payments",
+              "arbitrum-execution-adapters",
+              "arbitrum-defi-rwa-intents",
+              "privacy-intents",
+              "invoices",
+              "usdc-cards",
+              "reputation"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Developers",
+        "groups": [
+          {
+            "group": "Builder tools",
+            "pages": [
+              "cli",
+              "mcp",
+              "agent-onboarding",
+              "publish-checklist",
+              "run-locally",
+              "demo-script"
+            ]
+          },
+          {
+            "group": "Developer Reference",
+            "openapi": "apps/frontend/public/openapi.json"
+          }
+        ]
+      }
+    ]
+  },
+  "footer": {
+    "socials": {
+      "x": "https://x.com/PaysmithAfrica",
+      "github": "https://github.com/ArcPayLabs/arcpay-arbitrum"
+    }
+  }
+}

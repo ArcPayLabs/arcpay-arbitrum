@@ -1,0 +1,1043 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "ArcPay Arbitrum Developer API",
+    "version": "0.1.0",
+    "summary": "Public developer surface for ArcPay's Arbitrum x402, workspace evidence, and agent integration flows.",
+    "description": "ArcPay Arbitrum exposes a wallet-first app, a live x402 payment server, an MCP server for local agent hosts, and OpenAPI-compatible endpoint docs for developers building on Arbitrum Sepolia."
+  },
+  "servers": [
+    {
+      "url": "https://arbitrum-x402.20.208.46.195.nip.io",
+      "description": "Live ArcPay Arbitrum x402 server"
+    },
+    {
+      "url": "https://arcpay-arbitrum.vercel.app",
+      "description": "ArcPay Arbitrum frontend and workspace API"
+    }
+  ],
+  "tags": [
+    {
+      "name": "x402",
+      "description": "HTTP 402 payment-gated agent work on Arbitrum."
+    },
+    {
+      "name": "Workspace",
+      "description": "Workspace authentication and evidence mirror endpoints."
+    },
+    {
+      "name": "Beta",
+      "description": "Public beta access requests for Arbitrum builders and operators."
+    },
+    {
+      "name": "Discovery",
+      "description": "Machine-readable docs and integration discovery."
+    },
+    {
+      "name": "Developer Tools",
+      "description": "HTTP wrapper around safe ArcPay MCP-style tools."
+    },
+    {
+      "name": "MCP",
+      "description": "Hosted MCP-style JSON-RPC bridge for agent clients."
+    },
+    {
+      "name": "Developer Keys",
+      "description": "Workspace-scoped bearer keys for hosted MCP access."
+    },
+    {
+      "name": "Admin",
+      "description": "Operator-only beta queue management endpoints."
+    },
+    {
+      "name": "Status",
+      "description": "Runtime health checks for ArcPay Arbitrum production surfaces."
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": ["x402"],
+        "summary": "Check x402 server health",
+        "description": "Returns service status, network, program identifiers, and deployed Arbitrum contracts.",
+        "operationId": "getX402Health",
+        "responses": {
+          "200": {
+            "description": "Server is healthy.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                },
+                "example": {
+                  "ok": true,
+                  "service": "arcpay-arbitrum-x402",
+                  "network": "arbitrum-sepolia",
+                  "chainId": 421614
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/x402/demo": {
+      "get": {
+        "tags": ["Discovery"],
+        "summary": "Get x402 demo path",
+        "description": "Returns a human-readable flow for quoting, paying, verifying, fulfilling, and unlocking an agent endpoint.",
+        "operationId": "getX402Demo",
+        "responses": {
+          "200": {
+            "description": "Demo instructions.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DemoResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/x402/payment-requirements/{agentSlug}": {
+      "get": {
+        "tags": ["x402"],
+        "summary": "Quote Arbitrum payment requirements",
+        "description": "Returns exact ETH payment requirements for a registered Arbitrum agent without requesting the protected resource.",
+        "operationId": "getPaymentRequirements",
+        "parameters": [
+          {
+            "name": "agentSlug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "research-agent"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment requirements for the agent.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequirements"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Agent not found or inactive."
+          }
+        }
+      }
+    },
+    "/agent/{agentSlug}/work": {
+      "get": {
+        "tags": ["x402"],
+        "summary": "Request protected agent work",
+        "description": "Returns HTTP 402 with x402-style payment requirements until a supplied Arbitrum order proof is fulfilled or settled.",
+        "operationId": "getProtectedAgentWork",
+        "parameters": [
+          {
+            "name": "agentSlug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "research-agent"
+            }
+          },
+          {
+            "name": "orderId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "0xabc123..."
+            }
+          },
+          {
+            "name": "X-Payment",
+            "in": "header",
+            "required": false,
+            "description": "Arbitrum payment proof. Accepts a raw orderId, JSON like {\"orderId\":\"0x...\"}, or base64url JSON.",
+            "schema": {
+              "type": "string",
+              "example": "{\"orderId\":\"0xabc123...\"}"
+            }
+          },
+          {
+            "name": "X-ArcPay-Order-Id",
+            "in": "header",
+            "required": false,
+            "description": "Direct ArcPay order proof header for agents that do not yet produce X-Payment payloads.",
+            "schema": {
+              "type": "string",
+              "example": "0xabc123..."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Unlocked agent result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnlockedWork"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Payment required.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentRequirements"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/x402/verify": {
+      "post": {
+        "tags": ["x402"],
+        "summary": "Verify an on-chain order",
+        "description": "Checks AgentOrderBook state and returns whether the order is paid, fulfilled, unlocked, or settled.",
+        "operationId": "verifyX402Order",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyOrderRequest"
+              },
+              "example": {
+                "orderId": "0xabc123...",
+                "agentSlug": "research-agent"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Verification result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerificationResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/agent/{agentSlug}/provider/fulfill": {
+      "post": {
+        "tags": ["x402"],
+        "summary": "Provider fulfill an order",
+        "description": "Fulfills a paid order from the x402 server's configured provider wallet. Requires admin authorization in production.",
+        "operationId": "fulfillX402Order",
+        "security": [
+          {
+            "adminBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "agentSlug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "research-agent"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FulfillOrderRequest"
+              },
+              "example": {
+                "orderId": "0xabc123...",
+                "resultUri": "ipfs://arcpay-x402-result/research-agent"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Order fulfilled.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FulfillOrderResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/challenge": {
+      "post": {
+        "tags": ["Workspace"],
+        "summary": "Create wallet auth challenge",
+        "description": "Creates a short-lived wallet challenge for ArcPay workspace sign-in.",
+        "operationId": "createWalletChallenge",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["address"],
+                "properties": {
+                  "address": {
+                    "type": "string",
+                    "example": "0xB883e76A4f6841E72cAF1C28ba00f78df974f448"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Wallet challenge."
+          }
+        }
+      }
+    },
+    "/api/auth/verify": {
+      "post": {
+        "tags": ["Workspace"],
+        "summary": "Verify wallet auth signature",
+        "description": "Verifies the wallet challenge signature and creates or resumes a workspace account.",
+        "operationId": "verifyWalletChallenge",
+        "responses": {
+          "200": {
+            "description": "Workspace session result."
+          }
+        }
+      }
+    },
+    "/api/records": {
+      "get": {
+        "tags": ["Workspace"],
+        "summary": "Read workspace evidence records",
+        "description": "Reads indexed ArcPay evidence records mirrored by the Azure worker into Supabase.",
+        "operationId": "getWorkspaceRecords",
+        "responses": {
+          "200": {
+            "description": "Evidence records."
+          }
+        }
+      }
+    },
+    "/api/beta": {
+      "post": {
+        "tags": ["Beta"],
+        "summary": "Request ArcPay Arbitrum beta access",
+        "description": "Stores a beta request in the dedicated beta table when available, or falls back to the audit records table until the migration is applied.",
+        "operationId": "requestBetaAccess",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BetaSignupRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Beta request stored in the beta queue.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BetaSignupResponse"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Beta request stored in the records fallback table."
+          }
+        }
+      }
+    },
+    "/api/status": {
+      "get": {
+        "tags": ["Status"],
+        "summary": "Read ArcPay runtime status",
+        "description": "Checks Arbitrum RPC, deployed contract bytecode, x402 gateway health, Mintlify docs, and latest worker-indexed Supabase record.",
+        "operationId": "getRuntimeStatus",
+        "responses": {
+          "200": {
+            "description": "All runtime checks are healthy.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RuntimeStatus"
+                }
+              }
+            }
+          },
+          "207": {
+            "description": "One or more runtime checks are degraded, down, or unknown.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RuntimeStatus"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/developer/tools": {
+      "get": {
+        "tags": ["Developer Tools"],
+        "summary": "List developer tools",
+        "description": "Returns the safe HTTP-callable tools also exposed by the local MCP server.",
+        "operationId": "listDeveloperTools",
+        "responses": {
+          "200": {
+            "description": "Developer tool manifest.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeveloperToolList"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Developer Tools"],
+        "summary": "Run a developer tool",
+        "description": "Calls a safe/read-only ArcPay developer tool by name.",
+        "operationId": "runDeveloperTool",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeveloperToolRequest"
+              },
+              "example": {
+                "tool": "derive_agent_id",
+                "args": {
+                  "slug": "research-agent"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tool result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeveloperToolResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/developer/tools/{tool}": {
+      "get": {
+        "tags": ["Developer Tools"],
+        "summary": "Run a developer tool by URL",
+        "description": "Runs a tool with query-string arguments. Text tools return text/plain; JSON tools return application/json.",
+        "operationId": "runDeveloperToolByUrl",
+        "parameters": [
+          {
+            "name": "tool",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "get_deployment",
+                "derive_agent_id",
+                "derive_invoice_id",
+                "derive_claim_hash",
+                "derive_privacy_commitment",
+                "privacy_intent_guide",
+                "invoice_guide",
+                "x402_guide",
+                "execution_handoff",
+                "starter_kit",
+                "roadmap"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tool result."
+          }
+        }
+      }
+    },
+    "/api/developer/keys": {
+      "get": {
+        "tags": ["Developer Keys"],
+        "summary": "List developer keys",
+        "description": "Returns the current workspace's MCP developer keys. Requires an ArcPay session.",
+        "operationId": "listDeveloperKeys",
+        "responses": {
+          "200": {
+            "description": "Developer key list.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DeveloperKeyList" }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Developer Keys"],
+        "summary": "Create developer key",
+        "description": "Creates a scoped hosted MCP bearer key. The raw key is returned once and only stored as a hash.",
+        "operationId": "createDeveloperKey",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateDeveloperKeyRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Developer key created.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CreateDeveloperKeyResponse" }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Developer Keys"],
+        "summary": "Revoke developer key",
+        "description": "Revokes a workspace-owned hosted MCP key.",
+        "operationId": "revokeDeveloperKey",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["id"],
+                "properties": { "id": { "type": "string" } }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Developer key revoked." }
+        }
+      }
+    },
+    "/api/admin/beta": {
+      "get": {
+        "tags": ["Admin"],
+        "summary": "List beta requests",
+        "description": "Lists private beta access requests. Requires an admin wallet session when ARCPAY_ADMIN_WALLETS is configured.",
+        "operationId": "listBetaRequests",
+        "responses": {
+          "200": { "description": "Beta requests." }
+        }
+      },
+      "patch": {
+        "tags": ["Admin"],
+        "summary": "Update beta request status",
+        "description": "Updates a beta request to new, invited, active, paused, or rejected.",
+        "operationId": "updateBetaRequestStatus",
+        "responses": {
+          "200": { "description": "Beta request updated." }
+        }
+      }
+    },
+    "/api/admin/analytics": {
+      "get": {
+        "tags": ["Admin"],
+        "summary": "Read usage analytics",
+        "description": "Returns admin-only usage totals for app records, beta signups, developer keys, MCP/developer tool calls, x402 gateway activity, owners, and agents.",
+        "operationId": "getUsageAnalytics",
+        "responses": {
+          "200": { "description": "Usage analytics." },
+          "401": { "description": "Admin wallet session required." }
+        }
+      }
+    },
+    "/api/mcp": {
+      "get": {
+        "tags": ["MCP"],
+        "summary": "Read hosted MCP bridge manifest",
+        "description": "Returns the hosted MCP-style bridge metadata, auth mode, supported methods, and available safe tools.",
+        "operationId": "getMcpBridgeManifest",
+        "responses": {
+          "200": {
+            "description": "MCP bridge manifest.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/McpBridgeManifest"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bearer token required when ARCPAY_MCP_BEARER_TOKEN is configured."
+          },
+          "429": {
+            "description": "Rate limit exceeded."
+          }
+        }
+      },
+      "post": {
+        "tags": ["MCP"],
+        "summary": "Call hosted MCP-style JSON-RPC method",
+        "description": "Supports initialize, tools/list, and tools/call over JSON-RPC. Only safe developer tools are exposed.",
+        "operationId": "callMcpBridge",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/McpJsonRpcRequest"
+              },
+              "examples": {
+                "listTools": {
+                  "value": {
+                    "jsonrpc": "2.0",
+                    "id": "1",
+                    "method": "tools/list",
+                    "params": {}
+                  }
+                },
+                "callTool": {
+                  "value": {
+                    "jsonrpc": "2.0",
+                    "id": "2",
+                    "method": "tools/call",
+                    "params": {
+                      "name": "derive_agent_id",
+                      "arguments": {
+                        "slug": "research-agent"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "JSON-RPC result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/McpJsonRpcResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid method, request, or tool input."
+          },
+          "401": {
+            "description": "Bearer token required when ARCPAY_MCP_BEARER_TOKEN is configured."
+          },
+          "429": {
+            "description": "Rate limit exceeded."
+          }
+        }
+      }
+    },
+    "/openapi.json": {
+      "get": {
+        "tags": ["Discovery"],
+        "summary": "Read this OpenAPI document",
+        "description": "Machine-readable API contract for ArcPay Arbitrum developer tooling.",
+        "operationId": "getOpenApiDocument",
+        "responses": {
+          "200": {
+            "description": "OpenAPI document."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "adminBearer": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "HealthResponse": {
+        "type": "object",
+        "properties": {
+          "ok": { "type": "boolean" },
+          "service": { "type": "string" },
+          "network": { "type": "string" },
+          "chainId": { "type": "integer" },
+          "contracts": {
+            "type": "object",
+            "additionalProperties": { "type": "string" }
+          }
+        }
+      },
+      "DemoResponse": {
+        "type": "object",
+        "properties": {
+          "ok": { "type": "boolean" },
+          "steps": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      },
+      "PaymentRequirements": {
+        "type": "object",
+        "properties": {
+          "ok": { "type": "boolean" },
+          "x402Version": { "type": "string" },
+          "arcpayScheme": { "type": "string" },
+          "protocol": { "type": "string", "example": "x402" },
+          "network": { "type": "string" },
+          "caip2Network": { "type": "string", "example": "eip155:421614" },
+          "chainId": { "type": "integer" },
+          "currency": { "type": "string" },
+          "resource": { "type": "string" },
+          "agent": { "$ref": "#/components/schemas/Agent" },
+          "accepts": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/AcceptRequirement" }
+          }
+        }
+      },
+      "Agent": {
+        "type": "object",
+        "properties": {
+          "slug": { "type": "string" },
+          "agentId": { "type": "string" },
+          "owner": { "type": "string" },
+          "name": { "type": "string" },
+          "endpoint": { "type": "string" },
+          "capabilities": { "type": "string" }
+        }
+      },
+      "AcceptRequirement": {
+        "type": "object",
+        "properties": {
+          "scheme": { "type": "string", "example": "exact" },
+          "network": { "type": "string", "example": "eip155:421614" },
+          "chainId": { "type": "integer", "example": 421614 },
+          "asset": { "type": "string", "example": "native" },
+          "currency": { "type": "string", "example": "ETH" },
+          "maxAmountRequired": { "type": "string" },
+          "amountWei": { "type": "string" },
+          "amountEth": { "type": "string" },
+          "payTo": { "type": "string" },
+          "recipient": { "type": "string" },
+          "description": { "type": "string" },
+          "resource": { "type": "string" },
+          "mimeType": { "type": "string" },
+          "contract": { "type": "string" },
+          "action": { "type": "string" },
+          "calldata": { "type": "string" },
+          "args": {
+            "type": "object",
+            "properties": {
+              "agentId": { "type": "string" },
+              "requestUri": { "type": "string" }
+            }
+          },
+          "unlockUrl": { "type": "string" },
+          "verificationUrl": { "type": "string" },
+          "paymentProof": {
+            "type": "object",
+            "properties": {
+              "type": { "type": "string", "example": "arbitrum-order-id" },
+              "header": { "type": "string", "example": "X-Payment" },
+              "acceptedFormats": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+          }
+        }
+      },
+      "VerifyOrderRequest": {
+        "type": "object",
+        "required": ["orderId"],
+        "properties": {
+          "orderId": { "type": "string" },
+          "agentSlug": { "type": "string" },
+          "requester": { "type": "string" }
+        }
+      },
+      "VerificationResult": {
+        "type": "object",
+        "properties": {
+          "ok": { "type": "boolean" },
+          "paid": { "type": "boolean" },
+          "unlocked": { "type": "boolean" },
+          "settled": { "type": "boolean" },
+          "statusName": { "type": "string" },
+          "amountEth": { "type": "string" },
+          "requester": { "type": "string" },
+          "provider": { "type": "string" },
+          "resultUri": { "type": "string" }
+        }
+      },
+      "UnlockedWork": {
+        "type": "object",
+        "properties": {
+          "ok": { "type": "boolean" },
+          "unlocked": { "type": "boolean" },
+          "result": {
+            "type": "object",
+            "properties": {
+              "summary": { "type": "string" },
+              "evidenceUri": { "type": "string" },
+              "generatedAt": { "type": "string" },
+              "nextAction": { "type": "string" }
+            }
+          }
+        }
+      },
+      "FulfillOrderRequest": {
+        "type": "object",
+        "required": ["orderId", "resultUri"],
+        "properties": {
+          "orderId": { "type": "string" },
+          "resultUri": { "type": "string" }
+        }
+      },
+      "FulfillOrderResponse": {
+        "type": "object",
+        "properties": {
+          "ok": { "type": "boolean" },
+          "statusName": { "type": "string" },
+          "txs": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      },
+      "DeveloperToolList": {
+        "type": "object",
+        "properties": {
+          "ok": { "type": "boolean" },
+          "service": { "type": "string" },
+          "transport": { "type": "string" },
+          "tools": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/DeveloperTool" }
+          }
+        }
+      },
+      "RuntimeStatus": {
+        "type": "object",
+        "properties": {
+          "ok": { "type": "boolean" },
+          "generatedAt": { "type": "string", "format": "date-time" },
+          "network": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "chainId": { "type": "integer" },
+              "rpcUrl": { "type": "string" },
+              "explorerUrl": { "type": "string" }
+            }
+          },
+          "checks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "state": { "type": "string", "enum": ["ok", "degraded", "down", "unknown"] },
+                "summary": { "type": "string" },
+                "detail": { "type": "string" },
+                "checkedAt": { "type": "string", "format": "date-time" }
+              }
+            }
+          }
+        }
+      },
+      "BetaSignupRequest": {
+        "type": "object",
+        "required": ["name", "email", "role", "useCase"],
+        "properties": {
+          "name": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "telegram": { "type": "string" },
+          "walletAddress": { "type": "string" },
+          "role": { "type": "string" },
+          "useCase": { "type": "string" },
+          "agentUrl": { "type": "string" }
+        }
+      },
+      "BetaSignupResponse": {
+        "type": "object",
+        "properties": {
+          "ok": { "type": "boolean" },
+          "mode": { "type": "string", "enum": ["beta_table", "records_fallback"] },
+          "message": { "type": "string" },
+          "telegramUrl": { "type": "string" }
+        }
+      },
+      "DeveloperKey": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "label": { "type": "string" },
+          "key_prefix": { "type": "string" },
+          "scopes": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "created_at": { "type": "string", "format": "date-time" },
+          "last_used_at": { "type": ["string", "null"], "format": "date-time" },
+          "revoked_at": { "type": ["string", "null"], "format": "date-time" }
+        }
+      },
+      "DeveloperKeyList": {
+        "type": "object",
+        "properties": {
+          "ok": { "type": "boolean" },
+          "keys": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/DeveloperKey" }
+          }
+        }
+      },
+      "CreateDeveloperKeyRequest": {
+        "type": "object",
+        "properties": {
+          "label": { "type": "string" }
+        }
+      },
+      "CreateDeveloperKeyResponse": {
+        "type": "object",
+        "properties": {
+          "ok": { "type": "boolean" },
+          "key": { "type": "string" },
+          "record": { "$ref": "#/components/schemas/DeveloperKey" }
+        }
+      },
+      "DeveloperTool": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "inputSchema": { "type": "object" }
+        }
+      },
+      "DeveloperToolRequest": {
+        "type": "object",
+        "required": ["tool"],
+        "properties": {
+          "tool": { "type": "string" },
+          "args": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      },
+      "DeveloperToolResponse": {
+        "type": "object",
+        "properties": {
+          "ok": { "type": "boolean" },
+          "tool": { "type": "string" },
+          "contentType": { "type": "string" },
+          "result": {}
+        }
+      },
+      "McpBridgeManifest": {
+        "type": "object",
+        "properties": {
+          "ok": { "type": "boolean" },
+          "service": { "type": "string" },
+          "transport": { "type": "string" },
+          "protocolVersion": { "type": "string" },
+          "auth": { "type": "string" },
+          "methods": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "tools": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/DeveloperTool" }
+          }
+        }
+      },
+      "McpJsonRpcRequest": {
+        "type": "object",
+        "required": ["jsonrpc", "method"],
+        "properties": {
+          "jsonrpc": { "type": "string", "example": "2.0" },
+          "id": {
+            "oneOf": [
+              { "type": "string" },
+              { "type": "integer" },
+              { "type": "null" }
+            ]
+          },
+          "method": {
+            "type": "string",
+            "enum": ["initialize", "tools/list", "tools/call"]
+          },
+          "params": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      },
+      "McpJsonRpcResponse": {
+        "type": "object",
+        "properties": {
+          "jsonrpc": { "type": "string" },
+          "id": {},
+          "result": {},
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": { "type": "integer" },
+              "message": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

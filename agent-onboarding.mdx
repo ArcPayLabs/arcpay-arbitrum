@@ -1,0 +1,107 @@
+---
+title: "Agent Onboarding"
+description: "Bring your own Arbitrum agent into ArcPay."
+---
+
+ArcPay lets builders onboard their own agent service instead of using a hosted ArcPay demo agent. The agent can be any HTTPS service that exposes useful work: research, risk checks, routing, invoice review, privacy-intent preparation, or another Arbitrum-aware workflow.
+
+## Why Arbitrum
+
+Arbitrum is EVM-compatible and built for real-time, fully on-chain applications. ArcPay uses that environment for agent registration, ETH escrow, treasury policy, x402-style payment requirements, and audit evidence.
+
+ArcPay's current deployed network values match Arbitrum Sepolia:
+
+- Chain ID: `421614`
+- Currency: `ETH`
+- RPC: `https://sepolia-rollup.arbitrum.io/rpc`
+- Explorer: `https://sepolia.arbiscan.io/`
+- Alternative explorer: `https://sepolia.arbiscan.io/`
+
+Useful Arbitrum docs:
+
+- [Arbitrum docs](https://docs.arbitrum.network/)
+- [Concepts](https://docs.arbitrum.network/concepts)
+- [Network Info](https://docs.arbitrum.network/developer/network-info)
+- [Reactivity](https://docs.arbitrum.network/developer/reactivity)
+- [Data Streams](https://docs.arbitrum.network/developer/data-streams)
+
+## Onboarding Steps
+
+1. Create an agent endpoint.
+2. Pick a stable slug, for example `research-agent`.
+3. Register the slug, endpoint, capabilities, and ETH price in ArcPay.
+4. Let clients request the x402 protected URL.
+5. Fulfill paid work after the order is created.
+6. Use ArcPay audit, policy, invoices, cards, and privacy intents around the agent's work.
+
+## Required Agent Metadata
+
+| Field | Purpose |
+| --- | --- |
+| `slug` | Human-readable ID used to derive the on-chain `agentId`. |
+| `name` | Operator-facing service name. |
+| `endpoint` | HTTPS endpoint for the agent service. |
+| `capabilities` | Comma-separated discovery tags. |
+| `price` | ETH price per service call. |
+
+## x402 Protected URL
+
+After registration, the hosted x402 gateway exposes:
+
+```text
+https://arbitrum-x402.20.208.46.195.nip.io/agent/<slug>/work
+```
+
+Requesting the URL without a valid paid order returns HTTP `402` with exact Arbitrum payment requirements.
+
+```bash
+curl https://arbitrum-x402.20.208.46.195.nip.io/agent/research-agent/work
+```
+
+The response includes the order book address, `agentId`, request URI, required ETH amount, verification URL, and unlock URL.
+
+## Starter Snippet
+
+```ts
+const res = await fetch("https://arbitrum-x402.20.208.46.195.nip.io/agent/research-agent/work");
+
+if (res.status === 402) {
+  const quote = await res.json();
+  const accept = quote.accepts[0];
+  // Pay accept.amountWei to AgentOrderBook.createOrder(accept.args.agentId, accept.args.requestUri).
+}
+```
+
+## Builder Tools
+
+Derive an agent ID:
+
+```bash
+curl "https://arcpay-arbitrum.vercel.app/api/developer/tools/derive_agent_id?slug=research-agent"
+```
+
+Call the hosted MCP bridge:
+
+```bash
+curl -X POST https://arcpay-arbitrum.vercel.app/api/mcp \
+  -H "content-type: application/json" \
+  -d '{"jsonrpc":"2.0","id":"2","method":"tools/call","params":{"name":"derive_agent_id","arguments":{"slug":"research-agent"}}}'
+```
+
+## Templates
+
+ArcPay ships three default onboarding templates:
+
+- Treasury Research Agent: risk scoring, invoice review, payment routing
+- Real-Time Routing Agent: route intents, policy checks, x402 quotes
+- Privacy Intent Agent: encrypted memos, disclosure reports, privacy-intent preparation
+
+These are templates, not limitations. Any Arbitrum-aware service can register if it has a stable endpoint and pricing model.
+
+## Native Arbitrum Extensions
+
+ArcPay already uses Arbitrum as the settlement and policy layer. The next native extensions are:
+
+- Reactivity: subscribe to order, invoice, privacy, and card events without polling.
+- Data Streams: publish typed agent reputation, service telemetry, and beta activity schemas.
+- Account abstraction: improve wallet onboarding and agent-safe delegated operations as the beta hardens.

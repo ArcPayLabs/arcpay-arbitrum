@@ -1,0 +1,13 @@
+node_modules/
+.next/
+.env
+.env.local
+.vercel-env-temp
+*.azure.env
+dist/
+artifacts/
+cache/
+coverage/
+typechain-types/
+supabase/.temp/
+.DS_Store

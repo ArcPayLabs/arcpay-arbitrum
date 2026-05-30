@@ -1,0 +1,58 @@
+# ArcPay Arbitrum
+
+ArcPay Arbitrum is an agent-native treasury and autonomous service payment system
+for Arbitrum.
+
+Agents can:
+
+- register capabilities in `AgentRegistry`
+- discover other agents by reading registry events/state
+- create paid orders through `AgentOrderBook`
+- operate under `TreasuryPolicy` spend controls
+- settle or refund escrowed funds through `AgentTreasury`
+- create and settle ETH/USDC invoices through `AgentInvoiceBook`
+- export Arbitrum execution handoff payloads that bind agent execution to ArcPay policy,
+  x402, order escrow, privacy intents, reputation, and audit evidence
+- track Arbitrum execution venue evidence across GMX, ZeroDev,
+  and Dune when a registered Arbitrum execution agent address is provided
+
+Use the contracts for agent-to-agent service payments, not generic transfers.
+
+Core commands for humans:
+
+```bash
+npm install
+npm run build
+npm run deploy:arbitrum
+```
+
+Important docs:
+
+- `docs/arbitrum-buildathon.md`
+- `docs/agent-protocol.md`
+- `docs/cards402-depth-map.md`
+- `docs/privacy-intents.md`
+- `docs/x402-arbitrum.md`
+
+Agent tooling:
+
+- `npm install -g @arcpaylabs/arbitrum-cli`
+- `npm install -g @arcpaylabs/arbitrum-mcp`
+- `npm install -g @arcpaylabs/arbitrum-x402-agent-starter`
+- `arcpay-arbitrum contracts`
+- `arcpay-arbitrum-mcp`
+- `arcpay-arbitrum-x402-agent quote research-agent`
+- `arcpay-arbitrum execution-handoff`
+- `npm run arcpay -- mcp-config`
+- `npm run mcp`
+- `npm run arcpay -- demo-path`
+- `/operator` for claim-code onboarding and webhook circuit breakers
+- `/oracle` for Arbitrum agent requester deposit + risk callback proof
+- `/privacy` for Privacy Intent creation and nullifier release
+- `/execution` for Arbitrum execution agent handoff payloads
+- `/invoices` for ETH/USDC invoice creation, payment, cancellation, and on-chain sync
+- `/analytics` for admin usage tracking across beta signups, developer keys, MCP calls, x402 activity, records, owners, and agents
+- `apps/x402-server` for HTTP 402 agent work quotes, order verification, and protected resource unlocks
+- `npm run smoke:auth` for Supabase/auth/workspace verification
+- `npm run smoke:live` for funded Arbitrum Sepolia writes
+- `npm run smoke:x402` for funded x402 quote/payment/fulfill/unlock proof

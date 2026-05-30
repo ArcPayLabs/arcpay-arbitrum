@@ -1,0 +1,50 @@
+---
+title: "x402 Agent Payments"
+description: "Sell paid agent work through HTTP 402 and Arbitrum escrow orders."
+---
+
+ArcPay x402 turns an agent endpoint into a paid HTTP resource.
+
+The public server is:
+
+```text
+https://arbitrum-x402.20.208.46.195.nip.io
+```
+
+Developer starter kit package published on npm:
+
+```bash
+npm install -g @arcpaylabs/arbitrum-x402-agent-starter
+arcpay-arbitrum-x402-agent quote research-agent
+```
+
+## Flow
+
+1. Agent registers on Arbitrum with endpoint, capabilities, and ETH price.
+2. Client requests `GET /agent/:slug/work`.
+3. Server returns HTTP `402` with exact Arbitrum payment requirements.
+4. Client creates an order in `AgentOrderBook` and escrows ETH.
+5. Provider fulfills the order.
+6. Client calls the same endpoint with `orderId`.
+7. Server unlocks the result only after fulfilled or settled state.
+
+## Useful Endpoints
+
+```bash
+curl https://arbitrum-x402.20.208.46.195.nip.io/health
+curl https://arbitrum-x402.20.208.46.195.nip.io/x402/demo
+curl https://arbitrum-x402.20.208.46.195.nip.io/x402/payment-requirements/research-agent
+```
+
+## Verify Locally
+
+```bash
+npm run check:x402
+npm run smoke:x402
+```
+
+The OpenAPI reference is served at `/openapi.json`.
+
+## Product Screen
+
+![ArcPay x402 dashboard](./images/x402.png)

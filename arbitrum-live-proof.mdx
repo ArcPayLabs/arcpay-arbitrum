@@ -1,0 +1,56 @@
+---
+title: "Arbitrum Live Proof"
+description: "Arbitrum Sepolia proof status for contract deployment, x402 payment flow, privacy intent, invoice settlement, and execution evidence."
+---
+
+ArcPay Arbitrum proof is generated from:
+
+```text
+proofs/arbitrum-live-proof.json
+```
+
+## Current Status
+
+The repo is prepared for Arbitrum Sepolia deployment and proof capture. A valid final proof must be generated after the Arbitrum contracts are deployed and the x402 gateway is pointed at those addresses.
+
+Do not use copied Mantle or Somnia hashes as Arbitrum proof.
+
+## Required Proof Package
+
+| Field | Required value |
+| --- | --- |
+| Chain | Arbitrum Sepolia |
+| Chain ID | `421614` |
+| Explorer | `https://sepolia.arbiscan.io` |
+| Protected resource | `https://arbitrum-x402.20.208.46.195.nip.io/agent/treasury-router/work` |
+| Agent slug | `treasury-router` |
+| Budget envelope | ETH-denominated operator budget |
+| Captured tx evidence | Deployment txs plus x402, privacy, invoice, and audit txs |
+
+## Captured Flow
+
+1. Deploy ArcPay contracts on Arbitrum Sepolia.
+2. Register or update the `treasury-router` agent.
+3. Configure `TreasuryPolicy` and allowlist the agent.
+4. Call the public x402 protected resource and capture HTTP `402`.
+5. Create an on-chain x402 order through `AgentOrderBook`.
+6. Accept, process, fulfill, unlock, and settle the order.
+7. Create and release a native ETH privacy intent.
+8. Create and pay a native ETH or USDC invoice.
+9. Attach GMX, ZeroDev, Stylus, Dune, or manual signer evidence for any external execution.
+
+## Reproduce
+
+Run:
+
+```bash
+npm run proof:arbitrum
+```
+
+The command uses the funded Arbitrum Sepolia signer in `.env` and writes a fresh evidence file to `proofs/arbitrum-live-proof.json`.
+
+Use Arbiscan to inspect any transaction:
+
+```text
+https://sepolia.arbiscan.io/tx/<tx-hash>
+```

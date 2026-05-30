@@ -1,0 +1,53 @@
+{
+  "name": "arcpay-arbitrum",
+  "version": "0.1.0",
+  "private": true,
+  "license": "SEE LICENSE.md",
+  "description": "Agent-native treasury and autonomous service payments on Arbitrum.",
+  "bin": {
+    "arcpay-arbitrum": "bin/arcpay-arbitrum.mjs"
+  },
+  "scripts": {
+    "build": "hardhat compile",
+    "compile": "hardhat compile",
+    "install:frontend": "npm install --prefix apps/frontend",
+    "install:mcp": "npm install --prefix apps/mcp",
+    "install:worker": "npm install --prefix apps/worker",
+    "install:x402": "npm install --prefix apps/x402-server",
+    "dev:frontend": "npm run dev --prefix apps/frontend",
+    "build:frontend": "npm run build --prefix apps/frontend",
+    "mcp": "npm run start --prefix apps/mcp",
+    "worker": "npm run start --prefix apps/worker",
+    "check:worker": "npm run check --prefix apps/worker",
+    "worker:once": "node scripts/worker-once.mjs",
+    "x402": "npm run start --prefix apps/x402-server",
+    "check:x402": "npm run check --prefix apps/x402-server",
+    "docs:media": "node scripts/capture-docs-media.mjs",
+    "docs:check": "node -e \"JSON.parse(require('fs').readFileSync('docs.json','utf8')); JSON.parse(require('fs').readFileSync('apps/frontend/public/openapi.json','utf8')); console.log('docs ok')\"",
+    "audit:runtime": "npm audit --omit=dev --audit-level=moderate && npm audit --prefix apps/frontend --audit-level=moderate && npm audit --prefix apps/worker --audit-level=moderate && npm audit --prefix apps/x402-server --audit-level=moderate && npm audit --prefix apps/mcp --audit-level=moderate && npm audit --prefix apps/cli --audit-level=moderate && npm audit --prefix starter-kits/arbitrum-x402-agent --audit-level=moderate",
+    "package:cli": "npm --prefix apps/cli run pack:dry",
+    "package:mcp": "npm --prefix apps/mcp run pack:dry",
+    "package:x402-starter": "npm --prefix starter-kits/arbitrum-x402-agent run pack:dry",
+    "package:all": "npm run package:cli && npm run package:mcp && npm run package:x402-starter",
+    "smoke:auth": "node scripts/smoke-auth.mjs",
+    "smoke:live": "node scripts/smoke-live.mjs",
+    "smoke:x402": "node scripts/smoke-x402.mjs",
+    "proof:arbitrum": "node scripts/capture-arbitrum-proof.mjs",
+    "arcpay": "node bin/arcpay-arbitrum.mjs",
+    "test": "hardhat test",
+    "check:deployer": "hardhat run scripts/check-deployer.ts --network arbitrumTestnet",
+    "deploy:arbitrum": "hardhat run scripts/deploy.ts --network arbitrumTestnet",
+    "deploy:invoice": "hardhat run scripts/deploy-invoice.ts --network arbitrumTestnet",
+    "deploy:reputation": "hardhat run scripts/deploy-reputation.ts --network arbitrumTestnet",
+    "verify:arbitrum": "hardhat run scripts/verify-arbitrum.ts --network arbitrumTestnet"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-ethers": "^3.0.8",
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@supabase/supabase-js": "^2.106.2",
+    "dotenv": "^16.4.7",
+    "ethers": "^6.13.5",
+    "hardhat": "^2.22.19",
+    "typescript": "^5.7.3"
+  }
+}

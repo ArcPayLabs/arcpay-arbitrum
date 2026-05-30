@@ -1,0 +1,36 @@
+---
+title: "CLI"
+description: "Local developer commands for ArcPay Arbitrum."
+---
+
+ArcPay ships a local CLI:
+
+```bash
+npm run arcpay -- help
+```
+
+For external developers, the CLI package is published on npm:
+
+```bash
+npm install -g @arcpaylabs/arbitrum-cli
+arcpay-arbitrum contracts
+```
+
+## Common Commands
+
+```bash
+npm run arcpay -- contracts
+npm run arcpay -- wallet
+npm run arcpay -- agent-id research-agent
+npm run arcpay -- invoice-id inv_001
+npm run arcpay -- claim-hash claim-research-agent-001
+npm run arcpay -- privacy-commit "invoice-secret"
+npm run arcpay -- privacy-guide
+npm run arcpay -- invoice-guide
+npm run arcpay -- x402-guide
+npm run arcpay -- demo-path
+npm run arcpay -- smoke
+npm run arcpay -- mcp-config
+```
+
+The CLI helps builders derive contract IDs, print deployment addresses, configure MCP, and run repeatable proof flows.
