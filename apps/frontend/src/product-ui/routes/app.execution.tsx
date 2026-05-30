@@ -39,7 +39,7 @@ const DEFAULT_FORM: Handoff = {
   budgetEth: "0.02",
   riskLimit: "No leverage without operator approval, no completion without Arbiscan tx hash or x402 proof.",
   assets: "ETH, USDC, WETH",
-  x402Resource: "https://arbitrum-x402.20.208.46.195.nip.io/agent/research-agent/work",
+  x402Resource: "https://arcpay-arbitrum.vercel.app/api/agent/research-agent/work",
   developerToolUrl: "https://arcpay-arbitrum.vercel.app/api/developer/tools/execution_handoff",
   targetContract: "0x0000000000000000000000000000000000000000",
   calldataSummary: "GMX ETH/USDC route, ZeroDev session key, or Stylus policy check payload",
@@ -92,7 +92,7 @@ function ExecutionRoute() {
     endpoints: {
       x402ProtectedResource: form.x402Resource,
       arcPayDeveloperTool: form.developerToolUrl,
-      x402Gateway: "https://arbitrum-x402.20.208.46.195.nip.io",
+      x402Gateway: "https://arcpay-arbitrum.vercel.app/api",
       openapi: "https://arcpay-arbitrum.vercel.app/openapi.json",
     },
     contracts: {

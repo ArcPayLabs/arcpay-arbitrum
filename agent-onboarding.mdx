@@ -49,13 +49,13 @@ Useful Arbitrum docs:
 After registration, the hosted x402 gateway exposes:
 
 ```text
-https://arbitrum-x402.20.208.46.195.nip.io/agent/<slug>/work
+https://arcpay-arbitrum.vercel.app/api/agent/<slug>/work
 ```
 
 Requesting the URL without a valid paid order returns HTTP `402` with exact Arbitrum payment requirements.
 
 ```bash
-curl https://arbitrum-x402.20.208.46.195.nip.io/agent/research-agent/work
+curl https://arcpay-arbitrum.vercel.app/api/agent/research-agent/work
 ```
 
 The response includes the order book address, `agentId`, request URI, required ETH amount, verification URL, and unlock URL.
@@ -63,7 +63,7 @@ The response includes the order book address, `agentId`, request URI, required E
 ## Starter Snippet
 
 ```ts
-const res = await fetch("https://arbitrum-x402.20.208.46.195.nip.io/agent/research-agent/work");
+const res = await fetch("https://arcpay-arbitrum.vercel.app/api/agent/research-agent/work");
 
 if (res.status === 402) {
   const quote = await res.json();

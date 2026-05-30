@@ -6,8 +6,8 @@ Use these resources:
 
 - App docs: /docs
 - OpenAPI: /openapi.json
-- x402 health: https://arbitrum-x402.20.208.46.195.nip.io/health
-- x402 demo: https://arbitrum-x402.20.208.46.195.nip.io/x402/demo
+- x402 health: https://arcpay-arbitrum.vercel.app/api/health
+- x402 demo: https://arcpay-arbitrum.vercel.app/api/x402/demo
 - GitHub: https://github.com/ArcPayLabs/arcpay-arbitrum
 - Ecosystem thesis: /docs/ecosystem-thesis
 - Go to market: /docs/go-to-market

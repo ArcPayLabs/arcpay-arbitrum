@@ -48,6 +48,6 @@ Restart Claude Desktop after editing the config.
 - Docs: https://arcpay-arbitrum.vercel.app/docs/overview
 - OpenAPI: https://arcpay-arbitrum.vercel.app/openapi.json
 - llms.txt: https://arcpay-arbitrum.vercel.app/llms.txt
-- x402: https://arbitrum-x402.20.208.46.195.nip.io
+- x402: https://arcpay-arbitrum.vercel.app/api
 
 The MCP server does not sign transactions or mutate treasury state. It only returns deterministic IDs, integration guidance, and public deployment metadata.

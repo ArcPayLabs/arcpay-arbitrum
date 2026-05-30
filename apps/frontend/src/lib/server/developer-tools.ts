@@ -159,7 +159,7 @@ export async function runDeveloperTool(name: string, args: Record<string, unknow
     case "x402_guide":
       return text([
         "ArcPay Arbitrum x402",
-        "Server: https://arbitrum-x402.20.208.46.195.nip.io",
+        "Server: https://arcpay-arbitrum.vercel.app/api",
         `Registry: ${deployment.contracts.AgentRegistry}`,
         `OrderBook: ${deployment.contracts.AgentOrderBook}`,
         "1. Register an agent slug in AgentRegistry.",
@@ -193,8 +193,8 @@ export async function runDeveloperTool(name: string, args: Record<string, unknow
           noCompletionWithoutTxHashOrOrderEvidence: true,
         },
         endpoints: {
-          x402Gateway: "https://arbitrum-x402.20.208.46.195.nip.io",
-          protectedResource: `https://arbitrum-x402.20.208.46.195.nip.io/agent/${encodeURIComponent(agentSlug)}/work`,
+          x402Gateway: "https://arcpay-arbitrum.vercel.app/api",
+          protectedResource: `https://arcpay-arbitrum.vercel.app/api/agent/${encodeURIComponent(agentSlug)}/work`,
           status: "https://arcpay-arbitrum.vercel.app/api/status",
           openapi: "https://arcpay-arbitrum.vercel.app/openapi.json",
         },

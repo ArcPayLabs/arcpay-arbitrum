@@ -8,7 +8,7 @@
   },
   "servers": [
     {
-      "url": "https://arbitrum-x402.20.208.46.195.nip.io",
+      "url": "https://arcpay-arbitrum.vercel.app/api",
       "description": "Live ArcPay Arbitrum x402 server"
     },
     {

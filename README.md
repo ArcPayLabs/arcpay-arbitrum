@@ -123,11 +123,17 @@ npm run deploy:arbitrum
 npm run verify:arbitrum
 ```
 
-The deployment script rewrites `deployments/arbitrum-sepolia.json`. Until a real deployment is run, that file intentionally contains zero addresses so the app does not falsely claim live Arbitrum contracts.
+The deployment script rewrites `deployments/arbitrum-sepolia.json`. The committed deployment file contains the current Arbitrum Sepolia contract addresses and Circle USDC testnet address.
 
 ## x402 Server
 
-Run the x402 gateway:
+ArcPay exposes x402 through the deployed Vercel API surface:
+
+```text
+https://arcpay-arbitrum.vercel.app/api
+```
+
+The standalone Node gateway is still available for local development:
 
 ```bash
 ARBITRUM_RPC_URL=https://sepolia-rollup.arbitrum.io/rpc
@@ -224,8 +230,8 @@ Important files:
 
 ## Current Status
 
-- Arbitrum-specific repo scaffold is prepared from the hardened ArcPay EVM base.
-- Solidity contracts, frontend, x402 server, worker, CLI, MCP, docs, OpenAPI, and starter kit are present.
-- Arbitrum Sepolia deployment is pending a funded deployer key.
-- Contract verification and final live proof should run after deployment.
-- NPM publish should happen after deployment metadata is updated.
+- Arbitrum Sepolia contracts are deployed and verified on Arbiscan.
+- Circle Arbitrum Sepolia USDC is configured as the live USDC token for cards and invoices.
+- Solidity contracts, frontend, Vercel x402 API, standalone x402 server, worker, CLI, MCP, docs, OpenAPI, and starter kit are present.
+- Local proof capture has passed against the deployed contracts and x402 flow.
+- Final browser wallet QA and Vercel redeploy verification should be completed before submission.

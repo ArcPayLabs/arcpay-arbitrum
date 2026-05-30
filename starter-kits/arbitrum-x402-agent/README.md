@@ -32,7 +32,7 @@ node src/agent-client.mjs agent-id research-agent
 ## Live Server
 
 ```text
-https://arbitrum-x402.20.208.46.195.nip.io
+https://arcpay-arbitrum.vercel.app/api
 ```
 
 ## Payment Flow

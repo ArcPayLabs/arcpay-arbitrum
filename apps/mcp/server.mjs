@@ -143,8 +143,8 @@ server.tool("execution_handoff", "Return an Arbitrum execution handoff payload f
           noCompletionWithoutTxHashOrOrderEvidence: true,
         },
         endpoints: {
-          x402Gateway: "https://arbitrum-x402.20.208.46.195.nip.io",
-          protectedResource: `https://arbitrum-x402.20.208.46.195.nip.io/agent/${encodeURIComponent(agentSlug)}/work`,
+          x402Gateway: "https://arcpay-arbitrum.vercel.app/api",
+          protectedResource: `https://arcpay-arbitrum.vercel.app/api/agent/${encodeURIComponent(agentSlug)}/work`,
           status: "https://arcpay-arbitrum.vercel.app/api/status",
           openapi: "https://arcpay-arbitrum.vercel.app/openapi.json",
         },

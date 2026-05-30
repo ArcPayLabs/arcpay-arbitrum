@@ -26,7 +26,7 @@ type PaymentRequirement = {
   };
   accepts: Array<{
     amountWei: string;
-    amountStt: string;
+    amountEth: string;
     payTo: string;
     action: string;
     args: { agentId: string; requestUri: string };
@@ -41,7 +41,7 @@ type Verification = {
   unlocked?: boolean;
   settled?: boolean;
   statusName?: string;
-  amountStt?: string;
+  amountEth?: string;
   requester?: string;
   provider?: string;
   resultUri?: string;
@@ -63,7 +63,7 @@ type UnlockResult = {
 
 function X402Route() {
   const [form, setForm] = useState({
-    serverUrl: process.env.NEXT_PUBLIC_X402_SERVER_URL || "https://arbitrum-x402.20.208.46.195.nip.io",
+    serverUrl: process.env.NEXT_PUBLIC_X402_SERVER_URL || "https://arcpay-arbitrum.vercel.app/api",
     agentSlug: "research-agent",
     orderId: "",
     resultUri: "ipfs://arcpay-x402-result/research-agent",
@@ -94,7 +94,7 @@ function X402Route() {
       const body = await res.json();
       if (!res.ok) throw new Error(body.error || "Quote failed");
       setQuote(body);
-      setStatus(`Quote ready: ${body.accepts[0].amountStt} ETH for ${body.agent.name || form.agentSlug}.`);
+      setStatus(`Quote ready: ${body.accepts[0].amountEth} ETH for ${body.agent.name || form.agentSlug}.`);
     } catch (error) {
       setStatus(error instanceof Error ? error.message : "Quote failed.");
     } finally {
@@ -145,7 +145,7 @@ function X402Route() {
       const orderId = parsed?.args?.orderId ?? "";
       if (!orderId) throw new Error("OrderCreated event missing.");
       setForm((current) => ({ ...current, orderId }));
-      writeRecord({ id: crypto.randomUUID(), type: "x402", title: `Paid x402 order for ${form.agentSlug}`, status: "paid", amount: `${accept.amountStt} ETH`, txHash: tx.hash });
+      writeRecord({ id: crypto.randomUUID(), type: "x402", title: `Paid x402 order for ${form.agentSlug}`, status: "paid", amount: `${accept.amountEth} ETH`, txHash: tx.hash });
       setStatus(`x402 order created: ${shortAddress(orderId)}.`);
       await verifyOrder(orderId);
     } catch (error) {
@@ -197,7 +197,7 @@ function X402Route() {
       const body = await res.json();
       if (!res.ok || !body.ok) throw new Error(body.error || "Fulfillment failed");
       writeRecord({ id: crypto.randomUUID(), type: "x402", title: `Fulfilled x402 order ${shortAddress(form.orderId)}`, status: "fulfilled", txHash: body.txs?.at(-1) });
-      setStatus(`Provider fulfilled order: ${body.statusName}.`);
+      setStatus(`Provider fulfilled order: ${body.verification?.statusName || "fulfilled"}.`);
       await verifyOrder(form.orderId);
     } catch (error) {
       setStatus(error instanceof Error ? error.message : "Fulfillment failed.");
@@ -288,7 +288,7 @@ function X402Route() {
               <Row label="Agent" value={`${quote.agent.name || quote.agent.slug} (${quote.agent.slug})`} />
               <Row label="Agent ID" value={shortAddress(quote.agent.agentId)} mono />
               <Row label="Owner" value={shortAddress(quote.agent.owner)} mono />
-              {quotedPayment ? <Row label="Amount" value={`${quotedPayment.amountStt} ${quote.currency}`} mono /> : null}
+              {quotedPayment ? <Row label="Amount" value={`${quotedPayment.amountEth} ${quote.currency}`} mono /> : null}
               {quotedPayment ? <Row label="Action" value={quotedPayment.action} mono /> : null}
               {quotedPayment ? <Row label="OrderBook" value={shortAddress(quotedPayment.payTo)} mono /> : null}
               <div className="flex flex-wrap gap-2 pt-2">

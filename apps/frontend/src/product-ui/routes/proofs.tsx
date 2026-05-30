@@ -16,12 +16,13 @@ export const Route = createFileRoute("/proofs")({
   component: ProofsPage,
 });
 
-type Status = "live" | "testnet" | "local";
+type Status = "live" | "testnet" | "local" | "package-ready";
 
 const STATUS_STYLE: Record<Status, string> = {
   live: "bg-success/15 text-success",
   testnet: "bg-warning/25 text-warning-foreground",
   local: "bg-muted text-muted-foreground",
+  "package-ready": "bg-muted text-muted-foreground",
 };
 
 const CHECKS: { surface: string; status: Status; evidence: string }[] = [
@@ -30,10 +31,10 @@ const CHECKS: { surface: string; status: Status; evidence: string }[] = [
   { surface: "x402 payment gate", status: "testnet", evidence: "npm run smoke:x402 starts the HTTP 402 server, registers an agent, creates an on-chain order, fulfills it, unlocks the protected resource, and settles." },
   { surface: "Auth and workspace smoke", status: "live", evidence: "npm run smoke:auth verifies Supabase records, email sign-in workspace upsert, wallet workspace creation, and Arbitrum contract reads." },
   { surface: "Frontend", status: "live", evidence: "Next.js product UI builds successfully with Arbitrum-only wallet/auth/dashboard content." },
-  { surface: "Worker", status: "live", evidence: "Azure systemd worker listens to Arbitrum registry, policy, treasury, order, card, operator, privacy, invoice, risk, and reputation events from the deployed contracts." },
+  { surface: "Worker", status: "local", evidence: "Worker code check passes and is configured to listen to Arbitrum registry, policy, treasury, order, card, operator, privacy, invoice, risk, and reputation events after hosting." },
   { surface: "Tests", status: "local", evidence: "Hardhat test suite covers order lifecycle, approvals, emergency pause, weekly limit, cards, claim codes, circuit breakers, oracle, privacy vault, invoice settlement, and reputation reviews." },
   { surface: "Agent docs", status: "live", evidence: "skill.md, /llms.txt, and /openapi.json describe how AI agents should interact with ArcPay." },
-  { surface: "MCP, CLI, starter kit", status: "live", evidence: "Published npm packages: @arcpaylabs/arbitrum-cli, @arcpaylabs/arbitrum-mcp, and @arcpaylabs/arbitrum-x402-agent-starter." },
+  { surface: "MCP, CLI, starter kit", status: "package-ready", evidence: "Package dry-runs pass for @arcpaylabs/arbitrum-cli, @arcpaylabs/arbitrum-mcp, and @arcpaylabs/arbitrum-x402-agent-starter; publish after npm auth is available." },
 ];
 
 function ProofsPage() {

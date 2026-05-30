@@ -1,9 +1,152 @@
 {
-  "status": "pending",
-  "network": "arbitrum-sepolia",
+  "capturedAt": "2026-05-30T19:16:51.320Z",
+  "chain": "arbitrum-sepolia",
   "chainId": 421614,
   "explorer": "https://sepolia.arbiscan.io",
   "app": "https://arcpay-arbitrum.vercel.app",
-  "x402Gateway": "https://arbitrum-x402.20.208.46.195.nip.io",
-  "note": "Run npm run deploy:arbitrum, npm run verify:arbitrum, then npm run proof:arbitrum after the funded Arbitrum Sepolia signer is configured."
+  "x402Gateway": "http://127.0.0.1:4033",
+  "deployer": "0xB883e76A4f6841E72cAF1C28ba00f78df974f448",
+  "requester": "0x61ba94f14d27f586A766B8d396a0683d041A8243",
+  "executionAddress": "0x0000000000000000000000000000000000000000",
+  "budgetEth": "0.0004",
+  "contracts": {
+    "AgentRegistry": "0x5F5b8109c832BB6609178F0bb2e6A597387dA17E",
+    "TreasuryPolicy": "0x3F8bc2b46E7b71632CdADd1f00d4FD6BB11d8283",
+    "AgentTreasury": "0xe472A6367ab66C271aa47cA5882E919c0DEA0ff2",
+    "AgentOrderBook": "0x3587fd962d40433165d5f2a3dFc60636ebD11e59",
+    "OperatorControls": "0x0cbafFF48ac25178bd10D1cE851C04CCa4Fe387e",
+    "ArbitrumAgentRiskOracle": "0x176018C6C8c445807FE3688f463487E4b01C8ae3",
+    "AgentSpendCardVault": "0x7C7304bC2D7bB39800eFE7Cdd9c79C7Afd04acF0",
+    "ArbitrumPrivacyVault": "0xCBa6Fa24a02F11fE0cd9F16B50e883fE1B4D40Eb",
+    "AgentInvoiceBook": "0x487CbD73e298721a83ff460Eb56645C61BEb0f79",
+    "AgentReputationBook": "0xDdbe6aD2652BD5d0Ab4D8a6D2ab8798Cf294D9dD",
+    "AgentIdentity8004": "0xA6c4C9c5479553450F60663E5D8046f9E2CBF37D",
+    "ArbitrumExecutionRouter": "0x463152158F32aFeedCe58a6BbD19F8ECfA702d8e",
+    "MockUSDC": "0xd4Ae4c23A308024e2F2d7531cF395365eF67dE20",
+    "MockArbitrumAgentPlatform": "0x2D8bb0EBAa850626d2cEFA15bB3A7761B7F86196"
+  },
+  "steps": [
+    {
+      "name": "network_and_funds",
+      "ok": true,
+      "result": {
+        "deployer": "0xB883e76A4f6841E72cAF1C28ba00f78df974f448",
+        "balanceEth": "0.241180972068097988"
+      }
+    },
+    {
+      "name": "register_or_update_treasury_router",
+      "ok": true,
+      "result": {
+        "action": "updated",
+        "agentSlug": "treasury-router",
+        "agentId": "0x290b1f8e8b8b010a940ea896b0af6ae817a21ab3eece052a22bbdf553faf4825",
+        "txHash": "0x48e087e598b977d9ee3b6f81b8909e34d65dbc08138353665d614b588e10ab54",
+        "explorerUrl": "https://sepolia.arbiscan.io/tx/0x48e087e598b977d9ee3b6f81b8909e34d65dbc08138353665d614b588e10ab54"
+      }
+    },
+    {
+      "name": "fund_requester_and_policy",
+      "ok": true,
+      "result": {
+        "requester": "0x61ba94f14d27f586A766B8d396a0683d041A8243",
+        "fundTx": "0x839611d4645d3b2f25c553713b8a5636aace3c8401c9cc1eb3abea402e54e852",
+        "policyTx": "0x476b25b158b701e2bc03b07efd2cf22ecf693f64a0367f7acaa46a2b3d616626",
+        "allowlistTx": "0x66887c123a1e5686c7a4c3f09016f13a487d1c14cfe467da45c0d46a5e8cc023",
+        "explorerUrls": [
+          "https://sepolia.arbiscan.io/tx/0x839611d4645d3b2f25c553713b8a5636aace3c8401c9cc1eb3abea402e54e852",
+          "https://sepolia.arbiscan.io/tx/0x476b25b158b701e2bc03b07efd2cf22ecf693f64a0367f7acaa46a2b3d616626",
+          "https://sepolia.arbiscan.io/tx/0x66887c123a1e5686c7a4c3f09016f13a487d1c14cfe467da45c0d46a5e8cc023"
+        ]
+      }
+    },
+    {
+      "name": "x402_payment_required",
+      "ok": true,
+      "result": {
+        "url": "http://127.0.0.1:4033/agent/treasury-router/work",
+        "status": 402,
+        "latencyMs": 1051,
+        "x402Version": "1",
+        "paymentRequiredHeader": true,
+        "amountEth": "100000000000000",
+        "action": "createOrder(bytes32,string)"
+      }
+    },
+    {
+      "name": "create_x402_order",
+      "ok": true,
+      "result": {
+        "orderId": "0x343b718de4f1e5276cf19d66595851d14008b69fa81debd2e26015fa43ee7dd9",
+        "txHash": "0xba9dc3cd57585b0ee3458a82762e7b6aed62233875a0dd5fa663ac6ee240b6a8",
+        "explorerUrl": "https://sepolia.arbiscan.io/tx/0xba9dc3cd57585b0ee3458a82762e7b6aed62233875a0dd5fa663ac6ee240b6a8"
+      }
+    },
+    {
+      "name": "fulfill_and_unlock_x402_order",
+      "ok": true,
+      "result": {
+        "orderId": "0x343b718de4f1e5276cf19d66595851d14008b69fa81debd2e26015fa43ee7dd9",
+        "acceptTx": "0xf7c060f3bf537080c0a27a3599909fbe800db839f7b905025819e6b3a9fe1c66",
+        "processingTx": "0x8f8d3f0cc78718b8453fb1b3439d4f33aaef2fe1d3452c1e672acf51f07c1a36",
+        "fulfillTx": "0x59533e34f14f947981d7c7feac3cf732a41e6980048b7972408953c77fc49474",
+        "unlockStatus": 200,
+        "unlocked": true,
+        "evidenceUri": "ipfs://arcpay-arbitrum-proof/treasury-router",
+        "explorerUrls": [
+          "https://sepolia.arbiscan.io/tx/0xf7c060f3bf537080c0a27a3599909fbe800db839f7b905025819e6b3a9fe1c66",
+          "https://sepolia.arbiscan.io/tx/0x8f8d3f0cc78718b8453fb1b3439d4f33aaef2fe1d3452c1e672acf51f07c1a36",
+          "https://sepolia.arbiscan.io/tx/0x59533e34f14f947981d7c7feac3cf732a41e6980048b7972408953c77fc49474"
+        ]
+      }
+    },
+    {
+      "name": "settle_x402_order",
+      "ok": true,
+      "result": {
+        "orderId": "0x343b718de4f1e5276cf19d66595851d14008b69fa81debd2e26015fa43ee7dd9",
+        "txHash": "0x5976deb15eb7474fc14500fa485bc477c10df414fa40374a8d63d22e6f843b14",
+        "explorerUrl": "https://sepolia.arbiscan.io/tx/0x5976deb15eb7474fc14500fa485bc477c10df414fa40374a8d63d22e6f843b14",
+        "statusName": "Settled",
+        "amountEth": "0.0001"
+      }
+    },
+    {
+      "name": "privacy_intent_release",
+      "ok": true,
+      "result": {
+        "commitment": "0x54532cfaffe55e4b2f3bb7a0f611b3666a28ef58733bb4d4c921cae60163dce3",
+        "nullifier": "0xdde22aaf963c6a70301aee86b60e175f9a2dfce17bc909e68f0db1797441e550",
+        "createTx": "0x844d0ad61653447074cb07c6e3478a2dd245e99a19decf4daf7fb06814f60ba5",
+        "releaseTx": "0x9d14c29cd27ffec760a33ae32b1c358853911ecb9d1af398d1a6e3fc3c7879d9",
+        "recipient": "0x61ba94f14d27f586A766B8d396a0683d041A8243",
+        "explorerUrls": [
+          "https://sepolia.arbiscan.io/tx/0x844d0ad61653447074cb07c6e3478a2dd245e99a19decf4daf7fb06814f60ba5",
+          "https://sepolia.arbiscan.io/tx/0x9d14c29cd27ffec760a33ae32b1c358853911ecb9d1af398d1a6e3fc3c7879d9"
+        ]
+      }
+    },
+    {
+      "name": "native_invoice_paid",
+      "ok": true,
+      "result": {
+        "invoiceId": "0x3bf059e12a4e7b0f7f59f25b5235db45c44b9d7f7a400f133f759036bcd65c3e",
+        "createTx": "0x9d77b0ce98ec34ed5f70894e8b8dd172cb74e7189854a13a6beaa567d788be1e",
+        "payTx": "0x8e3ae5569c844fe399e35cc4484d46a118b1ea7181613f7bd066bc851a394e8e",
+        "amountEth": "0.0001",
+        "statusName": "Paid",
+        "explorerUrls": [
+          "https://sepolia.arbiscan.io/tx/0x9d77b0ce98ec34ed5f70894e8b8dd172cb74e7189854a13a6beaa567d788be1e",
+          "https://sepolia.arbiscan.io/tx/0x8e3ae5569c844fe399e35cc4484d46a118b1ea7181613f7bd066bc851a394e8e"
+        ]
+      }
+    }
+  ],
+  "summary": {
+    "ok": true,
+    "txCount": 23,
+    "executionAddress": "0x0000000000000000000000000000000000000000",
+    "agentSlug": "treasury-router",
+    "protectedResource": "http://127.0.0.1:4033/agent/treasury-router/work"
+  }
 }

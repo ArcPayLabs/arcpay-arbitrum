@@ -22,7 +22,7 @@ const provider = new JsonRpcProvider(process.env.ARBITRUM_RPC_URL || "https://se
 const deployer = new Wallet(process.env.PRIVATE_KEY, provider);
 const requester = Wallet.createRandom().connect(provider);
 const executionAddress = process.env.ARBITRUM_EXECUTION_ADDRESS || "0x0000000000000000000000000000000000000000";
-const x402Base = process.env.NEXT_PUBLIC_X402_SERVER_URL || "https://arbitrum-x402.20.208.46.195.nip.io";
+const x402Base = process.env.NEXT_PUBLIC_X402_SERVER_URL || "https://arcpay-arbitrum.vercel.app/api";
 const explorer = process.env.ARBITRUM_EXPLORER_URL || "https://sepolia.arbiscan.io";
 const c = deployment.contracts;
 
@@ -79,7 +79,7 @@ const proof = {
   deployer: deployer.address,
   requester: requester.address,
   executionAddress,
-  budgetMnt: "0.05",
+  budgetEth: "0.0004",
   contracts: c,
   steps: [],
 };
@@ -92,10 +92,10 @@ await step("network_and_funds", async () => {
   const network = await provider.getNetwork();
   const balance = await provider.getBalance(deployer.address);
   if (Number(network.chainId) !== 421614) throw new Error(`wrong chain ${network.chainId}`);
-  if (balance < parseEther("0.25")) throw new Error(`low deployer balance ${formatEther(balance)} ETH`);
+  if (balance < parseEther("0.0005")) throw new Error(`low deployer balance ${formatEther(balance)} ETH`);
   return {
     deployer: deployer.address,
-    balanceMnt: formatEther(balance),
+    balanceEth: formatEther(balance),
   };
 });
 
@@ -145,8 +145,8 @@ await step("register_or_update_treasury_router", async () => {
 });
 
 await step("fund_requester_and_policy", async () => {
-  const fundReceipt = await wait(deployer.sendTransaction({ to: requester.address, value: parseEther("0.2") }));
-  const policyReceipt = await wait(policy.setPolicy(parseEther("0.01"), parseEther("0.05"), parseEther("0.1"), 0, 0, 0, false, true));
+  const fundReceipt = await wait(deployer.sendTransaction({ to: requester.address, value: parseEther("0.0004") }));
+  const policyReceipt = await wait(policy.setPolicy(parseEther("0.0001"), parseEther("0.0004"), parseEther("0.001"), 0, 0, 0, false, true));
   const allowReceipt = await wait(policy.setAgentAllowed(agentId, true));
   return {
     requester: requester.address,
@@ -169,7 +169,7 @@ await step("x402_payment_required", async () => {
     latencyMs,
     x402Version: response.headers.get("x402-version"),
     paymentRequiredHeader: Boolean(response.headers.get("x402-payment-required")),
-    amountMnt: body.accepts?.[0]?.amountStt,
+    amountEth: body.accepts?.[0]?.amountWei,
     action: body.accepts?.[0]?.action,
     orderBook: body.accepts?.[0]?.orderBook,
     agentId: body.accepts?.[0]?.agentId,
@@ -219,7 +219,7 @@ await step("settle_x402_order", async () => {
     txHash: receipt.hash,
     explorerUrl: txUrl(receipt.hash),
     statusName: orderStatusName(Number(row[7])),
-    amountMnt: formatEther(row[4]),
+    amountEth: formatEther(row[4]),
   };
 });
 
@@ -251,7 +251,7 @@ await step("native_invoice_paid", async () => {
     invoiceId,
     createTx: createReceipt.hash,
     payTx: payReceipt.hash,
-    amountMnt: formatEther(amount),
+    amountEth: formatEther(amount),
     statusName: "Paid",
     explorerUrls: [createReceipt.hash, payReceipt.hash].map(txUrl),
   };

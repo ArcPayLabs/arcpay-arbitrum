@@ -84,7 +84,7 @@ npm run smoke:live
 
 ## CLI Helpers
 
-Published CLI:
+NPM CLI after publish:
 
 ```bash
 npm install -g @arcpaylabs/arbitrum-cli
@@ -108,7 +108,7 @@ The ArcPay Arbitrum MCP server exposes:
 - `derive_privacy_commitment`
 - `privacy_intent_guide`
 
-Run:
+Run after publish:
 
 ```bash
 npm install -g @arcpaylabs/arbitrum-mcp

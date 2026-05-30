@@ -2,7 +2,7 @@
 import "dotenv/config";
 import { id } from "ethers";
 
-const serverUrl = (process.env.ARCPAY_X402_SERVER_URL || "https://arbitrum-x402.20.208.46.195.nip.io").replace(/\/+$/, "");
+const serverUrl = (process.env.ARCPAY_X402_SERVER_URL || "https://arcpay-arbitrum.vercel.app/api").replace(/\/+$/, "");
 const [, , command = "help", arg1 = "research-agent", arg2 = "research-agent"] = process.argv;
 
 async function main() {

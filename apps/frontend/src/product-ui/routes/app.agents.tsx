@@ -23,7 +23,7 @@ function AgentsRoute() {
   const [copied, setCopied] = useState("");
 
   const agentId = agentIdFromSlug(form.slug);
-  const protectedUrl = `https://arbitrum-x402.20.208.46.195.nip.io/agent/${encodeURIComponent(form.slug)}/work`;
+  const protectedUrl = `https://arcpay-arbitrum.vercel.app/api/agent/${encodeURIComponent(form.slug)}/work`;
 
   async function registerAgent() {
     setStatus("Submitting agent registry transaction...");
@@ -236,7 +236,7 @@ const AGENT_TEMPLATES = [
 
 function templateSnippet(slug: string) {
   return [
-    `const res = await fetch("https://arbitrum-x402.20.208.46.195.nip.io/agent/${encodeURIComponent(slug)}/work");`,
+    `const res = await fetch("https://arcpay-arbitrum.vercel.app/api/agent/${encodeURIComponent(slug)}/work");`,
     "if (res.status === 402) {",
     "  const quote = await res.json();",
     "  // Pay quote.accepts[0] through AgentOrderBook.createOrder(agentId, requestUri).",

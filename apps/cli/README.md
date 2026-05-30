@@ -34,7 +34,7 @@ arcpay-arbitrum mcp-config
 
 - App: https://arcpay-arbitrum.vercel.app
 - Docs: https://arcpay-arbitrum.vercel.app/docs/overview
-- x402: https://arbitrum-x402.20.208.46.195.nip.io
+- x402: https://arcpay-arbitrum.vercel.app/api
 - OpenAPI: https://arcpay-arbitrum.vercel.app/openapi.json
 
 The CLI is a developer helper. It does not hold private keys or sign treasury transactions.

@@ -77,18 +77,18 @@ deployments/arbitrum-sepolia.json
 
 | Contract | Address |
 | --- | --- |
-| `AgentRegistry` | Pending Arbitrum Sepolia deploy |
-| `TreasuryPolicy` | Pending Arbitrum Sepolia deploy |
-| `AgentTreasury` | Pending Arbitrum Sepolia deploy |
-| `AgentOrderBook` | Pending Arbitrum Sepolia deploy |
-| `OperatorControls` | Pending Arbitrum Sepolia deploy |
-| `ArbitrumAgentRiskOracle` | Pending Arbitrum Sepolia deploy |
-| `AgentSpendCardVault` | Pending Arbitrum Sepolia deploy |
-| `ArbitrumPrivacyVault` | Pending Arbitrum Sepolia deploy |
-| `AgentInvoiceBook` | Pending Arbitrum Sepolia deploy |
-| `AgentReputationBook` | Pending Arbitrum Sepolia deploy |
-| `AgentIdentity8004` | Pending Arbitrum Sepolia deploy |
-| `ArbitrumExecutionRouter` | Pending Arbitrum Sepolia deploy |
+| `AgentRegistry` | `0x5F5b8109c832BB6609178F0bb2e6A597387dA17E` |
+| `TreasuryPolicy` | `0x3F8bc2b46E7b71632CdADd1f00d4FD6BB11d8283` |
+| `AgentTreasury` | `0xe472A6367ab66C271aa47cA5882E919c0DEA0ff2` |
+| `AgentOrderBook` | `0x3587fd962d40433165d5f2a3dFc60636ebD11e59` |
+| `OperatorControls` | `0x0cbafFF48ac25178bd10D1cE851C04CCa4Fe387e` |
+| `ArbitrumAgentRiskOracle` | `0x176018C6C8c445807FE3688f463487E4b01C8ae3` |
+| `AgentSpendCardVault` | `0x7C7304bC2D7bB39800eFE7Cdd9c79C7Afd04acF0` |
+| `ArbitrumPrivacyVault` | `0xCBa6Fa24a02F11fE0cd9F16B50e883fE1B4D40Eb` |
+| `AgentInvoiceBook` | `0x487CbD73e298721a83ff460Eb56645C61BEb0f79` |
+| `AgentReputationBook` | `0xDdbe6aD2652BD5d0Ab4D8a6D2ab8798Cf294D9dD` |
+| `AgentIdentity8004` | `0xA6c4C9c5479553450F60663E5D8046f9E2CBF37D` |
+| `ArbitrumExecutionRouter` | `0x463152158F32aFeedCe58a6BbD19F8ECfA702d8e` |
 
 ## Judging Alignment
 

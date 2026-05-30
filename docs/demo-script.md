@@ -30,7 +30,7 @@ The Arbitrum angle is simple: agents are not just users of the app. They are dis
 
 5. Show live x402.
    - Open `x402`.
-   - Use `https://arbitrum-x402.20.208.46.195.nip.io` as the server URL.
+   - Use `https://arcpay-arbitrum.vercel.app/api` as the server URL.
    - Quote the resource, create the order, verify it, fulfill it, then unlock the resource.
    - Say: "This is the agent commerce loop: the endpoint returns HTTP 402, the requester pays on Arbitrum, the provider fulfills the order, and the resource unlocks only after on-chain verification."
 
@@ -82,8 +82,8 @@ npm run smoke:x402
 Check the live x402 backend:
 
 ```bash
-curl https://arbitrum-x402.20.208.46.195.nip.io/health
-curl https://arbitrum-x402.20.208.46.195.nip.io/x402/demo
+curl https://arcpay-arbitrum.vercel.app/api/health
+curl https://arcpay-arbitrum.vercel.app/api/x402/demo
 ```
 
 `npm run smoke:live` spends small Arbitrum Sepolia amounts and verifies registry writes, policy, escrowed order lifecycle, operator controls, USDC cards, privacy release, and risk oracle fulfillment.

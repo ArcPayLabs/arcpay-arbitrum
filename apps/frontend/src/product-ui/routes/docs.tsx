@@ -19,7 +19,7 @@ const MODULES = [
   { icon: Gauge, title: "Risk oracle", body: "Quote the live Arbitrum agent requester deposit and store risk callback evidence for operator review.", href: "/app/oracle" },
   { icon: KeyRound, title: "Wallet auth", body: "Challenge-sign EVM wallets into an ArcPay workspace. Email auth remains optional for team sync.", href: "/sign-in" },
   { icon: ScrollText, title: "Audit mirror", body: "Azure worker indexes contract events into Supabase-backed records for dashboard and CSV export.", href: "/app/audit" },
-  { icon: Terminal, title: "Published CLI", body: "Install @arcpaylabs/arbitrum-cli to derive IDs, print contracts, generate MCP config, and inspect guides.", href: "/proofs" },
+  { icon: Terminal, title: "CLI and MCP", body: "Use the repo-local CLI now; npm packages are package-ready and can be published once npm auth is available.", href: "/proofs" },
   { icon: BookOpen, title: "MCP, starter kit, llms.txt", body: "Published MCP tools, x402 starter package, OpenAPI, and llms.txt help autonomous clients operate ArcPay.", href: "/proofs" },
 ];
 
@@ -68,7 +68,7 @@ function DocsPage() {
                 <Info label="Network" value="Arbitrum Sepolia" />
                 <Info label="Chain ID" value="421614 / 0x66eee" />
                 <Info label="Gas" value="ETH" />
-                <Info label="x402" value="https://arbitrum-x402.20.208.46.195.nip.io" mono />
+                <Info label="x402" value="https://arcpay-arbitrum.vercel.app/api" mono />
               </div>
               <div className="mt-6 flex flex-wrap gap-2">
                 <Link href="/sign-in" className="rounded-full bg-foreground px-4 py-2 text-sm font-semibold text-background">Open app</Link>

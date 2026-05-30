@@ -24,7 +24,7 @@ export type RuntimeStatus = {
 };
 
 const RPC_URL = process.env.ARBITRUM_RPC_URL ?? "https://sepolia-rollup.arbitrum.io/rpc";
-const X402_URL = process.env.NEXT_PUBLIC_X402_SERVER_URL ?? "https://arbitrum-x402.20.208.46.195.nip.io";
+const X402_URL = process.env.NEXT_PUBLIC_X402_SERVER_URL ?? "https://arcpay-arbitrum.vercel.app/api";
 const EXPLORER_URL = "https://sepolia.arbiscan.io";
 const RECORDS_TABLE = validRecordsTable(process.env.ARCPAY_RECORDS_TABLE ?? "arcpay_arbitrum_records");
 
@@ -86,7 +86,9 @@ async function checkContracts(): Promise<RuntimeCheck> {
 
 async function checkX402(): Promise<RuntimeCheck> {
   try {
-    const response = await fetch(`${trimSlash(X402_URL)}/health`, { cache: "no-store", signal: AbortSignal.timeout(10000) });
+    const base = trimSlash(X402_URL);
+    const healthUrl = base.endsWith("/api") ? `${base}/x402/health` : `${base}/health`;
+    const response = await fetch(healthUrl, { cache: "no-store", signal: AbortSignal.timeout(10000) });
     if (!response.ok) return check("x402 gateway", "down", `Health returned HTTP ${response.status}`);
     const body = await response.json().catch(() => ({}));
     return check("x402 gateway", body?.service === "arcpay-arbitrum-x402" ? "ok" : "degraded", "HTTP 402 payment gateway reachable", trim(JSON.stringify(body), 180));

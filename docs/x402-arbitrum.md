@@ -22,7 +22,7 @@ npm run x402
 Default endpoint:
 
 ```text
-https://arbitrum-x402.20.208.46.195.nip.io
+https://arcpay-arbitrum.vercel.app/api
 ```
 
 Useful env:

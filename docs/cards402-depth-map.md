@@ -5,7 +5,7 @@ Stellar/card-specific implementation.
 
 | Cards402 pattern | ArcPay Arbitrum implementation |
 | --- | --- |
-| MCP server | `apps/mcp/server.mjs` exposes deployment lookup, agent ID derivation, claim hash derivation, and demo path. Published as `@arcpaylabs/arbitrum-mcp`. |
+| MCP server | `apps/mcp/server.mjs` exposes deployment lookup, agent ID derivation, claim hash derivation, and demo path. Package-ready as `@arcpaylabs/arbitrum-mcp`. |
 | `skill.md` / `llms.txt` | Root files describe how agents, operators, and reviewers should operate the app. |
 | x402 HTTP payment gate | `apps/x402-server/server.mjs` returns real `402 Payment Required` quotes, verifies Arbitrum order state, and unlocks agent work after fulfillment. |
 | Order state machine | `AgentOrderBook` supports pending, accepted, processing, fulfilled, settled, refunded, and failed. |
@@ -13,7 +13,7 @@ Stellar/card-specific implementation.
 | Time-window policies | `TreasuryPolicy` enforces hourly, daily, weekly, UTC-hour windows, allowlists, emergency pause, and per-order approvals. |
 | Circuit-breaker webhooks | `OperatorControls` tracks per-origin webhook failures and opens a breaker after repeated failures. |
 | Agent claim code onboarding | `OperatorControls` creates and redeems expiring claim codes by hash. |
-| CLI tool | `apps/cli/arcpay-arbitrum.mjs` supports contracts, wallet, agent ID, claim hash, demo path, and MCP config commands. Published as `@arcpaylabs/arbitrum-cli`. |
+| CLI tool | `apps/cli/arcpay-arbitrum.mjs` supports contracts, wallet, agent ID, claim hash, demo path, and MCP config commands. Package-ready as `@arcpaylabs/arbitrum-cli`. |
 | Card-like spend product | `AgentSpendCardVault` creates USDC-backed virtual cards for agent budgets. |
 | Privacy layer | `ArbitrumPrivacyVault` creates commitment-based USDC/ETH payment intents with encrypted metadata and nullifier release. |
 
