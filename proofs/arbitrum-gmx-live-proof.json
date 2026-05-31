@@ -1,0 +1,59 @@
+{
+  "ok": true,
+  "generatedAt": "2026-05-31T18:06:51.225Z",
+  "chain": "arbitrum-sepolia",
+  "chainId": 421614,
+  "account": "0xB883e76A4f6841E72cAF1C28ba00f78df974f448",
+  "protocol": "gmx-v2-api-sdk",
+  "action": "classic_market_swap",
+  "symbol": "ETH/USD [WETH-USDC.SG]",
+  "fromToken": "WETH",
+  "toToken": "USDC.SG",
+  "amountWeth": "0.001",
+  "requestId": "d6d758313dc0e915cadc369a61237426",
+  "submitted": {
+    "requestId": "d6d758313dc0e915cadc369a61237426",
+    "status": "created",
+    "txHash": "0x9c0dbcfd7d89d4bc837d8bcc3c788b7d7269e750a2ecabaee802a8b61cffb829",
+    "mode": "classic"
+  },
+  "createOrderReceipt": {
+    "txHash": "0x9c0dbcfd7d89d4bc837d8bcc3c788b7d7269e750a2ecabaee802a8b61cffb829",
+    "blockNumber": 272534366,
+    "gasUsed": "911000",
+    "status": "success"
+  },
+  "status": {
+    "requestId": "d6d758313dc0e915cadc369a61237426",
+    "status": "executed",
+    "executionTxnHash": "0xd3f5a9ddadf187742068badf2295e540e19c09e859983d36f30adbb454ee45e9",
+    "createdAt": "2026-05-31T18:06:34.958Z",
+    "updatedAt": "2026-05-31T18:06:48.525Z"
+  },
+  "txHash": "0xd3f5a9ddadf187742068badf2295e540e19c09e859983d36f30adbb454ee45e9",
+  "explorerUrl": "https://sepolia.arbiscan.io/tx/0xd3f5a9ddadf187742068badf2295e540e19c09e859983d36f30adbb454ee45e9",
+  "setupTxs": [],
+  "balances": {
+    "before": {
+      "eth": "0.239933609586675988",
+      "weth": "0.001",
+      "usdcSg": "0.0",
+      "allowanceWethToRouter": "0.001"
+    },
+    "after": {
+      "eth": "0.239669758970747988",
+      "weth": "0.0",
+      "usdcSg": "1.998987",
+      "allowanceWethToRouter": "0.0"
+    }
+  },
+  "preparedSummary": {
+    "payloadType": "transaction",
+    "mode": "classic",
+    "requestId": "d6d758313dc0e915cadc369a61237426",
+    "to": "0xEd50B2A1eF0C35DAaF08Da6486971180237909c3",
+    "value": "709557883524000",
+    "gasLimit": "1000000",
+    "executionFeeAmount": "709557883524000"
+  }
+}

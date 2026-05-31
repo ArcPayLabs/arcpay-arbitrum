@@ -128,6 +128,10 @@ system into a Arbitrum-only testnet app:
 - on-chain execution intents for GMX, ZeroDev, Stylus, Dune, Fhenix, Robinhood Chain, and manual signer evidence
 - GMX Arbitrum Sepolia adapter surface with `ExchangeRouter`, `Router`,
   `Reader`, `DataStore`, `OrderVault`, and `EventEmitter` config
+- live GMX classic SDK execution proof for WETH -> USDC.SG:
+  create-order tx `0x9c0dbcfd7d89d4bc837d8bcc3c788b7d7269e750a2ecabaee802a8b61cffb829`,
+  execution tx `0xd3f5a9ddadf187742068badf2295e540e19c09e859983d36f30adbb454ee45e9`,
+  proof JSON `/proofs/arbitrum-gmx-live-proof.json`
 - embedded ZeroDev operator console with sponsor policy status, smart account,
   transaction proof, target contract, and proof JSON at
   `/proofs/arbitrum-zerodev-sponsored-userop.json`

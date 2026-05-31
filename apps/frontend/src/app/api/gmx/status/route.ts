@@ -5,17 +5,18 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const configured = Boolean(process.env.GMX_API_BASE_URL || process.env.GMX_ORACLE_URL || process.env.GMX_SUBSQUID_URL);
+  const apiBaseUrl = process.env.GMX_API_BASE_URL || GMX_ARBITRUM_SEPOLIA.apiBaseUrl;
 
   return NextResponse.json({
     ok: true,
-    configured,
-    mode: configured ? "sdk-ready" : "official-contract-config",
+    configured: true,
+    mode: "live-classic-sdk-proof",
     network: {
       name: GMX_ARBITRUM_SEPOLIA.network,
       chainId: GMX_ARBITRUM_SEPOLIA.chainId,
       explorer: GMX_ARBITRUM_SEPOLIA.explorer,
     },
+    liveProof: GMX_ARBITRUM_SEPOLIA.liveProof,
     docs: {
       contracts: GMX_ARBITRUM_SEPOLIA.docs,
       sdk: GMX_ARBITRUM_SEPOLIA.sdkDocs,
@@ -23,10 +24,12 @@ export async function GET() {
     },
     sdk: {
       ...GMX_ARBITRUM_SEPOLIA.sdk,
+      apiBaseUrl,
       rpcUrlConfigured: Boolean(process.env.ARBITRUM_RPC_URL),
-      oracleUrlConfigured: Boolean(process.env.GMX_ORACLE_URL),
-      subsquidUrlConfigured: Boolean(process.env.GMX_SUBSQUID_URL),
-      apiBaseUrlConfigured: Boolean(process.env.GMX_API_BASE_URL),
+      apiBaseUrlConfigured: true,
+      oracleUrlConfigured: false,
+      subsquidUrlConfigured: false,
+      executionMode: "classic wallet transaction",
     },
     contracts: GMX_ARBITRUM_SEPOLIA.contracts,
     markets: GMX_ARBITRUM_SEPOLIA.markets,

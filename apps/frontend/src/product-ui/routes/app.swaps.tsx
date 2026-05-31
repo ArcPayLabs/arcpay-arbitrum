@@ -22,6 +22,7 @@ type GmxStatus = {
   configured: boolean;
   mode: string;
   network: { name: string; chainId: number; explorer: string };
+  liveProof?: { orderTxHash: string; executionTxHash: string; requestId: string; proofUrl: string; explorerUrl: string };
   docs: { contracts: string; sdk: string; source: string };
   sdk: {
     package: string;
@@ -29,9 +30,8 @@ type GmxStatus = {
     requiredInputs: string[];
     supportedMethods: string[];
     rpcUrlConfigured: boolean;
-    oracleUrlConfigured: boolean;
-    subsquidUrlConfigured: boolean;
     apiBaseUrlConfigured: boolean;
+    executionMode?: string;
   };
   contracts: Record<string, string>;
   markets: Array<{ label: string; indexToken: string; longToken: string; shortToken: string; risk: string }>;
@@ -61,8 +61,8 @@ function SwapsRoute() {
       if (!cancelled) {
         setGmxStatus(body);
         setGmxMessage(body.configured
-          ? "GMX SDK env is configured. Wallet execution still requires operator signature and proof capture."
-          : "GMX official testnet contracts are loaded. Add GMX oracle/subsquid env before browser SDK execution.");
+          ? "GMX is live-tested on Arbitrum Sepolia through classic SDK execution. The proof includes create-order and execution tx hashes."
+          : "GMX official testnet contracts are loaded. Execution remains disabled until the SDK path is verified.");
       }
     }
     loadGmx().catch((error) => {
@@ -96,6 +96,7 @@ function SwapsRoute() {
       network: gmxStatus?.network ?? { name: "arbitrum-sepolia", chainId: 421614 },
       sdkPackage: gmxStatus?.sdk.package ?? "@gmx-io/sdk",
       sdkMethods: gmxStatus?.sdk.supportedMethods ?? ["createSwapOrder", "createIncreaseOrder", "createDecreaseOrder"],
+      liveProof: gmxStatus?.liveProof ?? null,
       contracts: {
         exchangeRouter: gmxStatus?.contracts.ExchangeRouter ?? "loading",
         router: gmxStatus?.contracts.Router ?? "loading",
@@ -176,7 +177,7 @@ function SwapsRoute() {
             </div>
             <h2 className="mt-5 text-3xl font-semibold tracking-[-0.04em] md:text-4xl">GMX routes with ArcPay policy before execution.</h2>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
-              ArcPay prepares GMX swap, hedge, and execution payloads against the official Arbitrum Sepolia GMX contracts. Execution remains wallet-signed and cannot be marked complete until an Arbiscan tx hash and evidence record are attached.
+              ArcPay prepares GMX swap, hedge, and execution payloads against the official Arbitrum Sepolia GMX contracts. The current adapter has been live-tested with a classic SDK WETH to USDC.SG market swap and requires Arbiscan plus proof JSON evidence before completion.
             </p>
             <div className="mt-5 flex flex-wrap gap-2">
               {gmxStatus?.docs.contracts ? (
@@ -192,6 +193,11 @@ function SwapsRoute() {
               <button type="button" onClick={copyPayload} className="inline-flex h-11 items-center gap-2 rounded-full border border-border bg-white/75 px-4 text-sm font-semibold">
                 <ClipboardCopy className="h-4 w-4" /> Copy GMX manifest
               </button>
+              {gmxStatus?.liveProof?.explorerUrl ? (
+                <a href={gmxStatus.liveProof.explorerUrl} target="_blank" rel="noreferrer" className="inline-flex h-11 items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 text-sm font-semibold text-emerald-800">
+                  Live GMX tx <ExternalLink className="h-4 w-4" />
+                </a>
+              ) : null}
             </div>
             <div className="mt-4 rounded-2xl border border-border/70 bg-white/75 px-4 py-3 text-sm text-muted-foreground">{gmxMessage}</div>
           </div>
@@ -203,6 +209,22 @@ function SwapsRoute() {
               <GmxMetric icon={Workflow} label="SDK methods" value={gmxStatus?.sdk.supportedMethods.length ? `${gmxStatus.sdk.supportedMethods.length} methods` : "loading"} />
               <GmxMetric icon={ShieldCheck} label="Mode" value={gmxStatus?.mode ?? "loading"} />
             </div>
+            {gmxStatus?.liveProof ? (
+              <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50/80 p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <div className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-800">Live proof</div>
+                    <div className="mt-1 text-sm font-semibold text-emerald-950">GMX WETH to USDC.SG executed on Arbitrum Sepolia</div>
+                  </div>
+                  <CheckCircle2 className="h-5 w-5 text-emerald-700" />
+                </div>
+                <div className="mt-3 grid gap-2 text-xs text-emerald-950/80">
+                  <a href={gmxStatus.liveProof.explorerUrl} target="_blank" rel="noreferrer" className="truncate underline decoration-emerald-400 underline-offset-4">Execution: {gmxStatus.liveProof.executionTxHash}</a>
+                  <a href={`https://sepolia.arbiscan.io/tx/${gmxStatus.liveProof.orderTxHash}`} target="_blank" rel="noreferrer" className="truncate underline decoration-emerald-400 underline-offset-4">Create order: {gmxStatus.liveProof.orderTxHash}</a>
+                  <a href={gmxStatus.liveProof.proofUrl} target="_blank" rel="noreferrer" className="truncate underline decoration-emerald-400 underline-offset-4">Proof JSON: {gmxStatus.liveProof.requestId}</a>
+                </div>
+              </div>
+            ) : null}
             <div className="mt-4 grid gap-2">
               {gmxStatus?.markets.map((market) => (
                 <button key={market.label} type="button" onClick={() => applyGmxMarket(market)} className="rounded-2xl border border-border/70 bg-background/80 p-4 text-left transition hover:border-primary">

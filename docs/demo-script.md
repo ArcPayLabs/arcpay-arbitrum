@@ -58,9 +58,10 @@ The Arbitrum angle is simple: agents are not just users of the app. They are dis
 
 10. Show GMX swap intent.
    - Open `Swaps`.
-   - Show the GMX Arbitrum Sepolia panel with official `ExchangeRouter`, `Reader`, and SDK method count.
+   - Show the GMX Arbitrum Sepolia panel with official `ExchangeRouter`, `Reader`, SDK method count, and the live proof card.
    - Select a GMX route template and copy the manifest.
-   - Say: "GMX is integrated as an execution adapter with official Arbitrum Sepolia contract config. ArcPay prepares the route, applies policy, then requires an Arbiscan tx hash and evidence before the action is considered complete."
+   - Open the proof JSON and execution tx.
+   - Say: "GMX is integrated as a live execution adapter, not just a manifest. ArcPay prepared a GMX classic SDK market swap, submitted it through the official ExchangeRouter, and captured the create-order and execution transaction hashes before marking the route as complete."
 
 11. Show cards and contractors.
    - Open `Cards`.

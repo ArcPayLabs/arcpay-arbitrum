@@ -3,8 +3,16 @@ export const GMX_ARBITRUM_SEPOLIA = {
   network: "arbitrum-sepolia",
   explorer: "https://sepolia.arbiscan.io",
   docs: "https://docs.gmx.io/docs/api/contracts/addresses/",
-  sdkDocs: "https://docs.gmx.io/docs/sdk/v1/",
-  source: "GMX docs list Arbitrum Sepolia as the current testnet deployment and note that testnet contracts can change.",
+  sdkDocs: "https://docs.gmx.io/docs/sdk/v2/",
+  source: "GMX docs list Arbitrum Sepolia as the current testnet deployment. ArcPay also ships a live classic-mode GMX SDK proof on Arbitrum Sepolia.",
+  apiBaseUrl: "https://gmx-api-arbitrum-sepolia-yp6pp.ondigitalocean.app/v1",
+  liveProof: {
+    orderTxHash: "0x9c0dbcfd7d89d4bc837d8bcc3c788b7d7269e750a2ecabaee802a8b61cffb829",
+    executionTxHash: "0xd3f5a9ddadf187742068badf2295e540e19c09e859983d36f30adbb454ee45e9",
+    requestId: "d6d758313dc0e915cadc369a61237426",
+    proofUrl: "/proofs/arbitrum-gmx-live-proof.json",
+    explorerUrl: "https://sepolia.arbiscan.io/tx/0xd3f5a9ddadf187742068badf2295e540e19c09e859983d36f30adbb454ee45e9",
+  },
   contracts: {
     DataStore: "0xCF4c2C4c53157BcC01A596e3788fFF69cBBCD201",
     RoleStore: "0x433E3C47885b929aEcE4149E3c835E565a20D95c",
@@ -30,12 +38,12 @@ export const GMX_ARBITRUM_SEPOLIA = {
   sdk: {
     package: "@gmx-io/sdk",
     chainId: 421614,
-    requiredInputs: ["rpcUrl", "oracleUrl", "subsquidUrl", "walletClient"],
-    supportedMethods: ["createSwapOrder", "createIncreaseOrder", "createDecreaseOrder", "cancelOrders"],
+    requiredInputs: ["rpcUrl", "privateKey or walletClient", "operator policy approval"],
+    supportedMethods: ["prepareOrder", "classic wallet transaction", "fetchOrderStatus", "prepareCancelOrder"],
   },
   markets: [
-    { label: "ETH/USD hedge", indexToken: "WETH", longToken: "WETH", shortToken: "USDC", risk: "medium" },
-    { label: "USDC runway swap", indexToken: "USDC", longToken: "USDC", shortToken: "ETH", risk: "low" },
+    { label: "ETH/USD swap proof", indexToken: "WETH", longToken: "WETH", shortToken: "USDC.SG", risk: "live-tested" },
+    { label: "USDC runway route", indexToken: "USDC.SG", longToken: "USDC.SG", shortToken: "WETH", risk: "policy-gated" },
     { label: "Manual GMX order", indexToken: "operator-selected", longToken: "operator-selected", shortToken: "operator-selected", risk: "requires review" },
   ],
 } as const;

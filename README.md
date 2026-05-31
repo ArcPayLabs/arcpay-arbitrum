@@ -170,27 +170,34 @@ ArcPay exposes GMX as a policy-gated execution adapter, not an unrestricted trad
 - App surface: `/swaps`
 - Status endpoint: `/api/gmx/status`
 - Official GMX contracts reference: `https://docs.gmx.io/docs/api/contracts/addresses/`
-- SDK reference: `https://docs.gmx.io/docs/sdk/v1/`
+- SDK reference: `https://docs.gmx.io/docs/sdk/v2/`
 
 Current adapter behavior:
 
 - loads official GMX Arbitrum Sepolia contract addresses including `ExchangeRouter`, `Router`, `Reader`, `DataStore`, `OrderVault`, and `EventEmitter`
+- executes the live-tested GMX classic SDK path for a WETH -> USDC.SG market swap on Arbitrum Sepolia
 - builds a copyable GMX execution manifest with route, budget, slippage, policy, SDK method, and evidence requirements
 - requires ArcPay policy and operator approval before leverage or treasury execution
 - refuses to mark a GMX action complete without Arbiscan transaction evidence and Dune/worker audit evidence
 
-Optional env for SDK-backed execution:
+Live GMX proof:
+
+- Create-order tx: `0x9c0dbcfd7d89d4bc837d8bcc3c788b7d7269e750a2ecabaee802a8b61cffb829`
+- Execution tx: `0xd3f5a9ddadf187742068badf2295e540e19c09e859983d36f30adbb454ee45e9`
+- Proof JSON: `/proofs/arbitrum-gmx-live-proof.json`
+
+Optional env for repeating SDK-backed execution:
 
 ```bash
-GMX_API_BASE_URL=
-GMX_ORACLE_URL=
-GMX_SUBSQUID_URL=
+GMX_API_BASE_URL=https://gmx-api-arbitrum-sepolia-yp6pp.ondigitalocean.app/v1
+GMX_TEST_WETH_AMOUNT=0.001
+GMX_CLASSIC_GAS_LIMIT=2500000
 GMX_EXCHANGE_ROUTER_ADDRESS=0xEd50B2A1eF0C35DAaF08Da6486971180237909c3
 GMX_READER_ADDRESS=0x4750376b9378294138Cf7B7D69a2d243f4940f71
 GMX_DATASTORE_ADDRESS=0xCF4c2C4c53157BcC01A596e3788fFF69cBBCD201
 ```
 
-The UI is already production-gated for GMX intents. Browser wallet execution should only be enabled when oracle/subsquid endpoints are verified and every fill path writes evidence back into ArcPay.
+Run the proof script with `npm run proof:gmx`. Express mode is not used because the public GMX/Gelato relay path returned `401 Unauthorized`; ArcPay uses the direct classic wallet transaction path instead.
 
 ## Deploy
 
