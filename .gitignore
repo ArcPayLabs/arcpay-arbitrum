@@ -3,6 +3,7 @@ node_modules/
 .env
 .env.local
 .vercel-env-temp
+.tmp-*.log
 *.azure.env
 dist/
 artifacts/
