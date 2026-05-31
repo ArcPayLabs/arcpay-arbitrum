@@ -52,6 +52,10 @@
     {
       "name": "Status",
       "description": "Runtime health checks for ArcPay Arbitrum production surfaces."
+    },
+    {
+      "name": "Integrations",
+      "description": "Safe configuration status for Arbitrum ecosystem integrations."
     }
   ],
   "paths": {
@@ -404,6 +408,62 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/integrations": {
+      "get": {
+        "tags": ["Integrations"],
+        "summary": "Read integration configuration status",
+        "description": "Returns masked ZeroDev, Dune, GMX, and Fhenix configuration status without exposing API keys or secrets.",
+        "operationId": "getIntegrationStatus",
+        "responses": {
+          "200": {
+            "description": "Integration status.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": { "type": "boolean" },
+                    "network": { "type": "object" },
+                    "integrations": { "type": "object" },
+                    "contracts": { "type": "object" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/zerodev/sponsor-policy": {
+      "get": {
+        "tags": ["Integrations"],
+        "summary": "Read ZeroDev sponsorship policy",
+        "description": "Returns the active ArcPay sponsorship allowlist and limits without exposing webhook secrets.",
+        "operationId": "getZeroDevSponsorPolicy",
+        "responses": {
+          "200": {
+            "description": "ZeroDev policy metadata."
+          }
+        }
+      },
+      "post": {
+        "tags": ["Integrations"],
+        "summary": "Evaluate ZeroDev sponsorship request",
+        "description": "Webhook endpoint for ZeroDev sponsorship. Rejects unknown chains, wallets, contracts, selectors, native value, and USDC approvals above configured caps.",
+        "operationId": "evaluateZeroDevSponsorPolicy",
+        "responses": {
+          "200": {
+            "description": "Sponsorship approved."
+          },
+          "401": {
+            "description": "Webhook bearer token invalid."
+          },
+          "403": {
+            "description": "Sponsorship rejected by ArcPay policy."
           }
         }
       }

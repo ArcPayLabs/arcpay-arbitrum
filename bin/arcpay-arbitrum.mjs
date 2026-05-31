@@ -27,6 +27,11 @@ Commands:
   arcpay-arbitrum privacy-guide          Print builder integration guide
   arcpay-arbitrum invoice-guide          Print invoice settlement guide
   arcpay-arbitrum x402-guide             Print x402 HTTP payment gate guide
+  arcpay-arbitrum execution-handoff      Print agent execution handoff payload
+  arcpay-arbitrum gmx-plan               Print GMX policy-bounded execution plan
+  arcpay-arbitrum zerodev-policy         Print ZeroDev sponsorship/session policy
+  arcpay-arbitrum dune-spec              Print Dune evidence dashboard schema
+  arcpay-arbitrum fhenix-boundary        Print Fhenix privacy boundary
   arcpay-arbitrum demo-path              Print operator demo steps
   arcpay-arbitrum smoke                  Print smoke-test commands
   arcpay-arbitrum mcp-config             Print MCP host config
@@ -112,6 +117,103 @@ try {
       "",
       "Proof command: npm run smoke:x402",
     ].join("\n"));
+  } else if (command === "execution-handoff") {
+    const info = deployment();
+    const agentSlug = args[0] || "treasury-router";
+    console.log(JSON.stringify({
+      protocol: "arcpay-arbitrum-execution-handoff",
+      chain: "arbitrum-sepolia",
+      chainId: 421614,
+      agentSlug,
+      objective: "Execute only policy-approved Arbitrum treasury work through ArcPay x402, escrow, privacy, invoice, reputation, and audit modules.",
+      endpoints: {
+        app: "https://arcpay-arbitrum.vercel.app",
+        x402: `https://arcpay-arbitrum.vercel.app/api/agent/${encodeURIComponent(agentSlug)}/work`,
+        status: "https://arcpay-arbitrum.vercel.app/api/status",
+        zerodevPolicy: "https://arcpay-arbitrum.vercel.app/api/zerodev/sponsor-policy",
+      },
+      contracts: {
+        registry: info.contracts.AgentRegistry,
+        orderBook: info.contracts.AgentOrderBook,
+        policy: info.contracts.TreasuryPolicy,
+        executionRouter: info.contracts.ArbitrumExecutionRouter,
+        privacyVault: info.contracts.ArbitrumPrivacyVault,
+        reputation: info.contracts.AgentReputationBook,
+      },
+      evidenceRequired: ["Arbiscan tx hash", "ArcPay order id", "x402 verification response", "Dune query/dashboard link"],
+    }, null, 2));
+  } else if (command === "gmx-plan") {
+    const info = deployment();
+    console.log(JSON.stringify({
+      protocol: "arcpay-gmx-execution-plan",
+      chain: "arbitrum-sepolia",
+      venue: "GMX",
+      adapter: "Execution intent first; wallet or smart account signs only after ArcPay policy approval.",
+      contracts: {
+        executionRouter: info.contracts.ArbitrumExecutionRouter,
+        policy: info.contracts.TreasuryPolicy,
+        orderBook: info.contracts.AgentOrderBook,
+      },
+      controls: {
+        requireOperatorApprovalForLeverage: true,
+        requireDuneEvidenceLink: true,
+        requireArbiscanTxHash: true,
+        rejectUnknownTargets: true,
+      },
+    }, null, 2));
+  } else if (command === "zerodev-policy") {
+    const info = deployment();
+    console.log(JSON.stringify({
+      protocol: "arcpay-zerodev-sponsorship-policy",
+      chain: "arbitrum-sepolia",
+      chainId: 421614,
+      webhook: "https://arcpay-arbitrum.vercel.app/api/zerodev/sponsor-policy",
+      dashboard: {
+        processIfWebhookFails: false,
+        timeoutMs: 5000,
+        walletLimits: "funded beta/demo wallets only",
+        chainLimits: "small daily Arbitrum Sepolia sponsorship cap",
+      },
+      allowedContracts: {
+        registry: info.contracts.AgentRegistry,
+        orderBook: info.contracts.AgentOrderBook,
+        policy: info.contracts.TreasuryPolicy,
+        executionRouter: info.contracts.ArbitrumExecutionRouter,
+        privacyVault: info.contracts.ArbitrumPrivacyVault,
+        invoiceBook: info.contracts.AgentInvoiceBook,
+        cards: info.contracts.AgentSpendCardVault,
+        reputation: info.contracts.AgentReputationBook,
+        usdc: info.usdcToken,
+      },
+      caps: {
+        maxNativeValueEth: process.env.ZERODEV_MAX_NATIVE_VALUE_ETH || "0.0005",
+        maxTokenAmountUsdc: process.env.ZERODEV_MAX_TOKEN_AMOUNT || "1",
+      },
+    }, null, 2));
+  } else if (command === "dune-spec") {
+    const info = deployment();
+    console.log(JSON.stringify({
+      protocol: "arcpay-dune-evidence",
+      chain: "arbitrum-sepolia",
+      contracts: info.contracts,
+      dashboards: [
+        "x402 order lifecycle",
+        "agent registrations and active service endpoints",
+        "execution intents by adapter: GMX, ZeroDev, Stylus, Dune, Fhenix, Robinhood, manual",
+        "privacy intent create/release/cancel events",
+        "USDC invoice and spend-card activity",
+        "reputation and dispute evidence",
+      ],
+      requiredEnv: ["DUNE_API_KEY", "DUNE_MCP_URL"],
+    }, null, 2));
+  } else if (command === "fhenix-boundary") {
+    console.log(JSON.stringify({
+      protocol: "arcpay-fhenix-privacy-boundary",
+      purpose: "Keep private treasury metadata, policy context, and risk memo computation off public calldata while ArcPay anchors commitments and settlement evidence on Arbitrum.",
+      privateInputs: ["counterparty notes", "agent prompt fragments", "risk memo", "invoice memo", "strategy rationale"],
+      publicOutputs: ["commitment", "nullifier", "execution intent id", "evidence URI", "Arbiscan tx hash"],
+      boundary: "ArcPay PrivacyVault is live commitment/nullifier infrastructure; Fhenix is the confidential-compute adapter path.",
+    }, null, 2));
   } else if (command === "demo-path") {
     console.log([
       "1. Connect wallet and switch to Arbitrum Sepolia.",

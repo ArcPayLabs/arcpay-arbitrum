@@ -104,6 +104,49 @@ arcpay-arbitrum-mcp
 arcpay-arbitrum-x402-agent quote research-agent
 ```
 
+## ZeroDev Sponsorship Policy
+
+ArcPay exposes a ZeroDev webhook for policy-gated gas sponsorship:
+
+```text
+https://arcpay-arbitrum.vercel.app/api/zerodev/sponsor-policy
+```
+
+Recommended ZeroDev dashboard setup:
+
+- Chain limits: Arbitrum Sepolia, with a low daily sponsored gas cap for beta/demo wallets.
+- Contract limits: allow only the deployed ArcPay contracts and Circle USDC on Arbitrum Sepolia.
+- Wallet limits: add only the funded test wallet and approved beta wallets.
+- Webhook: set the URL above, timeout `5000`, enable live mode, and do not process the transaction if the webhook fails.
+- If the ZeroDev dashboard does not allow custom headers, use `https://arcpay-arbitrum.vercel.app/api/zerodev/sponsor-policy?token=<ZERODEV_WEBHOOK_SECRET>`.
+
+Required env:
+
+```bash
+ZERO_DEV_PROJECT_ID=
+ZERODEV_API_KEY=
+ZERODEV_RPC_URL=https://rpc.zerodev.app/api/v3/<project-id>/chain/421614
+ZERODEV_ALLOWED_WALLETS=0x...
+ZERODEV_MAX_NATIVE_VALUE_ETH=0.0005
+ZERODEV_MAX_TOKEN_AMOUNT=1
+ZERODEV_WEBHOOK_SECRET=
+ZERODEV_WEBHOOK_LIVE=true
+```
+
+The webhook rejects unknown chain IDs, unknown target contracts, native value above the configured cap, unknown function selectors, and USDC approvals/transfers above the configured token cap.
+
+## Dune Evidence
+
+Set `DUNE_API_KEY` server-side only. Do not expose it through `NEXT_PUBLIC_*`.
+
+For local agent work, add Dune MCP:
+
+```bash
+codex mcp add dune_prod --url "https://api.dune.com/mcp/v1?api_key=$DUNE_API_KEY"
+```
+
+ArcPay uses Dune as the public evidence layer for Arbitrum activity: deployed contract events, x402 order lifecycle, execution adapter usage, privacy intent events, invoice/card activity, and reputation history.
+
 ## Deploy
 
 Create `.env` from `.env.example`:
