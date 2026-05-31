@@ -56,17 +56,19 @@ function BetaPage() {
     <MarketingShell navTone="light">
       <div className="px-6 py-12 md:py-16">
         <div className="mx-auto grid max-w-[88rem] gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
-          <section className="rounded-[2rem] bg-foreground p-8 text-background md:p-10">
-            <div className="inline-flex rounded-full bg-background/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-background/75">
+          <section className="relative overflow-hidden rounded-[2rem] border border-orange-200/70 bg-[radial-gradient(circle_at_18%_12%,rgba(255,122,24,0.26),transparent_30%),radial-gradient(circle_at_88%_18%,rgba(20,184,166,0.16),transparent_24%),linear-gradient(140deg,#fff9ef_0%,#f3eadc_48%,#fffaf2_100%)] p-8 text-foreground shadow-sm md:p-10">
+            <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full border-[42px] border-orange-300/25" />
+            <div className="pointer-events-none absolute -bottom-24 left-12 h-56 w-56 rounded-full bg-white/45 blur-3xl" />
+            <div className="relative inline-flex rounded-full border border-orange-200 bg-white/70 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-orange-700">
               Arbitrum private beta
             </div>
-            <h1 className="mt-8 max-w-2xl text-5xl font-medium leading-[0.95] tracking-[-0.05em] md:text-7xl">
+            <h1 className="relative mt-8 max-w-2xl text-5xl font-medium leading-[0.95] tracking-[-0.05em] md:text-7xl">
               Bring your agents into a real treasury loop.
             </h1>
-            <p className="mt-6 max-w-xl text-base leading-7 text-background/75">
+            <p className="relative mt-6 max-w-xl text-base leading-7 text-muted-foreground">
               ArcPay is onboarding Arbitrum builders who want wallet-first agent accounts, x402 paid endpoints, ETH escrow, USDC spend cards, privacy intents, risk checks, and reputation records on testnet.
             </p>
-            <div className="mt-8 grid gap-3 sm:grid-cols-2">
+            <div className="relative mt-8 grid gap-3 sm:grid-cols-2">
               <Pill icon={Bot} title="Agent onboarding" body="Register existing agents and expose capability metadata." />
               <Pill icon={RadioTower} title="x402 paid work" body="Charge for protected agent endpoints with on-chain settlement." />
               <Pill icon={ShieldCheck} title="Policy controls" body="Limit spend by hour, day, week, allowlist, and pause state." />
@@ -144,10 +146,10 @@ function BetaPage() {
 
 function Pill({ icon: Icon, title, body }: { icon: typeof Bot; title: string; body: string }) {
   return (
-    <div className="rounded-2xl border border-background/10 bg-background/5 p-4">
+    <div className="rounded-2xl border border-white/80 bg-white/65 p-4 shadow-sm backdrop-blur">
       <Icon className="h-5 w-5 text-primary" />
       <div className="mt-3 text-sm font-semibold">{title}</div>
-      <div className="mt-1 text-sm leading-6 text-background/65">{body}</div>
+      <div className="mt-1 text-sm leading-6 text-muted-foreground">{body}</div>
     </div>
   );
 }

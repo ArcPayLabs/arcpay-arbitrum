@@ -11,7 +11,7 @@ The product keeps the core control layer inside ArcPay: wallet identity, agent r
 
 - **GMX execution intents** for policy-approved trading, hedging, or route preparation. ArcPay stores market, collateral, budget, calldata hash, and evidence URI before execution is considered valid.
 - **Stylus policy module path** for a Rust/WASM policy verifier that can mirror or extend the Solidity `TreasuryPolicy` checks.
-- **ZeroDev smart accounts** for bounded session-key agent actions. ArcPay outputs allowed contracts, max budget, expiry, and blocked actions.
+- **ZeroDev smart accounts** for policy-gated gasless agent execution. ArcPay embeds sponsor-policy readiness, a live Kernel smart account, Arbiscan proof, target contract, and copyable handoff payload.
 - **Dune evidence** for public analytics and proof dashboards using ArcPay contract events.
 - **Fhenix privacy boundary** for confidential treasury metadata computation while ArcPay keeps settlement commitments and nullifiers on Arbitrum.
 - **Robinhood Chain path** for an optional Arbitrum ecosystem deployment target.
@@ -22,11 +22,12 @@ The product keeps the core control layer inside ArcPay: wallet identity, agent r
 1. Register or select an ArcPay agent.
 2. Open ArcPay `/execution`.
 3. Set strategy, adapter, budget, allowed assets, risk limit, x402 resource, and execution address.
-4. Copy the generated handoff payload.
-5. Propose the intent on `ArbitrumExecutionRouter`.
-6. Approve it with a Dune/query/policy evidence URI.
-7. Execute only after policy approval and budget checks.
-8. Record the Arbiscan tx hash or receipt hash back on `ArbitrumExecutionRouter`.
+4. For ZeroDev, load the sponsored proof account or connect the operator wallet to create a new smart-account route.
+5. Copy the generated handoff payload.
+6. Propose the intent on `ArbitrumExecutionRouter`.
+7. Approve it with a Dune/query/policy evidence URI.
+8. Execute only after policy approval and budget checks.
+9. Record the Arbiscan tx hash or receipt hash back on `ArbitrumExecutionRouter`.
 
 ## Handoff Payload
 
@@ -44,12 +45,23 @@ ArcPay generates an agent-readable payload containing:
 ## What Is Live Now
 
 - Execution handoff and evidence page in the app.
+- Embedded ZeroDev console on `/execution` with sponsor webhook status, smart account, caps, proof tx, proof JSON, and handoff copy.
 - On-chain execution intent contract with propose, approve, execute, and cancel lifecycle.
 - Payload copy/export.
 - Local and Supabase-backed audit record when a handoff is saved.
 - Developer tool output through `/api/developer/tools/execution_handoff`.
 - Developer tools for `gmx_execution_plan`, `zerodev_session_policy`, `dune_evidence_spec`, and `fhenix_privacy_boundary`.
 - CLI/MCP command surfaces for agent and developer setup.
+
+## ZeroDev Proof
+
+The current sponsored UserOp evidence is published with the frontend:
+
+- Dashboard: `https://arcpay-arbitrum.vercel.app/execution`
+- Proof JSON: `https://arcpay-arbitrum.vercel.app/proofs/arbitrum-zerodev-sponsored-userop.json`
+- Arbiscan transaction: `https://sepolia.arbiscan.io/tx/0xd075f82ec005b663f29c19996aa63c1b5001c54779fac936ffa8f12aaef050ae`
+
+The proof registers an ArcPay agent from a ZeroDev Kernel smart account on Arbitrum Sepolia. The dashboard uses that proof to populate the execution form with smart account, target contract, and evidence URI.
 
 ## Safety Model
 

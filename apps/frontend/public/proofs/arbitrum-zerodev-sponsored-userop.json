@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "generatedAt": "2026-05-31T15:41:36.812Z",
+  "chain": "arbitrum-sepolia",
+  "chainId": 421614,
+  "eoa": "0xB883e76A4f6841E72cAF1C28ba00f78df974f448",
+  "smartAccount": "0xc123A66d916A1C420040F861351C96791fc47769",
+  "submittedHash": "0xd075f82ec005b663f29c19996aa63c1b5001c54779fac936ffa8f12aaef050ae",
+  "txHash": "0xd075f82ec005b663f29c19996aa63c1b5001c54779fac936ffa8f12aaef050ae",
+  "txStatus": "success",
+  "blockNumber": "272501690",
+  "explorerUrl": "https://sepolia.arbiscan.io/tx/0xd075f82ec005b663f29c19996aa63c1b5001c54779fac936ffa8f12aaef050ae",
+  "target": "0x5F5b8109c832BB6609178F0bb2e6A597387dA17E",
+  "action": "AgentRegistry.registerAgent",
+  "slug": "zerodev-proof-164124",
+  "agentId": "0x77eb2add94d27a1a2e1701d2ca937f19f01d56c5a0a4d90d33a23816ead8377f",
+  "endpoint": "https://arcpay-arbitrum.vercel.app/api/agent/zerodev-proof-164124/work",
+  "smartAccountBalanceEth": "0",
+  "zerodev": {
+    "projectId": "264dd2...d7fd",
+    "rpcConfigured": true,
+    "apiKeyConfigured": true
+  }
+}

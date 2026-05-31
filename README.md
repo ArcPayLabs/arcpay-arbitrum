@@ -135,6 +135,14 @@ ZERODEV_WEBHOOK_LIVE=true
 
 The webhook rejects unknown chain IDs, unknown target contracts, native value above the configured cap, unknown function selectors, and USDC approvals/transfers above the configured token cap.
 
+Live ZeroDev proof:
+
+- Dashboard: `https://arcpay-arbitrum.vercel.app/execution`
+- Proof JSON: `https://arcpay-arbitrum.vercel.app/proofs/arbitrum-zerodev-sponsored-userop.json`
+- Sponsored transaction: `https://sepolia.arbiscan.io/tx/0xd075f82ec005b663f29c19996aa63c1b5001c54779fac936ffa8f12aaef050ae`
+
+The `/execution` dashboard embeds the ZeroDev smart account, sponsor webhook readiness, gas policy posture, proof transaction, target contract, agent slug, and copyable agent handoff payload.
+
 ## Dune Evidence
 
 Set `DUNE_API_KEY` server-side only. Do not expose it through `NEXT_PUBLIC_*`.
@@ -275,6 +283,7 @@ Important files:
 
 - Arbitrum Sepolia contracts are deployed and verified on Arbiscan.
 - Circle Arbitrum Sepolia USDC is configured as the live USDC token for cards and invoices.
+- ZeroDev sponsorship is configured with a live webhook policy and a sponsored Arbitrum Sepolia UserOp proof embedded in the dashboard.
 - Solidity contracts, frontend, Vercel x402 API, standalone x402 server, worker, CLI, MCP, docs, OpenAPI, and starter kit are present.
 - Local proof capture has passed against the deployed contracts and x402 flow.
 - Final browser wallet QA and Vercel redeploy verification should be completed before submission.

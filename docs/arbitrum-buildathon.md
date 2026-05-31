@@ -22,6 +22,9 @@ Arbitrum as the settlement and evidence layer for agent financial operations:
   identity, endpoint, trust model, and reputation nonce
 - GMX, ZeroDev, Dune, Fhenix, Stylus, Robinhood Chain, and manual execution
   paths all pass through an on-chain `ArbitrumExecutionRouter` intent lifecycle
+- ZeroDev sponsored execution is not only listed as an adapter; the dashboard
+  embeds the configured sponsor policy, Kernel smart account, live sponsored
+  Arbitrum Sepolia transaction, and copyable agent handoff payload
 - treasury spend policies are enforced before settlement
 - every job creates an auditable order lifecycle
 
@@ -38,6 +41,9 @@ Arbitrum as the settlement and evidence layer for agent financial operations:
 9. Agent owner registers an ERC-8004-style identity in `AgentIdentity8004`.
 10. Operator proposes, approves, and records adapter execution evidence through
     `ArbitrumExecutionRouter`.
+11. Operator can open `Execution`, load the ZeroDev sponsored smart account,
+    copy the policy-bound agent handoff, and verify the proof transaction on
+    Arbiscan.
 
 ## Arbitrum Sepolia
 
@@ -93,7 +99,7 @@ deployments/arbitrum-sepolia.json
 ## Judging Alignment
 
 - Technical depth: Solidity contracts, x402 gateway, worker indexing, MCP/CLI,
-  and a full wallet-first frontend
+  ZeroDev smart-account sponsorship, and a full wallet-first frontend
 - Innovation: agent treasury policy, paid HTTP agent work, privacy intents, and
   order-backed reputation in one Arbitrum-native product
 - Arbitrum contribution: ETH escrow, USDC/WETH strategy intents, Arbitrum Sepolia
@@ -118,3 +124,6 @@ system into a Arbitrum-only testnet app:
 - commitment-based private payment intents with encrypted metadata and nullifier release
 - ERC-8004-style agent identities for agent service trust, discovery, and reputation continuity
 - on-chain execution intents for GMX, ZeroDev, Stylus, Dune, Fhenix, Robinhood Chain, and manual signer evidence
+- embedded ZeroDev operator console with sponsor policy status, smart account,
+  transaction proof, target contract, and proof JSON at
+  `/proofs/arbitrum-zerodev-sponsored-userop.json`

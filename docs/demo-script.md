@@ -50,14 +50,20 @@ The Arbitrum angle is simple: agents are not just users of the app. They are dis
    - Create a small ETH or USDC shield intent, then show release/cancel/disclosure controls.
    - Say: "Arbitrum does not have a native privacy layer yet, so ArcPay adds a practical privacy-intent primitive: commitment, encrypted memo URI, delayed recipient release, cancellation, and nullifier evidence."
 
-9. Show cards and contractors.
+9. Show embedded ZeroDev execution.
+   - Open `Execution`.
+   - Show the ZeroDev smart-account panel, sponsor policy readiness, proof transaction, and proof JSON link.
+   - Click `Use proof account` so the smart account, target contract, and proof tx populate the execution form.
+   - Say: "ArcPay does not treat gas sponsorship as a logo. ZeroDev is embedded as a policy-gated execution path: the smart account is live, sponsorship is constrained by webhook policy, and the proof is tied to an Arbitrum Sepolia transaction."
+
+10. Show cards and contractors.
    - Open `Cards`.
    - Create or load a USDC card and show freeze/activate/top-up controls.
    - Open `Contractors`.
    - Show allowlist, risk score, and payout batch intent.
    - Say: "Operators can give agents and contributors bounded budgets without exposing the whole treasury."
 
-10. Close with audit and docs.
+11. Close with audit and docs.
    - Open `Audit`, `Proofs`, then public `Docs`.
    - Say: "The system is not just frontend state. There are deployed contracts, a live Azure x402 server, a Supabase-backed worker, published MCP, CLI, and x402 starter packages, smoke tests, and explorer links for verification."
 

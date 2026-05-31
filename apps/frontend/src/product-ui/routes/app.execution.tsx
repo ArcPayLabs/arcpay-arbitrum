@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Bot, CheckCircle2, ClipboardCopy, DatabaseZap, KeyRound, Route as RouteIcon, ShieldCheck, WalletCards, Workflow } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Bot, CheckCircle2, ClipboardCopy, DatabaseZap, ExternalLink, Gauge, KeyRound, Route as RouteIcon, ShieldCheck, Sparkles, WalletCards, Workflow, Zap } from "lucide-react";
 import { PageHeader } from "@/components/app/PageHeader";
 import { StatCard } from "@/components/primitives/StatCard";
 import { CONTRACTS, EXECUTION_ADAPTERS, executionRouterContract, hashText, shortAddress, toWei, txUrl, writeRecord } from "@arbitrum/lib/arbitrum";
@@ -26,6 +26,43 @@ type Handoff = {
   policyUri: string;
   evidenceUri: string;
   txHashOrReceipt: string;
+};
+
+type IntegrationStatus = {
+  ok: boolean;
+  integrations: {
+    zerodev: {
+      configured: boolean;
+      apiKeyConfigured: boolean;
+      projectId: string | null;
+      rpcUrl: string | null;
+      sponsorPolicy: string;
+      maxNativeValueEth: string;
+      maxTokenAmount: string;
+      walletAllowlistEnabled: boolean;
+    };
+    dune: { configured: boolean; mcpServer: string; purpose: string };
+    gmx: { configured: boolean; mode: string; purpose: string };
+    fhenix: { configured: boolean; mode: string; purpose: string };
+  };
+};
+
+type ZeroDevProof = {
+  ok: boolean;
+  generatedAt: string;
+  chain: string;
+  chainId: number;
+  smartAccount: string;
+  txHash: string;
+  txStatus: string;
+  blockNumber: string;
+  explorerUrl: string;
+  target: string;
+  action: string;
+  slug: string;
+  agentId: string;
+  endpoint: string;
+  zerodev: { projectId: string; rpcConfigured: boolean; apiKeyConfigured: boolean };
 };
 
 const DEFAULT_FORM: Handoff = {
@@ -67,6 +104,33 @@ function ExecutionRoute() {
   const [form, setForm] = useState<Handoff>(DEFAULT_FORM);
   const [intentId, setIntentId] = useState("");
   const [message, setMessage] = useState("Create an Arbitrum execution handoff. ArcPay keeps policy, x402, audit, privacy, and evidence records.");
+  const [integrations, setIntegrations] = useState<IntegrationStatus | null>(null);
+  const [zeroDevProof, setZeroDevProof] = useState<ZeroDevProof | null>(null);
+  const [zeroDevMessage, setZeroDevMessage] = useState("ZeroDev sponsorship proof is loaded from the latest ArcPay Arbitrum sponsored UserOp artifact.");
+
+  useEffect(() => {
+    let cancelled = false;
+    async function loadZeroDevReadiness() {
+      const [integrationsResponse, proofResponse] = await Promise.all([
+        fetch("/api/integrations", { cache: "no-store" }),
+        fetch("/proofs/arbitrum-zerodev-sponsored-userop.json", { cache: "no-store" }),
+      ]);
+      const [integrationsBody, proofBody] = await Promise.all([
+        integrationsResponse.json() as Promise<IntegrationStatus>,
+        proofResponse.json() as Promise<ZeroDevProof>,
+      ]);
+      if (!cancelled) {
+        setIntegrations(integrationsBody);
+        setZeroDevProof(proofBody);
+      }
+    }
+    loadZeroDevReadiness().catch((error) => {
+      if (!cancelled) setZeroDevMessage(error instanceof Error ? error.message : String(error));
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const payload = useMemo(() => ({
     protocol: "arcpay-arbitrum-execution-handoff",
@@ -187,6 +251,49 @@ function ExecutionRoute() {
     setMessage("Copied Arbitrum execution payload.");
   }
 
+  async function copyZeroDevHandoff() {
+    const handoff = {
+      protocol: "arcpay-arbitrum-zerodev-sponsored-execution",
+      chain: "arbitrum-sepolia",
+      chainId: 421614,
+      smartAccount: zeroDevProof?.smartAccount ?? "load-proof-first",
+      sponsorPolicy: integrations?.integrations.zerodev.sponsorPolicy ?? "/api/zerodev/sponsor-policy",
+      proof: zeroDevProof ? {
+        txHash: zeroDevProof.txHash,
+        explorerUrl: zeroDevProof.explorerUrl,
+        action: zeroDevProof.action,
+        agentSlug: zeroDevProof.slug,
+        agentId: zeroDevProof.agentId,
+      } : null,
+      constraints: {
+        requireArcPayPolicy: true,
+        requireSponsorWebhookApproval: true,
+        requireArbiscanTxHashForCompletion: true,
+        maxNativeValueEth: integrations?.integrations.zerodev.maxNativeValueEth ?? "not-loaded",
+      },
+    };
+    await navigator.clipboard.writeText(JSON.stringify(handoff, null, 2));
+    setZeroDevMessage("Copied ZeroDev smart-account handoff.");
+  }
+
+  function useZeroDevProofAccount() {
+    if (!zeroDevProof) {
+      setZeroDevMessage("ZeroDev proof is still loading.");
+      return;
+    }
+    setForm({
+      ...form,
+      adapter: "ZeroDev sponsored smart account",
+      executionAddress: zeroDevProof.smartAccount,
+      primaryVenue: "ZeroDev smart account",
+      txHashOrReceipt: zeroDevProof.txHash,
+      evidenceUri: zeroDevProof.explorerUrl,
+      targetContract: zeroDevProof.target,
+      calldataSummary: `${zeroDevProof.action} for ${zeroDevProof.slug}`,
+    });
+    setZeroDevMessage("Loaded the sponsored smart account, target contract, and proof tx into the execution form.");
+  }
+
   return (
     <div className="space-y-6">
       <PageHeader
@@ -203,6 +310,72 @@ function ExecutionRoute() {
         <StatCard icon={ShieldCheck} label="Policy" value="Required" hint="Budget first" />
         <StatCard icon={WalletCards} label="Assets" value="ETH/USDC" hint="WETH strategy-ready" />
       </div>
+
+      <section className="overflow-hidden rounded-[2rem] border border-orange-200/70 bg-[radial-gradient(circle_at_top_left,rgba(255,122,24,0.20),transparent_34%),linear-gradient(135deg,#fffaf2_0%,#f7efe3_52%,#fffdf8_100%)] shadow-sm">
+        <div className="grid gap-0 xl:grid-cols-[1.1fr_0.9fr]">
+          <div className="p-6 md:p-7">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-white/70 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-orange-700">
+                <Zap className="h-3.5 w-3.5" /> ZeroDev smart accounts
+              </span>
+              <span className="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">
+                Sponsored UserOp live
+              </span>
+            </div>
+            <div className="mt-5 grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
+              <div>
+                <h2 className="text-3xl font-semibold tracking-[-0.04em] text-foreground md:text-4xl">Gasless agent execution, embedded in ArcPay.</h2>
+                <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
+                  Operators can onboard a Kernel smart account, enforce ArcPay sponsor policy, and keep every sponsored execution attached to an Arbiscan transaction, agent id, and audit record.
+                </p>
+                <div className="mt-5 flex flex-wrap gap-2">
+                  <button type="button" onClick={useZeroDevProofAccount} className="inline-flex h-11 items-center gap-2 rounded-full bg-foreground px-4 text-sm font-semibold text-background">
+                    <Sparkles className="h-4 w-4" /> Use proof account
+                  </button>
+                  <button type="button" onClick={() => void copyZeroDevHandoff()} className="inline-flex h-11 items-center gap-2 rounded-full border border-border bg-white/70 px-4 text-sm font-semibold">
+                    <ClipboardCopy className="h-4 w-4" /> Copy handoff
+                  </button>
+                  {zeroDevProof?.explorerUrl ? (
+                    <a href={zeroDevProof.explorerUrl} target="_blank" rel="noreferrer" className="inline-flex h-11 items-center gap-2 rounded-full border border-border bg-white/70 px-4 text-sm font-semibold">
+                      Arbiscan proof <ExternalLink className="h-4 w-4" />
+                    </a>
+                  ) : null}
+                </div>
+              </div>
+              <div className="rounded-3xl border border-white/70 bg-white/75 p-5 shadow-sm backdrop-blur">
+                <div className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Live sponsor posture</div>
+                <div className="mt-4 grid gap-3">
+                  <ReadinessRow label="Project" value={integrations?.integrations.zerodev.projectId ?? "loading"} ready={Boolean(integrations?.integrations.zerodev.configured)} />
+                  <ReadinessRow label="API key" value={integrations?.integrations.zerodev.apiKeyConfigured ? "configured" : "not configured"} ready={Boolean(integrations?.integrations.zerodev.apiKeyConfigured)} />
+                  <ReadinessRow label="Webhook" value={integrations?.integrations.zerodev.sponsorPolicy ?? "loading"} ready={Boolean(integrations?.integrations.zerodev.sponsorPolicy)} />
+                  <ReadinessRow label="Native cap" value={`${integrations?.integrations.zerodev.maxNativeValueEth ?? "..."} ETH`} ready />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="border-t border-orange-200/70 bg-white/55 p-6 md:p-7 xl:border-l xl:border-t-0">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <ProofMetric icon={WalletCards} label="Smart account" value={zeroDevProof ? shortAddress(zeroDevProof.smartAccount) : "loading"} />
+              <ProofMetric icon={Gauge} label="Tx status" value={zeroDevProof?.txStatus ?? "loading"} />
+              <ProofMetric icon={RouteIcon} label="Action" value={zeroDevProof?.action ?? "loading"} />
+              <ProofMetric icon={DatabaseZap} label="Block" value={zeroDevProof?.blockNumber ?? "loading"} />
+            </div>
+            <div className="mt-4 rounded-2xl border border-border/70 bg-background/80 p-4">
+              <div className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Proof artifact</div>
+              <div className="mt-2 break-all text-sm font-medium">{zeroDevProof?.txHash ?? "Loading sponsored transaction hash..."}</div>
+              <div className="mt-3 grid gap-2 text-xs text-muted-foreground">
+                <span>Agent slug: {zeroDevProof?.slug ?? "loading"}</span>
+                <span>Target: {zeroDevProof ? shortAddress(zeroDevProof.target) : "loading"}</span>
+                <span>Endpoint: {zeroDevProof?.endpoint ?? "loading"}</span>
+              </div>
+            </div>
+            <div className="mt-4 rounded-2xl border border-border/70 bg-background/80 px-4 py-3 text-sm text-muted-foreground">
+              {zeroDevMessage}
+            </div>
+          </div>
+        </div>
+      </section>
 
       <section className="grid grid-cols-1 gap-4 xl:grid-cols-[0.85fr_1.15fr]">
         <form className="space-y-4 rounded-3xl border border-border bg-card p-5" onSubmit={(event) => { event.preventDefault(); void proposeIntent(); }}>
@@ -293,4 +466,26 @@ function adapterId(value: string) {
   if (normalized.includes("robinhood")) return EXECUTION_ADAPTERS.RobinhoodChain;
   if (normalized.includes("manual")) return EXECUTION_ADAPTERS.Manual;
   return EXECUTION_ADAPTERS.GMX;
+}
+
+function ReadinessRow({ label, value, ready }: { label: string; value: string; ready: boolean }) {
+  return (
+    <div className="flex items-center justify-between gap-3 rounded-2xl border border-border/70 bg-background/80 px-4 py-3">
+      <div>
+        <div className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">{label}</div>
+        <div className="mt-1 max-w-[18rem] truncate text-sm font-medium">{value}</div>
+      </div>
+      <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${ready ? "bg-emerald-500" : "bg-muted-foreground/35"}`} />
+    </div>
+  );
+}
+
+function ProofMetric({ icon: Icon, label, value }: { icon: typeof WalletCards; label: string; value: string }) {
+  return (
+    <div className="rounded-2xl border border-border/70 bg-background/80 p-4">
+      <Icon className="h-5 w-5 text-primary" />
+      <div className="mt-5 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">{label}</div>
+      <div className="mt-1 truncate text-lg font-semibold">{value}</div>
+    </div>
+  );
 }
