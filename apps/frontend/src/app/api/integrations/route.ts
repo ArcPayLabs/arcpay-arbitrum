@@ -26,6 +26,8 @@ export async function GET() {
         configured: Boolean(process.env.DUNE_API_KEY),
         mcpUrlConfigured: Boolean(process.env.DUNE_MCP_URL),
         mcpServer: "dune_prod",
+        evidenceQueryId: process.env.DUNE_EVIDENCE_QUERY_ID || "7623300",
+        evidenceUrl: `https://dune.com/queries/${process.env.DUNE_EVIDENCE_QUERY_ID || "7623300"}`,
         purpose: "Arbitrum event analytics and public execution evidence.",
       },
       gmx: {

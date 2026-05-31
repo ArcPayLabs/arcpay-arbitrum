@@ -155,6 +155,14 @@ codex mcp add dune_prod --url "https://api.dune.com/mcp/v1?api_key=$DUNE_API_KEY
 
 ArcPay uses Dune as the public evidence layer for Arbitrum activity: deployed contract events, x402 order lifecycle, execution adapter usage, privacy intent events, invoice/card activity, and reputation history.
 
+Public Dune evidence:
+
+- Query: `https://dune.com/queries/7623300`
+- App surface: `/execution`
+- Env override: `DUNE_EVIDENCE_QUERY_ID=7623300`
+
+This query is a public evidence register for the Arbitrum Sepolia proof set. Dune docs expose Arbitrum One event tables clearly; until dependable Arbitrum Sepolia event tables are verified, ArcPay uses Dune for public proof registration and keeps Sepolia event reconciliation in the ArcPay worker/API.
+
 ## Deploy
 
 Create `.env` from `.env.example`:

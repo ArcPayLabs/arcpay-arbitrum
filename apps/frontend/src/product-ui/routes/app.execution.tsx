@@ -41,7 +41,7 @@ type IntegrationStatus = {
       maxTokenAmount: string;
       walletAllowlistEnabled: boolean;
     };
-    dune: { configured: boolean; mcpServer: string; purpose: string };
+    dune: { configured: boolean; mcpServer: string; evidenceQueryId: string; evidenceUrl: string; purpose: string };
     gmx: { configured: boolean; mode: string; purpose: string };
     fhenix: { configured: boolean; mode: string; purpose: string };
   };
@@ -374,6 +374,33 @@ function ExecutionRoute() {
               {zeroDevMessage}
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="grid grid-cols-1 gap-4 lg:grid-cols-[0.8fr_1.2fr]">
+        <div className="rounded-3xl border border-border bg-card p-5">
+          <div className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+            <DatabaseZap className="h-4 w-4 text-primary" /> Dune evidence
+          </div>
+          <h2 className="mt-3 text-2xl font-semibold tracking-tight">Public proof register</h2>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            Dune is wired as ArcPay's public evidence layer for contract addresses, proof artifacts, and execution links. Arbitrum Sepolia events still use ArcPay worker/API proof until Dune exposes dependable Sepolia event tables.
+          </p>
+          <div className="mt-5 flex flex-wrap gap-2">
+            {integrations?.integrations.dune.evidenceUrl ? (
+              <a href={integrations.integrations.dune.evidenceUrl} target="_blank" rel="noreferrer" className="inline-flex h-11 items-center gap-2 rounded-full bg-foreground px-4 text-sm font-semibold text-background">
+                Open Dune query <ExternalLink className="h-4 w-4" />
+              </a>
+            ) : null}
+            <button type="button" onClick={() => void navigator.clipboard.writeText(integrations?.integrations.dune.evidenceUrl ?? "https://dune.com/queries/7623300")} className="inline-flex h-11 items-center gap-2 rounded-full border border-border px-4 text-sm font-semibold">
+              <ClipboardCopy className="h-4 w-4" /> Copy Dune link
+            </button>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+          <ProofMetric icon={DatabaseZap} label="Query" value={integrations?.integrations.dune.evidenceQueryId ? `#${integrations.integrations.dune.evidenceQueryId}` : "loading"} />
+          <ProofMetric icon={CheckCircle2} label="MCP" value={integrations?.integrations.dune.mcpServer ?? "loading"} />
+          <ProofMetric icon={ShieldCheck} label="Mode" value={integrations?.integrations.dune.configured ? "configured" : "public proof"} />
         </div>
       </section>
 

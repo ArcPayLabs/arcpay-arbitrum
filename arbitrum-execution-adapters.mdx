@@ -63,6 +63,15 @@ The current sponsored UserOp evidence is published with the frontend:
 
 The proof registers an ArcPay agent from a ZeroDev Kernel smart account on Arbitrum Sepolia. The dashboard uses that proof to populate the execution form with smart account, target contract, and evidence URI.
 
+## Dune Evidence Register
+
+ArcPay also publishes the Arbitrum Sepolia proof set to Dune:
+
+- Query: `https://dune.com/queries/7623300`
+- App surface: `/execution`
+
+This is a public proof register for contracts, ZeroDev transaction evidence, smart-account address, frontend, and proof JSON. Dune currently documents Arbitrum One event tables more clearly than Arbitrum Sepolia event tables, so ArcPay does not claim live Sepolia event indexing through Dune until that support is verified. Sepolia reconciliation remains handled by the ArcPay worker/API, while Dune provides a public evidence artifact.
+
 ## Safety Model
 
 ArcPay should not grant unrestricted spend authority to any external adapter. Use:
