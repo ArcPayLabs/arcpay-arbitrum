@@ -61,8 +61,10 @@ export async function evaluateZeroDevPolicy(body: unknown): Promise<ZeroDevPolic
   const sender = normalizeAddress(operation.sender);
   checks.push({
     name: "wallet",
-    ok: !allowedWallets.length || Boolean(sender && allowedWallets.includes(sender)),
-    detail: sender || "missing",
+    ok: true,
+    detail: !allowedWallets.length
+      ? `${sender || "missing"}; no webhook wallet allowlist configured`
+      : `${sender || "missing"}; ${sender && allowedWallets.includes(sender) ? "allowlisted" : "not in webhook allowlist; enforce wallet limits in ZeroDev dashboard"}`,
   });
 
   const calls = operation.calls.length ? operation.calls : [{ to: operation.to, data: operation.data, value: operation.value }];

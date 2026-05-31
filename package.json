@@ -32,6 +32,7 @@
     "smoke:auth": "node scripts/smoke-auth.mjs",
     "smoke:live": "node scripts/smoke-live.mjs",
     "smoke:x402": "node scripts/smoke-x402.mjs",
+    "proof:zerodev": "node scripts/zerodev-sponsored-proof.mjs",
     "proof:arbitrum": "node scripts/capture-arbitrum-proof.mjs",
     "arcpay": "node bin/arcpay-arbitrum.mjs",
     "test": "hardhat test",
@@ -45,9 +46,12 @@
     "@nomicfoundation/hardhat-ethers": "^3.0.8",
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
     "@supabase/supabase-js": "^2.106.2",
+    "@zerodev/ecdsa-validator": "^5.4.9",
+    "@zerodev/sdk": "^5.5.10",
     "dotenv": "^16.4.7",
     "ethers": "^6.13.5",
     "hardhat": "^2.22.19",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "viem": "^2.51.3"
   }
 }
