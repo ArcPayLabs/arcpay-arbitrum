@@ -22,6 +22,8 @@ Arbitrum as the settlement and evidence layer for agent financial operations:
   identity, endpoint, trust model, and reputation nonce
 - GMX, ZeroDev, Dune, Fhenix, Stylus, Robinhood Chain, and manual execution
   paths all pass through an on-chain `ArbitrumExecutionRouter` intent lifecycle
+- GMX is configured with official Arbitrum Sepolia contract addresses and a
+  policy-gated swap/hedge manifest on `/swaps`
 - ZeroDev sponsored execution is not only listed as an adapter; the dashboard
   embeds the configured sponsor policy, Kernel smart account, live sponsored
   Arbitrum Sepolia transaction, and copyable agent handoff payload
@@ -124,6 +126,8 @@ system into a Arbitrum-only testnet app:
 - commitment-based private payment intents with encrypted metadata and nullifier release
 - ERC-8004-style agent identities for agent service trust, discovery, and reputation continuity
 - on-chain execution intents for GMX, ZeroDev, Stylus, Dune, Fhenix, Robinhood Chain, and manual signer evidence
+- GMX Arbitrum Sepolia adapter surface with `ExchangeRouter`, `Router`,
+  `Reader`, `DataStore`, `OrderVault`, and `EventEmitter` config
 - embedded ZeroDev operator console with sponsor policy status, smart account,
   transaction proof, target contract, and proof JSON at
   `/proofs/arbitrum-zerodev-sponsored-userop.json`

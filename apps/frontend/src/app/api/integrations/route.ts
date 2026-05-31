@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import deployment from "@arbitrum/deployment/arbitrum-sepolia.json";
+import { GMX_ARBITRUM_SEPOLIA } from "@arbitrum/lib/gmx";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -31,9 +32,15 @@ export async function GET() {
         purpose: "Arbitrum event analytics and public execution evidence.",
       },
       gmx: {
-        configured: Boolean(process.env.GMX_API_BASE_URL || process.env.GMX_ROUTER_ADDRESS),
-        mode: "intent-and-evidence adapter",
-        purpose: "Policy-bounded GMX execution planning and post-trade evidence.",
+        configured: Boolean(process.env.GMX_API_BASE_URL || process.env.GMX_ORACLE_URL || process.env.GMX_SUBSQUID_URL),
+        mode: "official-contract-config",
+        status: "/api/gmx/status",
+        chainId: GMX_ARBITRUM_SEPOLIA.chainId,
+        exchangeRouter: GMX_ARBITRUM_SEPOLIA.contracts.ExchangeRouter,
+        dataStore: GMX_ARBITRUM_SEPOLIA.contracts.DataStore,
+        reader: GMX_ARBITRUM_SEPOLIA.contracts.Reader,
+        eventEmitter: GMX_ARBITRUM_SEPOLIA.contracts.EventEmitter,
+        purpose: "Policy-bounded GMX Arbitrum Sepolia swap/hedge planning with post-trade evidence.",
       },
       fhenix: {
         configured: Boolean(process.env.FHENIX_API_KEY),

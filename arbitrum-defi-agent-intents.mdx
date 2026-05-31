@@ -32,6 +32,19 @@ The `/swaps` page supports Arbitrum route intents for:
 
 ArcPay records the swap intent and exports a structured payload with source asset, target asset, amount, slippage, expiry, executor, policy requirement, and contract context.
 
+## GMX Adapter
+
+GMX is implemented as an Arbitrum Sepolia execution adapter with official contract configuration:
+
+- status endpoint: `/api/gmx/status`
+- app surface: `/swaps`
+- contract docs: `https://docs.gmx.io/docs/api/contracts/addresses/`
+- SDK docs: `https://docs.gmx.io/docs/sdk/v1/`
+
+ArcPay loads the GMX `ExchangeRouter`, `Router`, `Reader`, `DataStore`, `OrderVault`, `EventEmitter`, and related testnet contracts into the swap manifest. The operator can select a route template, copy the GMX manifest, and move it through ArcPay policy review before any wallet execution.
+
+The key rule is unchanged: no GMX route, hedge, or order can be marked complete unless the final Arbitrum transaction hash and Dune/worker evidence are attached.
+
 ## Yield and RWA Strategy
 
 The `/yield` page supports Arbitrum strategy intents for:
@@ -57,4 +70,4 @@ Until then the status remains an intent.
 
 ## Production Boundary
 
-The current implementation is ready for policy-bound agent handoff and audit capture on Arbitrum Sepolia. ZeroDev sponsorship has a live proof path through the `/execution` dashboard and published proof JSON. Direct GMX, Stylus, Dune, or Fhenix automation should only be enabled after each adapter is tested with reliable failure handling and clear evidence capture.
+The current implementation is ready for policy-bound agent handoff and audit capture on Arbitrum Sepolia. ZeroDev sponsorship has a live proof path through the `/execution` dashboard and published proof JSON. GMX has official testnet contract configuration and a production-gated manifest on `/swaps`. Direct signed GMX fills, Stylus execution, Dune automation, or Fhenix compute should only be enabled after each adapter is tested with reliable failure handling and clear evidence capture.

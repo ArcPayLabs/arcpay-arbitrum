@@ -163,6 +163,35 @@ Public Dune evidence:
 
 This query is a public evidence register for the Arbitrum Sepolia proof set. Dune docs expose Arbitrum One event tables clearly; until dependable Arbitrum Sepolia event tables are verified, ArcPay uses Dune for public proof registration and keeps Sepolia event reconciliation in the ArcPay worker/API.
 
+## GMX Arbitrum Sepolia Adapter
+
+ArcPay exposes GMX as a policy-gated execution adapter, not an unrestricted trading bot.
+
+- App surface: `/swaps`
+- Status endpoint: `/api/gmx/status`
+- Official GMX contracts reference: `https://docs.gmx.io/docs/api/contracts/addresses/`
+- SDK reference: `https://docs.gmx.io/docs/sdk/v1/`
+
+Current adapter behavior:
+
+- loads official GMX Arbitrum Sepolia contract addresses including `ExchangeRouter`, `Router`, `Reader`, `DataStore`, `OrderVault`, and `EventEmitter`
+- builds a copyable GMX execution manifest with route, budget, slippage, policy, SDK method, and evidence requirements
+- requires ArcPay policy and operator approval before leverage or treasury execution
+- refuses to mark a GMX action complete without Arbiscan transaction evidence and Dune/worker audit evidence
+
+Optional env for SDK-backed execution:
+
+```bash
+GMX_API_BASE_URL=
+GMX_ORACLE_URL=
+GMX_SUBSQUID_URL=
+GMX_EXCHANGE_ROUTER_ADDRESS=0xEd50B2A1eF0C35DAaF08Da6486971180237909c3
+GMX_READER_ADDRESS=0x4750376b9378294138Cf7B7D69a2d243f4940f71
+GMX_DATASTORE_ADDRESS=0xCF4c2C4c53157BcC01A596e3788fFF69cBBCD201
+```
+
+The UI is already production-gated for GMX intents. Browser wallet execution should only be enabled when oracle/subsquid endpoints are verified and every fill path writes evidence back into ArcPay.
+
 ## Deploy
 
 Create `.env` from `.env.example`:

@@ -1,8 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import { ArrowLeftRight, Bot, CheckCircle2, ClipboardCopy, Route as RouteIcon, ShieldCheck, Workflow } from "lucide-react";
+import { ArrowLeftRight, Bot, CheckCircle2, ClipboardCopy, ExternalLink, Gauge, Route as RouteIcon, ShieldCheck, Workflow } from "lucide-react";
 import { PageHeader } from "@/components/app/PageHeader";
 import { StatCard } from "@/components/primitives/StatCard";
 import { CONTRACTS, shortAddress, writeRecord } from "@arbitrum/lib/arbitrum";
@@ -17,6 +17,27 @@ const ADAPTERS = [
   { name: "Manual signer", status: "Available now", description: "Export a policy-approved payload for a human or agent signer to execute." },
 ] as const;
 
+type GmxStatus = {
+  ok: boolean;
+  configured: boolean;
+  mode: string;
+  network: { name: string; chainId: number; explorer: string };
+  docs: { contracts: string; sdk: string; source: string };
+  sdk: {
+    package: string;
+    chainId: number;
+    requiredInputs: string[];
+    supportedMethods: string[];
+    rpcUrlConfigured: boolean;
+    oracleUrlConfigured: boolean;
+    subsquidUrlConfigured: boolean;
+    apiBaseUrlConfigured: boolean;
+  };
+  contracts: Record<string, string>;
+  markets: Array<{ label: string; indexToken: string; longToken: string; shortToken: string; risk: string }>;
+  guardrails: Record<string, boolean | number>;
+};
+
 function SwapsRoute() {
   const [form, setForm] = useState({
     from: "ETH",
@@ -29,6 +50,28 @@ function SwapsRoute() {
     objective: "Acquire USDC for invoices and agent spend cards without exceeding policy.",
   });
   const [message, setMessage] = useState("Create a policy-ready Arbitrum route intent. ArcPay does not mark a swap filled until an executor returns signed evidence.");
+  const [gmxStatus, setGmxStatus] = useState<GmxStatus | null>(null);
+  const [gmxMessage, setGmxMessage] = useState("Loading GMX Arbitrum Sepolia adapter config.");
+
+  useEffect(() => {
+    let cancelled = false;
+    async function loadGmx() {
+      const response = await fetch("/api/gmx/status", { cache: "no-store" });
+      const body = await response.json() as GmxStatus;
+      if (!cancelled) {
+        setGmxStatus(body);
+        setGmxMessage(body.configured
+          ? "GMX SDK env is configured. Wallet execution still requires operator signature and proof capture."
+          : "GMX official testnet contracts are loaded. Add GMX oracle/subsquid env before browser SDK execution.");
+      }
+    }
+    loadGmx().catch((error) => {
+      if (!cancelled) setGmxMessage(error instanceof Error ? error.message : String(error));
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const payload = useMemo(() => ({
     kind: "arcpay-arbitrum-swap-intent",
@@ -49,13 +92,25 @@ function SwapsRoute() {
       requireArbiscanTxHashForCompletion: true,
       supportedAdapters: ["GMX", "ZeroDev", "Stylus", "Dune", "Manual signer"],
     },
+    gmx: {
+      network: gmxStatus?.network ?? { name: "arbitrum-sepolia", chainId: 421614 },
+      sdkPackage: gmxStatus?.sdk.package ?? "@gmx-io/sdk",
+      sdkMethods: gmxStatus?.sdk.supportedMethods ?? ["createSwapOrder", "createIncreaseOrder", "createDecreaseOrder"],
+      contracts: {
+        exchangeRouter: gmxStatus?.contracts.ExchangeRouter ?? "loading",
+        router: gmxStatus?.contracts.Router ?? "loading",
+        reader: gmxStatus?.contracts.Reader ?? "loading",
+        dataStore: gmxStatus?.contracts.DataStore ?? "loading",
+        eventEmitter: gmxStatus?.contracts.EventEmitter ?? "loading",
+      },
+    },
     contracts: {
       registry: CONTRACTS.AgentRegistry,
       orderBook: CONTRACTS.AgentOrderBook,
       policy: CONTRACTS.TreasuryPolicy,
       reputation: CONTRACTS.AgentReputationBook,
     },
-  }), [form]);
+  }), [form, gmxStatus]);
 
   function saveIntent() {
     writeRecord({
@@ -71,6 +126,17 @@ function SwapsRoute() {
   async function copyPayload() {
     await navigator.clipboard.writeText(JSON.stringify(payload, null, 2));
     setMessage("Copied Arbitrum swap intent payload.");
+  }
+
+  function applyGmxMarket(market: { label: string; longToken: string; shortToken: string }) {
+    setForm({
+      ...form,
+      from: market.longToken,
+      to: market.shortToken,
+      adapter: "GMX execution intent",
+      objective: `${market.label}: prepare a policy-approved GMX route, require operator signature, then attach Arbiscan and Dune evidence before completion.`,
+    });
+    setGmxMessage(`Loaded ${market.label} into the route builder.`);
   }
 
   const reviewItems = [
@@ -96,6 +162,61 @@ function SwapsRoute() {
         <StatCard icon={Bot} label="Primary adapter" value="GMX" hint="Agent handoff" />
         <StatCard icon={Workflow} label="Order path" value="x402/escrow" hint="Optional paid execution" />
       </div>
+
+      <section className="overflow-hidden rounded-[2rem] border border-sky-200/70 bg-[radial-gradient(circle_at_top_left,rgba(14,165,233,0.18),transparent_32%),linear-gradient(135deg,#f8fbff_0%,#eef8ff_46%,#fffaf2_100%)] shadow-sm">
+        <div className="grid gap-0 xl:grid-cols-[0.95fr_1.05fr]">
+          <div className="p-6 md:p-7">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-white/75 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-sky-800">
+                <RouteIcon className="h-3.5 w-3.5" /> GMX Arbitrum Sepolia
+              </span>
+              <span className="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">
+                Official contracts loaded
+              </span>
+            </div>
+            <h2 className="mt-5 text-3xl font-semibold tracking-[-0.04em] md:text-4xl">GMX routes with ArcPay policy before execution.</h2>
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
+              ArcPay prepares GMX swap, hedge, and execution payloads against the official Arbitrum Sepolia GMX contracts. Execution remains wallet-signed and cannot be marked complete until an Arbiscan tx hash and evidence record are attached.
+            </p>
+            <div className="mt-5 flex flex-wrap gap-2">
+              {gmxStatus?.docs.contracts ? (
+                <a href={gmxStatus.docs.contracts} target="_blank" rel="noreferrer" className="inline-flex h-11 items-center gap-2 rounded-full bg-foreground px-4 text-sm font-semibold text-background">
+                  GMX contracts <ExternalLink className="h-4 w-4" />
+                </a>
+              ) : null}
+              {gmxStatus?.docs.sdk ? (
+                <a href={gmxStatus.docs.sdk} target="_blank" rel="noreferrer" className="inline-flex h-11 items-center gap-2 rounded-full border border-border bg-white/75 px-4 text-sm font-semibold">
+                  SDK docs <ExternalLink className="h-4 w-4" />
+                </a>
+              ) : null}
+              <button type="button" onClick={copyPayload} className="inline-flex h-11 items-center gap-2 rounded-full border border-border bg-white/75 px-4 text-sm font-semibold">
+                <ClipboardCopy className="h-4 w-4" /> Copy GMX manifest
+              </button>
+            </div>
+            <div className="mt-4 rounded-2xl border border-border/70 bg-white/75 px-4 py-3 text-sm text-muted-foreground">{gmxMessage}</div>
+          </div>
+
+          <div className="border-t border-sky-200/70 bg-white/55 p-6 md:p-7 xl:border-l xl:border-t-0">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <GmxMetric icon={RouteIcon} label="ExchangeRouter" value={shortGmxAddress(gmxStatus, "ExchangeRouter")} />
+              <GmxMetric icon={Gauge} label="Reader" value={shortGmxAddress(gmxStatus, "Reader")} />
+              <GmxMetric icon={Workflow} label="SDK methods" value={gmxStatus?.sdk.supportedMethods.length ? `${gmxStatus.sdk.supportedMethods.length} methods` : "loading"} />
+              <GmxMetric icon={ShieldCheck} label="Mode" value={gmxStatus?.mode ?? "loading"} />
+            </div>
+            <div className="mt-4 grid gap-2">
+              {gmxStatus?.markets.map((market) => (
+                <button key={market.label} type="button" onClick={() => applyGmxMarket(market)} className="rounded-2xl border border-border/70 bg-background/80 p-4 text-left transition hover:border-primary">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="font-semibold">{market.label}</span>
+                    <span className="rounded-full bg-muted px-3 py-1 text-xs font-semibold text-muted-foreground">{market.risk}</span>
+                  </div>
+                  <p className="mt-1 text-xs text-muted-foreground">{market.longToken} to {market.shortToken} via policy-gated GMX intent</p>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
       <section className="grid grid-cols-1 gap-4 xl:grid-cols-[0.8fr_1.2fr]">
         <form className="rounded-3xl border border-border bg-card p-5 space-y-4" onSubmit={(event) => { event.preventDefault(); saveIntent(); }}>
@@ -159,4 +280,19 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
       <div className="mt-1.5">{children}</div>
     </label>
   );
+}
+
+function GmxMetric({ icon: Icon, label, value }: { icon: typeof RouteIcon; label: string; value: string }) {
+  return (
+    <div className="rounded-2xl border border-border/70 bg-background/80 p-4">
+      <Icon className="h-5 w-5 text-primary" />
+      <div className="mt-5 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">{label}</div>
+      <div className="mt-1 truncate text-lg font-semibold">{value}</div>
+    </div>
+  );
+}
+
+function shortGmxAddress(status: GmxStatus | null, key: string) {
+  const value = status?.contracts[key];
+  return value ? shortAddress(value) : "loading";
 }

@@ -56,14 +56,20 @@ The Arbitrum angle is simple: agents are not just users of the app. They are dis
    - Click `Use proof account` so the smart account, target contract, and proof tx populate the execution form.
    - Say: "ArcPay does not treat gas sponsorship as a logo. ZeroDev is embedded as a policy-gated execution path: the smart account is live, sponsorship is constrained by webhook policy, and the proof is tied to an Arbitrum Sepolia transaction."
 
-10. Show cards and contractors.
+10. Show GMX swap intent.
+   - Open `Swaps`.
+   - Show the GMX Arbitrum Sepolia panel with official `ExchangeRouter`, `Reader`, and SDK method count.
+   - Select a GMX route template and copy the manifest.
+   - Say: "GMX is integrated as an execution adapter with official Arbitrum Sepolia contract config. ArcPay prepares the route, applies policy, then requires an Arbiscan tx hash and evidence before the action is considered complete."
+
+11. Show cards and contractors.
    - Open `Cards`.
    - Create or load a USDC card and show freeze/activate/top-up controls.
    - Open `Contractors`.
    - Show allowlist, risk score, and payout batch intent.
    - Say: "Operators can give agents and contributors bounded budgets without exposing the whole treasury."
 
-11. Close with audit and docs.
+12. Close with audit and docs.
    - Open `Audit`, `Proofs`, then public `Docs`.
    - Say: "The system is not just frontend state. There are deployed contracts, a live Azure x402 server, a Supabase-backed worker, published MCP, CLI, and x402 starter packages, smoke tests, and explorer links for verification."
 

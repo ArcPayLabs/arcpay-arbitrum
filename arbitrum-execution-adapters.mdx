@@ -9,7 +9,7 @@ The product keeps the core control layer inside ArcPay: wallet identity, agent r
 
 ## Supported Adapter Paths
 
-- **GMX execution intents** for policy-approved trading, hedging, or route preparation. ArcPay stores market, collateral, budget, calldata hash, and evidence URI before execution is considered valid.
+- **GMX execution intents** for policy-approved trading, hedging, or route preparation. ArcPay loads the official Arbitrum Sepolia GMX contracts and stores market, collateral, budget, calldata hash, and evidence URI before execution is considered valid.
 - **Stylus policy module path** for a Rust/WASM policy verifier that can mirror or extend the Solidity `TreasuryPolicy` checks.
 - **ZeroDev smart accounts** for policy-gated gasless agent execution. ArcPay embeds sponsor-policy readiness, a live Kernel smart account, Arbiscan proof, target contract, and copyable handoff payload.
 - **Dune evidence** for public analytics and proof dashboards using ArcPay contract events.
@@ -71,6 +71,21 @@ ArcPay also publishes the Arbitrum Sepolia proof set to Dune:
 - App surface: `/execution`
 
 This is a public proof register for contracts, ZeroDev transaction evidence, smart-account address, frontend, and proof JSON. Dune currently documents Arbitrum One event tables more clearly than Arbitrum Sepolia event tables, so ArcPay does not claim live Sepolia event indexing through Dune until that support is verified. Sepolia reconciliation remains handled by the ArcPay worker/API, while Dune provides a public evidence artifact.
+
+## GMX Adapter
+
+The GMX path is exposed on `/swaps` and `/api/gmx/status`.
+
+ArcPay includes the official GMX Arbitrum Sepolia contract config:
+
+- `ExchangeRouter`: `0xEd50B2A1eF0C35DAaF08Da6486971180237909c3`
+- `Router`: `0x72F13a44C8ba16a678CAD549F17bc9e06d2B8bD2`
+- `Reader`: `0x4750376b9378294138Cf7B7D69a2d243f4940f71`
+- `DataStore`: `0xCF4c2C4c53157BcC01A596e3788fFF69cBBCD201`
+- `OrderVault`: `0x1b8AC606de71686fd2a1AEDEcb6E0EFba28909a2`
+- `EventEmitter`: `0xa973c2692C1556E1a3d478e745e9a75624AEDc73`
+
+The route builder exports a GMX manifest that includes selected market, assets, slippage, expiry, SDK methods, ArcPay policy, and evidence requirements. Execution remains wallet-signed and evidence-gated: ArcPay does not claim a GMX route is complete until a valid Arbitrum Sepolia transaction hash is attached.
 
 ## Safety Model
 

@@ -56,6 +56,10 @@
     {
       "name": "Integrations",
       "description": "Safe configuration status for Arbitrum ecosystem integrations."
+    },
+    {
+      "name": "GMX",
+      "description": "GMX Arbitrum Sepolia contract config and policy-gated execution adapter status."
     }
   ],
   "paths": {
@@ -430,6 +434,37 @@
                     "network": { "type": "object" },
                     "integrations": { "type": "object" },
                     "contracts": { "type": "object" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/gmx/status": {
+      "get": {
+        "tags": ["GMX"],
+        "summary": "Read GMX Arbitrum Sepolia adapter status",
+        "description": "Returns official GMX Arbitrum Sepolia contract addresses, SDK readiness, route templates, and ArcPay guardrails for policy-gated GMX execution.",
+        "operationId": "getGmxAdapterStatus",
+        "responses": {
+          "200": {
+            "description": "GMX adapter status.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": { "type": "boolean" },
+                    "configured": { "type": "boolean" },
+                    "mode": { "type": "string" },
+                    "network": { "type": "object" },
+                    "docs": { "type": "object" },
+                    "sdk": { "type": "object" },
+                    "contracts": { "type": "object" },
+                    "markets": { "type": "array", "items": { "type": "object" } },
+                    "guardrails": { "type": "object" }
                   }
                 }
               }
