@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import deployment from "@arbitrum/deployment/arbitrum-sepolia.json";
 import { GMX_ARBITRUM_SEPOLIA } from "@arbitrum/lib/gmx";
+import { FHENIX_ARBITRUM_SEPOLIA } from "@arbitrum/lib/fhenix";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -44,9 +45,12 @@ export async function GET() {
         purpose: "Policy-bounded GMX Arbitrum Sepolia swap/hedge execution with post-trade evidence.",
       },
       fhenix: {
-        configured: Boolean(process.env.FHENIX_API_KEY),
-        mode: "privacy boundary adapter",
-        purpose: "Confidential metadata/policy compute boundary; ArcPay anchors commitments on Arbitrum.",
+        configured: true,
+        mode: "live-cofhe-policy-proof",
+        status: "/api/fhenix/status",
+        taskManager: FHENIX_ARBITRUM_SEPOLIA.taskManager,
+        liveProof: FHENIX_ARBITRUM_SEPOLIA.liveProof,
+        purpose: "CoFHE confidential policy handles for private treasury metadata; ArcPay anchors commitments on Arbitrum.",
       },
     },
     contracts: {

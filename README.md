@@ -199,6 +199,21 @@ GMX_DATASTORE_ADDRESS=0xCF4c2C4c53157BcC01A596e3788fFF69cBBCD201
 
 Run the proof script with `npm run proof:gmx`. Express mode is not used because the public GMX/Gelato relay path returned `401 Unauthorized`; ArcPay uses the direct classic wallet transaction path instead.
 
+## Fhenix CoFHE Privacy Proof
+
+ArcPay uses Fhenix CoFHE on Arbitrum Sepolia for confidential treasury policy metadata.
+
+- App surface: `/privacy`
+- Status endpoint: `/api/fhenix/status`
+- CoFHE docs: `https://cofhe-docs.fhenix.zone/fhe-library/introduction/quick-start`
+- CoFHE task manager: `0xeA30c4B8b44078Bbf8a6ef5b9f1eC1626C7848D9`
+- Live policy vault: `0xC9e4a3f86FD0771f657eA5dFE01d9E0e726e30D1`
+- Deploy tx: `0xf35c22d52c88452cb9dbf8811faaa3f3014b2dce2efc02e5840612ec4fa1133d`
+- Confidential policy record tx: `0x988ba57a8bd2d3ec0167a306ed7a6b910bc504d5cf51d6568e2edcc9511cfd1a`
+- Proof JSON: `/proofs/arbitrum-fhenix-live-proof.json`
+
+Run the proof script with `npm run proof:fhenix`. It deploys `ArbitrumFhenixPolicyVault`, records encrypted spend/limit/approval handles through CoFHE, and publishes proof JSON for app and submission evidence.
+
 ## Deploy
 
 Create `.env` from `.env.example`:

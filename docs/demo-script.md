@@ -70,6 +70,12 @@ The Arbitrum angle is simple: agents are not just users of the app. They are dis
    - Show allowlist, risk score, and payout batch intent.
    - Say: "Operators can give agents and contributors bounded budgets without exposing the whole treasury."
 
+12. Show Fhenix privacy proof.
+   - Open `Privacy`.
+   - Show the Fhenix CoFHE live proof card.
+   - Open the record transaction and proof JSON.
+   - Say: "The privacy layer is not just a memo screen. ArcPay deployed a CoFHE-backed policy vault on Arbitrum Sepolia and recorded encrypted spend, limit, and approval handles while keeping only commitments and handles public."
+
 12. Close with audit and docs.
    - Open `Audit`, `Proofs`, then public `Docs`.
    - Say: "The system is not just frontend state. There are deployed contracts, a live Azure x402 server, a Supabase-backed worker, published MCP, CLI, and x402 starter packages, smoke tests, and explorer links for verification."

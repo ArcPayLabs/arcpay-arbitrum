@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
-import { Eye, EyeOff, KeyRound, Lock, Send, Sparkles } from "lucide-react";
+import { CheckCircle2, ExternalLink, Eye, EyeOff, KeyRound, Lock, Send, Sparkles } from "lucide-react";
 import { EmptyState } from "@/components/app/EmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
 import { ReviewModal, type ReviewRow } from "@/components/primitives/ReviewModal";
@@ -10,6 +10,7 @@ import { StatCard } from "@/components/primitives/StatCard";
 import { readLocalJson, writeLocalJson } from "@/lib/browser-cache";
 import { checkActionPolicies } from "@/lib/policy";
 import { connectedAddress, CONTRACTS, erc20Contract, hashText, privacyVaultContract, shortAddress, USDC_TOKEN_ADDRESS, toUnits, toWei, txUrl, writeRecord } from "@arbitrum/lib/arbitrum";
+import { FHENIX_ARBITRUM_SEPOLIA } from "@arbitrum/lib/fhenix";
 
 export const Route = { options: { component: PrivacyPage } };
 
@@ -181,6 +182,28 @@ function PrivacyPage() {
       </div>
 
       <div className="rounded-2xl border border-border bg-muted/40 px-4 py-3 text-sm text-muted-foreground">{message}</div>
+
+      <section className="rounded-[2rem] border border-emerald-200 bg-[linear-gradient(135deg,#f0fdf4_0%,#ffffff_48%,#eff6ff_100%)] p-5 shadow-sm md:p-6">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-emerald-800">
+              <CheckCircle2 className="h-3.5 w-3.5" /> Fhenix CoFHE live proof
+            </div>
+            <h2 className="mt-4 text-2xl font-semibold tracking-tight">Confidential policy handles are recorded on Arbitrum Sepolia.</h2>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
+              ArcPay deployed a CoFHE-backed policy vault and recorded encrypted spend, limit, and approval handles. The public proof stores handles and commitments only; plaintext treasury metadata stays outside public state.
+            </p>
+          </div>
+          <div className="grid min-w-0 gap-2 text-sm lg:min-w-[23rem]">
+            <a href={FHENIX_ARBITRUM_SEPOLIA.liveProof.explorerUrl} target="_blank" rel="noreferrer" className="inline-flex items-center justify-between gap-3 rounded-2xl border border-emerald-200 bg-white/75 px-4 py-3 font-semibold text-emerald-950">
+              Record tx {shortAddress(FHENIX_ARBITRUM_SEPOLIA.liveProof.recordTxHash)} <ExternalLink className="h-4 w-4" />
+            </a>
+            <a href={FHENIX_ARBITRUM_SEPOLIA.liveProof.proofUrl} target="_blank" rel="noreferrer" className="inline-flex items-center justify-between gap-3 rounded-2xl border border-border bg-white/75 px-4 py-3 font-semibold">
+              Proof JSON <span className="font-mono text-xs text-muted-foreground">{shortAddress(FHENIX_ARBITRUM_SEPOLIA.liveProof.contract)}</span>
+            </a>
+          </div>
+        </div>
+      </section>
 
       {open && (
         <section className="rounded-3xl border border-border bg-card p-5 md:p-6">

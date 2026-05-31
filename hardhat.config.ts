@@ -9,13 +9,26 @@ const etherscanApiKey = process.env.ETHERSCAN_API_KEY ?? process.env.ARBISCAN_AP
 
 const config: HardhatUserConfig = {
   solidity: {
-    version: "0.8.23",
-    settings: {
-      optimizer: {
-        enabled: true,
-        runs: 200,
+    compilers: [
+      {
+        version: "0.8.23",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+        },
       },
-    },
+      {
+        version: "0.8.25",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+        },
+      },
+    ],
   },
   networks: {
     arbitrumTestnet: {

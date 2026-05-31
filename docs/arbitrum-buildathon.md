@@ -132,6 +132,10 @@ system into a Arbitrum-only testnet app:
   create-order tx `0x9c0dbcfd7d89d4bc837d8bcc3c788b7d7269e750a2ecabaee802a8b61cffb829`,
   execution tx `0xd3f5a9ddadf187742068badf2295e540e19c09e859983d36f30adbb454ee45e9`,
   proof JSON `/proofs/arbitrum-gmx-live-proof.json`
+- live Fhenix CoFHE confidential policy proof:
+  policy vault `0xC9e4a3f86FD0771f657eA5dFE01d9E0e726e30D1`,
+  record tx `0x988ba57a8bd2d3ec0167a306ed7a6b910bc504d5cf51d6568e2edcc9511cfd1a`,
+  proof JSON `/proofs/arbitrum-fhenix-live-proof.json`
 - embedded ZeroDev operator console with sponsor policy status, smart account,
   transaction proof, target contract, and proof JSON at
   `/proofs/arbitrum-zerodev-sponsored-userop.json`

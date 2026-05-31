@@ -1,0 +1,45 @@
+{
+  "ok": true,
+  "generatedAt": "2026-05-31T18:28:44.596Z",
+  "protocol": "arcpay-fhenix-cofhe-policy-proof",
+  "chain": "arbitrum-sepolia",
+  "chainId": 421614,
+  "account": "0xB883e76A4f6841E72cAF1C28ba00f78df974f448",
+  "contract": "0xC9e4a3f86FD0771f657eA5dFE01d9E0e726e30D1",
+  "docs": {
+    "cofheQuickStart": "https://cofhe-docs.fhenix.zone/fhe-library/introduction/quick-start",
+    "fhenixArbitrum": "https://blog.arbitrum.io/fhenix-private-computation/"
+  },
+  "action": "record_confidential_policy_handles",
+  "policyId": "0x06eb54fb839580905288502021d303dfa4fcf13f0002e3e22ce3f95749f58e4c",
+  "spendCents": 125,
+  "limitCents": 500,
+  "metadataCommitment": "0xd747f4ae3005c6a810a98b185e90c30cc0e5a3a3128427e1cd5b6202c3119c7f",
+  "deployTxHash": "0xf35c22d52c88452cb9dbf8811faaa3f3014b2dce2efc02e5840612ec4fa1133d",
+  "recordTxHash": "0x988ba57a8bd2d3ec0167a306ed7a6b910bc504d5cf51d6568e2edcc9511cfd1a",
+  "explorerUrl": "https://sepolia.arbiscan.io/tx/0x988ba57a8bd2d3ec0167a306ed7a6b910bc504d5cf51d6568e2edcc9511cfd1a",
+  "deployExplorerUrl": "https://sepolia.arbiscan.io/tx/0xf35c22d52c88452cb9dbf8811faaa3f3014b2dce2efc02e5840612ec4fa1133d",
+  "receipts": {
+    "deploy": {
+      "blockNumber": 272539267,
+      "gasUsed": "613426",
+      "status": "success"
+    },
+    "record": {
+      "blockNumber": 272539293,
+      "gasUsed": "418418",
+      "status": "success"
+    }
+  },
+  "handles": {
+    "operator": "0xB883e76A4f6841E72cAF1C28ba00f78df974f448",
+    "spendHandle": "0xe6e6d42a3103e04fcb6927fd7403306e2a0f81d5e7877bee56bd779f75e08400",
+    "limitHandle": "0xdb80733ac1da87ff09f22057f0e5efe4124c2af8a44043694d3fa899b6cf8400",
+    "allowedHandle": "0xb07ccda4cf80a5aea061442e3ac983c3e8eaa2c84c95490774fee876fc710000",
+    "createdAt": "1780252118"
+  },
+  "balances": {
+    "beforeEth": "0.239669758970747988",
+    "afterEth": "0.239649051876163988"
+  }
+}

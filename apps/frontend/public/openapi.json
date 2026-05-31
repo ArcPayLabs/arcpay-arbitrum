@@ -473,6 +473,37 @@
         }
       }
     },
+    "/api/fhenix/status": {
+      "get": {
+        "tags": ["Fhenix"],
+        "summary": "Read Fhenix CoFHE Arbitrum Sepolia status",
+        "description": "Returns the live CoFHE policy proof contract, task manager, proof JSON, and guardrails for confidential ArcPay treasury metadata.",
+        "operationId": "getFhenixAdapterStatus",
+        "responses": {
+          "200": {
+            "description": "Fhenix CoFHE adapter status.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": { "type": "boolean" },
+                    "configured": { "type": "boolean" },
+                    "mode": { "type": "string" },
+                    "network": { "type": "object" },
+                    "docs": { "type": "object" },
+                    "packages": { "type": "array", "items": { "type": "string" } },
+                    "taskManager": { "type": "string" },
+                    "liveProof": { "type": "object" },
+                    "guardrails": { "type": "object" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/zerodev/sponsor-policy": {
       "get": {
         "tags": ["Integrations"],
