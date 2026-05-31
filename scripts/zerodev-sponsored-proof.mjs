@@ -115,28 +115,31 @@ const callData = encodeFunctionData({
   functionName: "registerAgent",
   args: [agentId, "ArcPay ZeroDev Sponsored Agent", endpoint, capabilities, parseEther("0.00001")],
 });
+const target = args["self-call"] ? smartAccount : deployment.contracts.AgentRegistry;
+const data = args["self-call"] ? "0x" : callData;
+const action = args["self-call"] ? "Kernel self-call no-op" : "AgentRegistry.registerAgent";
 
 console.log(JSON.stringify({
   ok: true,
   phase: "prepared",
   eoa: signer.address,
   smartAccount,
-  target: deployment.contracts.AgentRegistry,
+  target,
   slug,
   agentId,
   valueEth: "0",
 }, null, 2));
 
-const userOpHash = await kernelClient.sendTransaction({
-  to: deployment.contracts.AgentRegistry,
+const submittedHash = await kernelClient.sendTransaction({
+  to: target,
   value: 0n,
-  data: callData,
+  data,
 });
 
-console.log(JSON.stringify({ ok: true, phase: "submitted", userOpHash }, null, 2));
+console.log(JSON.stringify({ ok: true, phase: "submitted", submittedHash }, null, 2));
 
-const receipt = await kernelClient.waitForUserOperationReceipt({ hash: userOpHash });
-const txHash = receipt.receipt?.transactionHash || receipt.transactionHash;
+const receipt = await publicClient.waitForTransactionReceipt({ hash: submittedHash, timeout: 180_000 });
+const txHash = receipt.transactionHash;
 const balance = await publicClient.getBalance({ address: smartAccount });
 
 const proof = {
@@ -146,11 +149,13 @@ const proof = {
   chainId: chain.id,
   eoa: signer.address,
   smartAccount,
-  userOpHash,
+  submittedHash,
   txHash,
+  txStatus: receipt.status,
+  blockNumber: receipt.blockNumber.toString(),
   explorerUrl: txHash ? `${chain.blockExplorers.default.url}/tx/${txHash}` : null,
-  target: deployment.contracts.AgentRegistry,
-  action: "AgentRegistry.registerAgent",
+  target,
+  action,
   slug,
   agentId,
   endpoint,
