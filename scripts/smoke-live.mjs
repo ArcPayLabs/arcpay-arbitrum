@@ -11,6 +11,8 @@ const deployment = JSON.parse(fs.readFileSync("deployments/arbitrum-sepolia.json
 const provider = new JsonRpcProvider(process.env.ARBITRUM_RPC_URL || "https://sepolia-rollup.arbitrum.io/rpc", 421614);
 const deployer = new Wallet(process.env.PRIVATE_KEY, provider);
 const requester = Wallet.createRandom().connect(provider);
+const requesterFunding = parseEther(process.env.ARBITRUM_SMOKE_REQUESTER_FUNDING_ETH || "0.03");
+const minimumDeployerBalance = parseEther(process.env.ARBITRUM_SMOKE_MIN_DEPLOYER_ETH || "0.08");
 const c = deployment.contracts;
 
 const registry = new Contract(c.AgentRegistry, [
@@ -88,12 +90,12 @@ await run("Signer and Arbitrum funds", async () => {
   const network = await provider.getNetwork();
   if (Number(network.chainId) !== 421614) throw new Error(`wrong chain ${network.chainId}`);
   const balance = await provider.getBalance(deployer.address);
-  if (balance < parseEther("1")) throw new Error(`low ETH balance ${formatEther(balance)}`);
+  if (balance < minimumDeployerBalance) throw new Error(`low ETH balance ${formatEther(balance)}`);
   return `${deployer.address.slice(0, 6)}...${deployer.address.slice(-4)} has ${formatEther(balance)} ETH`;
 });
 
 await run("Fund requester wallet", async () => {
-  await wait(deployer.sendTransaction({ to: requester.address, value: parseEther("1") }));
+  await wait(deployer.sendTransaction({ to: requester.address, value: requesterFunding }));
   return `${requester.address.slice(0, 6)}...${requester.address.slice(-4)}`;
 });
 

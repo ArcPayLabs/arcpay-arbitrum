@@ -131,7 +131,11 @@ function loadEnv() {
     const trimmed = line.trim();
     if (!trimmed || trimmed.startsWith("#")) continue;
     const index = trimmed.indexOf("=");
-    if (index > 0) process.env[trimmed.slice(0, index)] = trimmed.slice(index + 1);
+    if (index > 0) {
+      const key = trimmed.slice(0, index);
+      const value = trimmed.slice(index + 1);
+      if (value || !process.env[key]) process.env[key] = value;
+    }
   }
 }
 

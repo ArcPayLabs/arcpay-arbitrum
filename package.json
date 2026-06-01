@@ -24,7 +24,7 @@
     "check:x402": "npm run check --prefix apps/x402-server",
     "docs:media": "node scripts/capture-docs-media.mjs",
     "docs:check": "node -e \"JSON.parse(require('fs').readFileSync('docs.json','utf8')); JSON.parse(require('fs').readFileSync('apps/frontend/public/openapi.json','utf8')); console.log('docs ok')\"",
-    "audit:runtime": "npm audit --omit=dev --audit-level=moderate && npm audit --prefix apps/frontend --audit-level=moderate && npm audit --prefix apps/worker --audit-level=moderate && npm audit --prefix apps/x402-server --audit-level=moderate && npm audit --prefix apps/mcp --audit-level=moderate && npm audit --prefix apps/cli --audit-level=moderate && npm audit --prefix starter-kits/arbitrum-x402-agent --audit-level=moderate",
+    "audit:runtime": "npm audit --omit=dev --audit-level=moderate && npm audit --prefix apps/frontend --omit=dev --audit-level=moderate && npm audit --prefix apps/worker --omit=dev --audit-level=moderate && npm audit --prefix apps/x402-server --omit=dev --audit-level=moderate && npm audit --prefix apps/mcp --omit=dev --audit-level=moderate && npm audit --prefix apps/cli --omit=dev --audit-level=moderate && npm audit --prefix starter-kits/arbitrum-x402-agent --omit=dev --audit-level=moderate",
     "package:cli": "npm --prefix apps/cli run pack:dry",
     "package:mcp": "npm --prefix apps/mcp run pack:dry",
     "package:x402-starter": "npm --prefix starter-kits/arbitrum-x402-agent run pack:dry",
