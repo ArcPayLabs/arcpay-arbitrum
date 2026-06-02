@@ -2,6 +2,8 @@
 
 ArcPay Arbitrum is an agent-native treasury and autonomous service payment system for AI-agent businesses on Arbitrum.
 
+ArcPay is not only an app. It is a control plane plus developer distribution layer for agent payments, treasury policies, paid APIs, and verifiable execution across chain ecosystems.
+
 It gives operators one control layer for agent discovery, x402 paid work, escrowed orders, policy enforcement, privacy intents, USDC invoices, agent spend cards, reputation, audit records, and Arbitrum execution evidence.
 
 ## Source Use

@@ -1,6 +1,6 @@
 # ArcPay Arbitrum MCP
 
-Local MCP server for ArcPay Arbitrum. It exposes safe developer tools for Arbitrum Sepolia deployments, x402 payment gates, invoice IDs, claim hashes, privacy commitments, and repeatable demo paths.
+ArcPay Arbitrum MCP is ArcPay for AI agents. Claude Desktop, Codex-compatible hosts, and other MCP clients can ask ArcPay for Arbitrum deployment data, derive agent and invoice IDs, prepare x402 paid-resource flows, generate privacy/invoice instructions, build GMX/ZeroDev/Dune/Fhenix execution handoff payloads, and return evidence checklists before claiming any work is complete.
 
 ## Install
 
@@ -50,4 +50,4 @@ Restart Claude Desktop after editing the config.
 - llms.txt: https://arcpay-arbitrum.vercel.app/llms.txt
 - x402: https://arcpay-arbitrum.vercel.app/api
 
-The MCP server does not sign transactions or mutate treasury state. It only returns deterministic IDs, integration guidance, and public deployment metadata.
+The MCP server makes ArcPay usable by agents directly, not only by humans clicking a dashboard. It does not sign transactions or mutate treasury state; it returns deterministic IDs, integration guidance, handoff payloads, and public deployment metadata that an operator can verify before execution.

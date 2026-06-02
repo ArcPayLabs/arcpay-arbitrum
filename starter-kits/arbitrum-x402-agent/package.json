@@ -1,6 +1,6 @@
 {
   "name": "@arcpaylabs/arbitrum-x402-agent-starter",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": false,
   "description": "Starter client for integrating with ArcPay Arbitrum x402 paid agent endpoints.",
   "license": "MIT",
