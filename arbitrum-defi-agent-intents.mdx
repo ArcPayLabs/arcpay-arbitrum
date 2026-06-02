@@ -26,7 +26,6 @@ The `/swaps` page supports Arbitrum route intents for:
 
 - GMX execution or hedge intent
 - ZeroDev smart-account execution with policy-gated sponsorship proof
-- Stylus policy-module route checks
 - Dune analytics/evidence links
 - manual signer execution
 
@@ -70,4 +69,4 @@ Until then the status remains an intent.
 
 ## Production Boundary
 
-The current implementation is ready for policy-bound agent handoff and audit capture on Arbitrum Sepolia. ZeroDev sponsorship has a live proof path through the `/execution` dashboard and published proof JSON. GMX has official testnet contract configuration and a production-gated manifest on `/swaps`. Direct signed GMX fills, Stylus execution, Dune automation, or Fhenix compute should only be enabled after each adapter is tested with reliable failure handling and clear evidence capture.
+The current implementation is ready for policy-bound agent handoff and audit capture on Arbitrum Sepolia. ZeroDev sponsorship has a live proof path through the `/execution` dashboard and published proof JSON. GMX has official testnet contract configuration and a production-gated manifest on `/swaps`. Direct signed GMX fills, Dune automation, or Fhenix compute should only be enabled after each adapter is tested with reliable failure handling and clear evidence capture.

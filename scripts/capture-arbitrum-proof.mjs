@@ -109,7 +109,7 @@ await step("register_or_update_treasury_router", async () => {
     "policy",
     "privacy",
     `execution:${executionAddress}`,
-    "venues:GMX,ZeroDev,Stylus,Dune",
+    "venues:GMX,ZeroDev,Dune",
   ].join(",");
   const price = parseEther("0.0001");
 

@@ -1,6 +1,6 @@
 {
   "name": "@arcpaylabs/arbitrum-cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": false,
   "description": "Developer CLI for ArcPay Arbitrum contracts, x402, invoices, privacy intents, and MCP setup.",
   "type": "module",

@@ -63,7 +63,7 @@ export const developerTools: ToolDefinition[] = [
   },
   {
     name: "execution_handoff",
-    description: "Return an Arbitrum execution handoff payload for GMX, Stylus policy checks, ZeroDev smart accounts, Dune evidence, or manual execution.",
+    description: "Return an Arbitrum execution handoff payload for GMX, ZeroDev smart accounts, Dune evidence, or manual execution.",
     inputSchema: {
       type: "object",
       properties: {
@@ -185,7 +185,7 @@ export async function runDeveloperTool(name: string, args: Record<string, unknow
         constraints: {
           maxBudgetEth: budgetEth,
           allowedAssets: ["ETH", "USDC", "WETH"],
-          allowedVenues: ["GMX", "Stylus policy module", "ZeroDev smart account", "Dune evidence", "Manual signer"],
+          allowedVenues: ["GMX", "ZeroDev smart account", "Dune evidence", "Manual signer"],
           requireArcPayPolicy: true,
           requireOperatorApprovalForLeverage: true,
           requireExecutionEvidence: true,
@@ -207,7 +207,7 @@ export async function runDeveloperTool(name: string, args: Record<string, unknow
         },
         setup: [
           "Register or select an ArcPay agent identity.",
-          "Choose an execution adapter: GMX intent, Stylus policy check, ZeroDev smart account, Dune evidence, or manual signer.",
+          "Choose an execution adapter: GMX intent, ZeroDev smart account, Dune evidence, or manual signer.",
           "Create the x402 quote or escrow order before work starts.",
           "Execute only after policy approval and budget checks.",
           "Attach Arbiscan tx hash, x402 verification, Dune query link, or signed result evidence before marking the work complete.",

@@ -79,7 +79,7 @@ const DEFAULT_FORM: Handoff = {
   x402Resource: "https://arcpay-arbitrum.vercel.app/api/agent/research-agent/work",
   developerToolUrl: "https://arcpay-arbitrum.vercel.app/api/developer/tools/execution_handoff",
   targetContract: "0x0000000000000000000000000000000000000000",
-  calldataSummary: "GMX ETH/USDC route, ZeroDev session key, or Stylus policy check payload",
+  calldataSummary: "GMX ETH/USDC route, ZeroDev session key, Dune evidence, or manual signer payload",
   policyUri: "ipfs://arcpay-arbitrum/policies/treasury-router",
   evidenceUri: "dune://arcpay-arbitrum/execution-evidence",
   txHashOrReceipt: "",
@@ -87,7 +87,7 @@ const DEFAULT_FORM: Handoff = {
 
 const SETUP_STEPS = [
   "Register or select the ArcPay agent that will own the order and audit trail.",
-  "Pick the execution adapter: GMX intent, Stylus policy module, ZeroDev smart account, Dune evidence, Robinhood Chain path, or manual signer.",
+  "Pick the execution adapter: GMX intent, ZeroDev smart account, Dune evidence, Robinhood Chain path, or manual signer.",
   "Generate the x402 quote or escrow order before any paid work begins.",
   "Run the policy check and keep leverage or large moves behind operator approval.",
   "Attach Arbiscan tx hash, x402 verification, Dune query link, or signed result evidence before marking the work complete.",
@@ -95,7 +95,6 @@ const SETUP_STEPS = [
 
 const INTEGRATIONS = [
   { label: "GMX", value: "Execution intents", hint: "Perps/spot route evidence" },
-  { label: "Stylus", value: "Policy path", hint: "Rust/WASM policy module" },
   { label: "ZeroDev", value: "Smart accounts", hint: "Session-key agent UX" },
   { label: "Dune", value: "Analytics", hint: "Public proof dashboards" },
 ];
@@ -147,7 +146,7 @@ function ExecutionRoute() {
       maxBudgetEth: form.budgetEth,
       riskLimit: form.riskLimit,
       allowedAssets: form.assets.split(",").map((asset) => asset.trim()).filter(Boolean),
-      allowedVenues: ["GMX", "Stylus policy module", "ZeroDev smart account", "Dune evidence", "Robinhood Chain", "Manual signer"],
+      allowedVenues: ["GMX", "ZeroDev smart account", "Dune evidence", "Robinhood Chain", "Manual signer"],
       requireArcPayPolicy: true,
       requireOperatorOverrideForLeverage: true,
       requireExecutionEvidence: true,
@@ -300,7 +299,7 @@ function ExecutionRoute() {
         icon={Bot}
         eyebrow="Arbitrum execution"
         title="Agent execution handoff"
-        description="Prepare and record policy-approved Arbitrum execution intents for GMX, ZeroDev, Stylus, Dune, Fhenix, Robinhood Chain, or manual signers. ArcPay stores the execution envelope and final evidence on-chain."
+        description="Prepare and record policy-approved Arbitrum execution intents for GMX, ZeroDev, Dune, Fhenix, Robinhood Chain, or manual signers. ArcPay stores the execution envelope and final evidence on-chain."
         actions={<button type="button" onClick={copyPayload} className="inline-flex items-center gap-2 rounded-full bg-foreground px-4 py-2 text-sm font-semibold text-background"><ClipboardCopy className="h-4 w-4" /> Copy payload</button>}
       />
 
@@ -487,7 +486,6 @@ function labelFor(key: string) {
 function adapterId(value: string) {
   const normalized = value.toLowerCase();
   if (normalized.includes("zerodev")) return EXECUTION_ADAPTERS.ZeroDev;
-  if (normalized.includes("stylus")) return EXECUTION_ADAPTERS.Stylus;
   if (normalized.includes("dune")) return EXECUTION_ADAPTERS.Dune;
   if (normalized.includes("fhenix")) return EXECUTION_ADAPTERS.Fhenix;
   if (normalized.includes("robinhood")) return EXECUTION_ADAPTERS.RobinhoodChain;

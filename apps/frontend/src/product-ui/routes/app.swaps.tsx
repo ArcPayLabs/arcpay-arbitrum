@@ -12,7 +12,6 @@ export const Route = { options: { component: SwapsRoute } };
 const ADAPTERS = [
   { name: "GMX execution intent", status: "Primary adapter", description: "Prepare policy-approved GMX route or hedge intents and attach Arbiscan tx evidence after execution." },
   { name: "ZeroDev smart account", status: "Smart wallet", description: "Route approved actions through a session-key or paymaster account when enabled." },
-  { name: "Stylus policy module", status: "Policy path", description: "Use the same ArcPay policy envelope as the future Stylus/Rust verifier path." },
   { name: "Dune evidence", status: "Analytics", description: "Attach public Dune query links for transaction and treasury analytics evidence." },
   { name: "Manual signer", status: "Available now", description: "Export a policy-approved payload for a human or agent signer to execute." },
 ] as const;
@@ -90,7 +89,7 @@ function SwapsRoute() {
       emergencyPauseAware: true,
       noFillClaimWithoutTxHash: true,
       requireArbiscanTxHashForCompletion: true,
-      supportedAdapters: ["GMX", "ZeroDev", "Stylus", "Dune", "Manual signer"],
+      supportedAdapters: ["GMX", "ZeroDev", "Dune", "Manual signer"],
     },
     gmx: {
       network: gmxStatus?.network ?? { name: "arbitrum-sepolia", chainId: 421614 },
@@ -153,7 +152,7 @@ function SwapsRoute() {
         icon={ArrowLeftRight}
         eyebrow="Arbitrum routing"
         title="Policy-checked swap intents"
-        description="Build execution-ready Arbitrum swap requests for GMX, ZeroDev smart accounts, Stylus policy checks, Dune evidence, or manual signers. ArcPay records the intent, policy envelope, and evidence requirement before any fill is claimed."
+        description="Build execution-ready Arbitrum swap requests for GMX, ZeroDev smart accounts, Dune evidence, or manual signers. ArcPay records the intent, policy envelope, and evidence requirement before any fill is claimed."
         actions={<button type="button" onClick={copyPayload} className="inline-flex items-center gap-2 rounded-full bg-foreground px-4 py-2 text-sm font-semibold text-background"><ClipboardCopy className="h-4 w-4" /> Copy route</button>}
       />
 

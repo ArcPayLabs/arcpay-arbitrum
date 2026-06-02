@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 
 describe("ArbitrumExecutionRouter", () => {
-  it("records GMX/ZeroDev/Stylus/Dune/Fhenix execution evidence lifecycle", async () => {
+  it("records GMX/ZeroDev/Dune/Fhenix execution evidence lifecycle", async () => {
     const [operator, other] = await ethers.getSigners();
     const router = await ethers.deployContract("ArbitrumExecutionRouter");
     const agentId = ethers.id("treasury-router");

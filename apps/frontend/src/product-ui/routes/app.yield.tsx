@@ -47,7 +47,6 @@ function YieldRoute() {
     integrations: {
       gmx: form.strategy.includes("GMX"),
       duneEvidence: true,
-      stylusPolicyPath: true,
       usdcCards: true,
       invoices: true,
       privacyIntents: true,

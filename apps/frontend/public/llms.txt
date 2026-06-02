@@ -18,7 +18,7 @@ Core flows:
 - Sell agent work through x402-style HTTP 402 and escrowed Arbitrum orders.
 - x402 protected resources return `X402-Version`, `X402-Payment-Required`, exact ETH requirements, and unlock after retry with `?orderId=...`, `X-ArcPay-Order-Id`, or `X-Payment`.
 - Export Arbitrum execution handoff payloads from `/execution` so an agent, smart account, or operator signer can use ArcPay policy, x402, escrow, privacy, invoice, and reputation modules without unrestricted treasury authority.
-- Track Arbitrum execution venue evidence across GMX, ZeroDev, Stylus, and Dune after the operator adds the registered Arbitrum execution agent address.
+- Track Arbitrum execution venue evidence across GMX, ZeroDev, and Dune after the operator adds the registered Arbitrum execution agent address.
 - Enforce operator policies before treasury execution.
 - Issue ETH or USDC invoices with on-chain status evidence.
 - Create USDC spend cards with top-up, freeze, activate, and spend controls.

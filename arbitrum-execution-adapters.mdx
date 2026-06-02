@@ -1,6 +1,6 @@
 ---
 title: "Arbitrum Execution Adapters"
-description: "How ArcPay prepares policy-bound Arbitrum execution through GMX, Stylus, ZeroDev, Dune evidence, Robinhood Chain, or manual signer flows."
+description: "How ArcPay prepares policy-bound Arbitrum execution through GMX, ZeroDev, Dune evidence, Robinhood Chain, or manual signer flows."
 ---
 
 ArcPay Arbitrum uses execution adapters instead of giving an agent unrestricted wallet control. The core primitive is `ArbitrumExecutionRouter`, which stores a policy-bound execution intent before any external adapter action is claimed as complete.
@@ -10,7 +10,6 @@ The product keeps the core control layer inside ArcPay: wallet identity, agent r
 ## Supported Adapter Paths
 
 - **GMX execution intents** for policy-approved trading, hedging, or route preparation. ArcPay loads the official Arbitrum Sepolia GMX contracts and stores market, collateral, budget, calldata hash, and evidence URI before execution is considered valid.
-- **Stylus policy module path** for a Rust/WASM policy verifier that can mirror or extend the Solidity `TreasuryPolicy` checks.
 - **ZeroDev smart accounts** for policy-gated gasless agent execution. ArcPay embeds sponsor-policy readiness, a live Kernel smart account, Arbiscan proof, target contract, and copyable handoff payload.
 - **Dune evidence** for public analytics and proof dashboards using ArcPay contract events.
 - **Fhenix privacy boundary** for confidential treasury metadata computation while ArcPay keeps settlement commitments and nullifiers on Arbitrum.
@@ -35,7 +34,7 @@ ArcPay generates an agent-readable payload containing:
 
 - Arbitrum Sepolia network metadata.
 - Selected adapter and execution address placeholder.
-- GMX, Stylus, ZeroDev, Dune, Robinhood Chain, or manual signer allowlist.
+- GMX, ZeroDev, Dune, Robinhood Chain, or manual signer allowlist.
 - ArcPay x402 protected resource URL.
 - AgentRegistry, AgentIdentity8004, AgentOrderBook, TreasuryPolicy, PrivacyVault, ReputationBook, and ArbitrumExecutionRouter addresses.
 - Budget and asset constraints.

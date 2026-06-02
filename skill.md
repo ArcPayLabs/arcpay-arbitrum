@@ -22,7 +22,7 @@ treasury policies.
 - Create, pay, cancel, and sync ETH/USDC invoices through `AgentInvoiceBook`.
 - Use the x402 server for HTTP 402 payment-gated agent work.
 - Export Arbitrum execution handoff payloads without storing Arbitrum execution Telegram bot tokens.
-- Track GMX, ZeroDev, Stylus, and Dune evidence for Arbitrum execution agent activity when an agent address is provided.
+- Track GMX, ZeroDev, and Dune evidence for Arbitrum execution agent activity when an agent address is provided.
 - Use the MCP server with `npm run mcp`.
 
 ## Constraints

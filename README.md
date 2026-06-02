@@ -21,7 +21,7 @@ The x402 starter kit under `starter-kits/arbitrum-x402-agent` is separately lice
 - USDC agent spend cards.
 - Reputation, audit, and usage analytics.
 - ERC-8004-style agent identity records.
-- Arbitrum execution router for GMX, Stylus, ZeroDev, Dune evidence, Fhenix privacy boundary, Robinhood Chain path, and manual signer flows.
+- Arbitrum execution router for GMX, ZeroDev, Dune evidence, Fhenix privacy boundary, Robinhood Chain path, and manual signer flows.
 - CLI, MCP, OpenAPI, hosted developer tools, and a reusable x402 starter kit.
 
 ## Network
@@ -49,7 +49,7 @@ The x402 starter kit under `starter-kits/arbitrum-x402-agent` is separately lice
 | `ArbitrumPrivacyVault.sol` | Commitment-based payment intents with encrypted memo URIs and nullifier release. |
 | `AgentReputationBook.sol` | Order-backed score, review, and dispute evidence for service agents. |
 | `AgentIdentity8004.sol` | ERC-8004-style identity record for agent metadata, endpoint, trust model, active state, and reputation nonce. |
-| `ArbitrumExecutionRouter.sol` | On-chain execution intent lifecycle for GMX, ZeroDev, Stylus, Dune, Fhenix, Robinhood Chain, and manual evidence. |
+| `ArbitrumExecutionRouter.sol` | On-chain execution intent lifecycle for GMX, ZeroDev, Dune, Fhenix, Robinhood Chain, and manual evidence. |
 
 ## Local Setup
 
@@ -324,7 +324,7 @@ Important files:
 | `/agents` | Register and load Arbitrum agent services from `AgentRegistry`. |
 | `/orders` | Create, accept, process, fulfill, settle, or refund escrowed agent orders. |
 | `/x402` | Quote HTTP 402 payment requirements, create an escrowed order, verify, fulfill, and unlock paid agent work. |
-| `/execution` | Propose, approve, and record policy-bound Arbitrum execution intents for GMX, ZeroDev, Stylus, Dune, Fhenix, Robinhood Chain, or manual signers. |
+| `/execution` | Propose, approve, and record policy-bound Arbitrum execution intents for GMX, ZeroDev, Dune, Fhenix, Robinhood Chain, or manual signers. |
 | `/cards` | Create USDC-backed agent spend cards with limits and freeze controls. |
 | `/policies` | Set hourly/daily/weekly limits, approval threshold, UTC-hour windows, emergency pause, and agent allowlist. |
 | `/privacy` | Create and release commitment-based USDC/ETH payment intents with encrypted metadata and nullifiers. |
@@ -332,7 +332,7 @@ Important files:
 | `/oracle` | Arbitrum agent risk request/callback flow. |
 | `/payments` | Wallet-signed direct ETH payments for operator payouts. |
 | `/invoices` | Create, pay, cancel, and sync ETH/USDC invoices through `AgentInvoiceBook`. |
-| `/swaps` | Arbitrum swap intent builder for GMX, ZeroDev, Stylus, Dune evidence, or manual signer execution. |
+| `/swaps` | Arbitrum swap intent builder for GMX, ZeroDev, Dune evidence, or manual signer execution. |
 | `/yield` | Arbitrum USDC/WETH strategy intent builder with allocation and drawdown controls. |
 | `/audit` | Workflow records and transaction hashes. |
 | `/analytics` | Admin usage analytics. |

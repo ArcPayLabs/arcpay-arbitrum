@@ -134,7 +134,7 @@ try {
       constraints: {
         maxBudgetEth: budgetEth,
         allowedAssets: ["ETH", "USDC", "WETH"],
-        allowedVenues: ["GMX", "Stylus policy module", "ZeroDev smart account", "Dune evidence", "Manual signer"],
+        allowedVenues: ["GMX", "ZeroDev smart account", "Dune evidence", "Manual signer"],
         requireArcPayPolicy: true,
         requireOperatorApprovalForLeverage: true,
         requireExecutionEvidence: true,
@@ -158,7 +158,7 @@ try {
       },
       setup: [
         "Register or select an ArcPay agent identity.",
-        "Choose an execution adapter: GMX intent, Stylus policy check, ZeroDev smart account, Dune evidence, or manual signer.",
+        "Choose an execution adapter: GMX intent, ZeroDev smart account, Dune evidence, or manual signer.",
         "Create the x402 quote or escrow order before work starts.",
         "Execute only after policy approval and budget checks.",
         "Attach Arbiscan tx hash, x402 verification, Dune query link, or signed result evidence before marking the work complete.",

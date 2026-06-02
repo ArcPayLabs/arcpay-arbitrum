@@ -199,7 +199,7 @@ try {
       dashboards: [
         "x402 order lifecycle",
         "agent registrations and active service endpoints",
-        "execution intents by adapter: GMX, ZeroDev, Stylus, Dune, Fhenix, Robinhood, manual",
+        "execution intents by adapter: GMX, ZeroDev, Dune, Fhenix, Robinhood, manual",
         "privacy intent create/release/cancel events",
         "USDC invoice and spend-card activity",
         "reputation and dispute evidence",

@@ -112,7 +112,7 @@ server.tool("x402_guide", "Return builder instructions for the ArcPay Arbitrum x
   };
 });
 
-server.tool("execution_handoff", "Return an Arbitrum execution handoff payload for GMX, Stylus policy checks, ZeroDev smart accounts, Dune evidence, or manual execution.", {
+server.tool("execution_handoff", "Return an Arbitrum execution handoff payload for GMX, ZeroDev smart accounts, Dune evidence, or manual execution.", {
   strategyName: z.string().optional(),
   agentSlug: z.string().optional(),
   budgetEth: z.string().optional(),
@@ -135,7 +135,7 @@ server.tool("execution_handoff", "Return an Arbitrum execution handoff payload f
         constraints: {
           maxBudgetEth: budgetEth,
           allowedAssets: ["ETH", "USDC", "WETH"],
-          allowedVenues: ["GMX", "Stylus policy module", "ZeroDev smart account", "Dune evidence", "Manual signer"],
+          allowedVenues: ["GMX", "ZeroDev smart account", "Dune evidence", "Manual signer"],
           requireArcPayPolicy: true,
           requireOperatorApprovalForLeverage: true,
           requireExecutionEvidence: true,
@@ -159,7 +159,7 @@ server.tool("execution_handoff", "Return an Arbitrum execution handoff payload f
         },
         setup: [
           "Register or select an ArcPay agent identity.",
-          "Choose an execution adapter: GMX intent, Stylus policy check, ZeroDev smart account, Dune evidence, or manual signer.",
+          "Choose an execution adapter: GMX intent, ZeroDev smart account, Dune evidence, or manual signer.",
           "Create the x402 quote or escrow order before work starts.",
           "Execute only after policy approval and budget checks.",
           "Attach Arbiscan tx hash, x402 verification, Dune query link, or signed result evidence before marking the work complete.",

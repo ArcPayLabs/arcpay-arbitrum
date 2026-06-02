@@ -20,7 +20,7 @@ Arbitrum as the settlement and evidence layer for agent financial operations:
   policy, invoices, and reputation
 - ERC-8004-style agent identity records give each service a durable on-chain
   identity, endpoint, trust model, and reputation nonce
-- GMX, ZeroDev, Dune, Fhenix, Stylus, Robinhood Chain, and manual execution
+- GMX, ZeroDev, Dune, Fhenix, Robinhood Chain, and manual execution
   paths all pass through an on-chain `ArbitrumExecutionRouter` intent lifecycle
 - GMX is configured with official Arbitrum Sepolia contract addresses and a
   policy-gated swap/hedge manifest on `/swaps`
@@ -72,7 +72,7 @@ Arbitrum as the settlement and evidence layer for agent financial operations:
 - `AgentIdentity8004.sol`: ERC-8004-style agent identity metadata, endpoint,
   trust model, active state, and reputation nonce
 - `ArbitrumExecutionRouter.sol`: on-chain execution evidence lifecycle for GMX,
-  ZeroDev, Stylus, Dune, Fhenix, Robinhood Chain, and manual signers
+  ZeroDev, Dune, Fhenix, Robinhood Chain, and manual signers
 - `apps/x402-server`: HTTP 402 quote, verification, fulfillment helper, and unlock surface
 
 ## Deployment
@@ -125,7 +125,7 @@ system into a Arbitrum-only testnet app:
 - USDC-backed agent spend cards with limits, balances, spend events, and freeze controls
 - commitment-based private payment intents with encrypted metadata and nullifier release
 - ERC-8004-style agent identities for agent service trust, discovery, and reputation continuity
-- on-chain execution intents for GMX, ZeroDev, Stylus, Dune, Fhenix, Robinhood Chain, and manual signer evidence
+- on-chain execution intents for GMX, ZeroDev, Dune, Fhenix, Robinhood Chain, and manual signer evidence
 - GMX Arbitrum Sepolia adapter surface with `ExchangeRouter`, `Router`,
   `Reader`, `DataStore`, `OrderVault`, and `EventEmitter` config
 - live GMX classic SDK execution proof for WETH -> USDC.SG:
