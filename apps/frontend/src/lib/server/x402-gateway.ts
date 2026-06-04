@@ -217,6 +217,13 @@ export async function protectedWork(slug: string, request: Request) {
       nextAction: "Settle the order from the requester wallet if it is not already settled.",
     },
     verification,
+  }, {
+    headers: {
+      "payment-response": JSON.stringify({ ok: true, orderId, unlocked: true, scheme: ARCPAY_X402_SCHEME }),
+      "x-payment-response": JSON.stringify({ ok: true, orderId, unlocked: true, scheme: ARCPAY_X402_SCHEME }),
+      "PAYMENT-RESPONSE": JSON.stringify({ ok: true, orderId, unlocked: true, scheme: ARCPAY_X402_SCHEME }),
+      "X-PAYMENT-RESPONSE": JSON.stringify({ ok: true, orderId, unlocked: true, scheme: ARCPAY_X402_SCHEME }),
+    },
   });
 }
 
@@ -270,7 +277,9 @@ function paymentRequired(requirements: unknown, extra: Record<string, unknown>) 
       "x402-version": X402_PROTOCOL_VERSION,
       "x402-payment-required": "true",
       "payment-required": "true",
+      "PAYMENT-REQUIRED": "true",
       "x-accept-payment": JSON.stringify((requirements as { accepts?: unknown }).accepts || []),
+      "X-ACCEPT-PAYMENT": JSON.stringify((requirements as { accepts?: unknown }).accepts || []),
     },
   });
 }
@@ -279,8 +288,8 @@ export function corsHeaders() {
   return {
     "access-control-allow-origin": process.env.X402_ALLOWED_ORIGIN || "*",
     "access-control-allow-methods": "GET,POST,OPTIONS",
-    "access-control-allow-headers": "content-type,authorization,x-arcpay-order-id,x-payment,payment",
-    "access-control-expose-headers": "x-accept-payment,x402-version,x402-payment-required,payment-required",
+    "access-control-allow-headers": "content-type,authorization,x-arcpay-order-id,x-payment,payment,X-PAYMENT,PAYMENT",
+    "access-control-expose-headers": "x-accept-payment,X-ACCEPT-PAYMENT,x402-version,x402-payment-required,payment-required,PAYMENT-REQUIRED,payment-response,x-payment-response,PAYMENT-RESPONSE,X-PAYMENT-RESPONSE",
   };
 }
 

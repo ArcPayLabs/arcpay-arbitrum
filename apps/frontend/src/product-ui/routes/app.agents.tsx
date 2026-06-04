@@ -85,7 +85,7 @@ function AgentsRoute() {
 
       <div className="rounded-2xl border border-border bg-muted/40 px-4 py-3 text-sm text-muted-foreground">{status}</div>
 
-      <section className="rounded-3xl border border-border bg-card p-5 md:p-6">
+      <section className="min-w-0 overflow-hidden rounded-3xl border border-border bg-card p-5 md:p-6">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-primary">
@@ -119,8 +119,8 @@ function AgentsRoute() {
           ))}
         </div>
 
-        <div className="mt-5 grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
-          <div className="rounded-2xl border border-border bg-background p-4">
+        <div className="mt-5 grid min-w-0 gap-4 lg:grid-cols-[0.95fr_1.05fr]">
+          <div className="min-w-0 rounded-2xl border border-border bg-background p-4">
             <div className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.16em] text-muted-foreground">
               <Workflow className="h-4 w-4" /> Onboarding path
             </div>
@@ -131,14 +131,14 @@ function AgentsRoute() {
                 "Use x402 payment requirements so clients can pay before work unlocks.",
                 "Let ArcPay policy, audit records, and privacy intents govern the work.",
               ].map((step, index) => (
-                <div key={step} className="flex gap-3 rounded-2xl bg-muted/40 p-3 text-sm">
+                <div key={step} className="flex min-w-0 gap-3 rounded-2xl bg-muted/40 p-3 text-sm">
                   <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">{index + 1}</span>
-                  <span className="text-muted-foreground">{step}</span>
+                  <span className="min-w-0 text-muted-foreground">{step}</span>
                 </div>
               ))}
             </div>
           </div>
-          <div className="rounded-2xl border border-border bg-background p-4">
+          <div className="min-w-0 rounded-2xl border border-border bg-background p-4">
             <div className="text-sm font-semibold uppercase tracking-[0.16em] text-muted-foreground">Builder payload</div>
             <pre className="mt-4 max-h-72 overflow-auto rounded-2xl bg-foreground p-4 text-xs text-background">{JSON.stringify({
               slug: form.slug,

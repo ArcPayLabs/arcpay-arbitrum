@@ -68,7 +68,7 @@ export function Hero() {
               <div className="hero-marquee mt-12 w-full max-w-md overflow-hidden">
                 <div className="text-xs text-white/50 mb-3 uppercase tracking-[0.18em]">Wired into</div>
                 <div className="relative">
-                  <div className="ap-marquee flex gap-10 whitespace-nowrap">
+                  <div className="ap-marquee flex w-max gap-10 whitespace-nowrap">
                     {[...PARTNERS, ...PARTNERS].map((p, i) => (
                       <span key={i} className="text-white/85 text-base font-medium">
                         {p}

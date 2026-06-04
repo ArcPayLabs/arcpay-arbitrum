@@ -48,11 +48,11 @@ export function ProductAppShell({ children }: { readonly children: ReactNode }) 
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background">
+      <div className="min-h-screen flex w-full min-w-0 overflow-x-hidden bg-background">
         <AppSidebar />
-        <SidebarInset className="flex flex-col">
+        <SidebarInset className="flex min-w-0 flex-col">
           <AppTopBar />
-          <main className="flex-1 p-6 lg:p-8">{children}</main>
+          <main className="min-w-0 flex-1 overflow-x-hidden p-4 sm:p-6 lg:p-8">{children}</main>
         </SidebarInset>
       </div>
     </SidebarProvider>

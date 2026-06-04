@@ -57,8 +57,8 @@ function BetaPage() {
       <div className="px-6 py-12 md:py-16">
         <div className="mx-auto grid max-w-[88rem] gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
           <section className="relative overflow-hidden rounded-[2rem] border border-orange-200/70 bg-[radial-gradient(circle_at_18%_12%,rgba(255,122,24,0.26),transparent_30%),radial-gradient(circle_at_88%_18%,rgba(20,184,166,0.16),transparent_24%),linear-gradient(140deg,#fff9ef_0%,#f3eadc_48%,#fffaf2_100%)] p-8 text-foreground shadow-sm md:p-10">
-            <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full border-[42px] border-orange-300/25" />
-            <div className="pointer-events-none absolute -bottom-24 left-12 h-56 w-56 rounded-full bg-white/45 blur-3xl" />
+            <div className="pointer-events-none absolute -right-24 -top-24 hidden h-72 w-72 rounded-full border-[42px] border-orange-300/25 sm:block" />
+            <div className="pointer-events-none absolute -bottom-24 left-12 hidden h-56 w-56 rounded-full bg-white/45 blur-3xl sm:block" />
             <div className="relative inline-flex rounded-full border border-orange-200 bg-white/70 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-orange-700">
               Arbitrum private beta
             </div>
