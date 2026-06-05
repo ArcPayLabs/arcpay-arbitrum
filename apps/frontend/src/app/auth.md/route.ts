@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const body = `# ArcPay Arbitrum auth
+const body = `# Auth.md - ArcPay Arbitrum auth
 
 ArcPay supports wallet-first operator access and hosted MCP developer keys.
 

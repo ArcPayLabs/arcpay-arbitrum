@@ -12,7 +12,7 @@ const nextConfig = {
       {
         source: "/",
         headers: [
-          { key: "Link", value: "</.well-known/api-catalog>; rel=\"api-catalog\", </openapi.json>; rel=\"service-desc\", </docs/overview>; rel=\"service-doc\", </.well-known/mcp/server-card.json>; rel=\"mcp-server-card\", </.well-known/agent-skills/index.json>; rel=\"agent-skills\"" },
+          { key: "Link", value: "</.well-known/api-catalog>; rel=\"api-catalog\", </openapi.json>; rel=\"service-desc\", </docs/overview>; rel=\"service-doc\", </auth.md>; rel=\"authorization\", </.well-known/oauth-authorization-server>; rel=\"oauth-authorization-server\", </.well-known/oauth-protected-resource>; rel=\"oauth-protected-resource\", </.well-known/mcp/server-card.json>; rel=\"mcp-server-card\", </.well-known/agent-skills/index.json>; rel=\"agent-skills\", </.well-known/acp.json>; rel=\"agentic-commerce-protocol\"" },
         ],
       },
     ];
