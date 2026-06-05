@@ -5,7 +5,7 @@ const origin = "https://arcpay-arbitrum.vercel.app";
 export function GET() {
   return NextResponse.json({
     resource: origin,
-    authorization_servers: [`${origin}/.well-known/oauth-authorization-server`],
+    authorization_servers: [origin],
     bearer_methods_supported: ["header"],
     scopes_supported: [
       "wallet:read",
