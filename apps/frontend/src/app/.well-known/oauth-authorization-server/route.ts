@@ -26,11 +26,25 @@ export function GET() {
     ],
     code_challenge_methods_supported: ["S256"],
     agent_auth: {
-      register_uri: `${origin}/developer-access`,
-      claim_uri: `${origin}/onboard`,
-      revocation_uri: `${origin}/developer-access`,
-      supported_identity_types: ["wallet", "email_workspace", "mcp_bearer_key", "claim_code"],
-      credential_types: ["evm_wallet_signature", "mcp_bearer_token", "agent_claim_code"],
+      skill: "https://workos.com/auth.md",
+      register_uri: `${origin}/agent/auth`,
+      claim_uri: `${origin}/agent/auth/claim`,
+      claim_complete_uri: `${origin}/agent/auth/claim/complete`,
+      revocation_uri: `${origin}/agent/auth/revoke`,
+      identity_types_supported: ["anonymous", "identity_assertion"],
+      anonymous: {
+        credential_types_supported: ["api_key"],
+      },
+      identity_assertion: {
+        assertion_types_supported: [
+          "urn:ietf:params:oauth:token-type:id-jag",
+          "verified_email",
+        ],
+        credential_types_supported: ["access_token", "api_key"],
+      },
+      events_supported: [
+        "https://schemas.workos.com/events/agent/auth/identity/assertion/revoked",
+      ],
       protected_resource_metadata: `${origin}/.well-known/oauth-protected-resource`,
       instructions: `${origin}/auth.md`,
     },

@@ -16,11 +16,36 @@ Agent registration is supported through ArcPay workspace onboarding, scoped MCP 
 
 ### Agent registration
 
-1. Register URI: https://arcpay-arbitrum.vercel.app/developer-access
-2. Claim URI: https://arcpay-arbitrum.vercel.app/onboard
-3. Revocation URI: https://arcpay-arbitrum.vercel.app/developer-access
-4. Supported identity types: wallet, email workspace, MCP bearer key, claim code.
-5. Supported credential types: EVM wallet signature, scoped MCP bearer token, ArcPay agent claim code.
+ArcPay supports the auth.md agent registration pattern for agent onboarding.
+
+Supported flows:
+
+- Agent verified flow: 'identity_assertion' with 'urn:ietf:params:oauth:token-type:id-jag'.
+- User claimed flow: 'anonymous' pre-claim registration followed by claim-code or workspace ownership.
+
+Endpoints:
+
+- register_uri: https://arcpay-arbitrum.vercel.app/agent/auth
+- claim_uri: https://arcpay-arbitrum.vercel.app/agent/auth/claim
+- claim_complete_uri: https://arcpay-arbitrum.vercel.app/agent/auth/claim/complete
+- revocation_uri: https://arcpay-arbitrum.vercel.app/agent/auth/revoke
+- Protected Resource Metadata: https://arcpay-arbitrum.vercel.app/.well-known/oauth-protected-resource
+
+Supported identity and credential types:
+
+~~~json
+{
+  "identity_types_supported": ["anonymous", "identity_assertion"],
+  "credential_types_supported": ["api_key", "access_token"],
+  "assertion_types_supported": [
+    "urn:ietf:params:oauth:token-type:id-jag",
+    "verified_email"
+  ]
+}
+~~~
+
+Operator flow:
+
 6. Open Developer Access inside the dashboard.
 7. Create a scoped MCP key.
 8. Call https://arcpay-arbitrum.vercel.app/api/mcp with Authorization: Bearer <key>.

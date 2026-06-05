@@ -11,6 +11,7 @@ export function GET() {
     name: "ArcPay Arbitrum",
     version: "0.1.0",
     api_base_url: origin,
+    transports: ["https", "mcp", "x402"],
     supported_transports: ["https", "mcp", "x402"],
     website: origin,
     network: {
