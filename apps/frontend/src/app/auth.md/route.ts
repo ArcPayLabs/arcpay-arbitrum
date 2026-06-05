@@ -12,9 +12,18 @@ ArcPay supports wallet-first operator access and hosted MCP developer keys.
 
 ## Agent and MCP clients
 
-1. Open Developer Access inside the dashboard.
-2. Create a scoped MCP key.
-3. Call https://arcpay-arbitrum.vercel.app/api/mcp with Authorization: Bearer <key>.
+Agent registration is supported through ArcPay workspace onboarding, scoped MCP developer keys, and claim-code based agent onboarding.
+
+### Agent registration
+
+1. Register URI: https://arcpay-arbitrum.vercel.app/developer-access
+2. Claim URI: https://arcpay-arbitrum.vercel.app/onboard
+3. Revocation URI: https://arcpay-arbitrum.vercel.app/developer-access
+4. Supported identity types: wallet, email workspace, MCP bearer key, claim code.
+5. Supported credential types: EVM wallet signature, scoped MCP bearer token, ArcPay agent claim code.
+6. Open Developer Access inside the dashboard.
+7. Create a scoped MCP key.
+8. Call https://arcpay-arbitrum.vercel.app/api/mcp with Authorization: Bearer <key>.
 
 Public read-only discovery endpoints include /openapi.json, /llms.txt, /.well-known/api-catalog, /.well-known/mcp/server-card.json, and /.well-known/agent-skills/index.json.
 `;

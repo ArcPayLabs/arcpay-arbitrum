@@ -25,6 +25,15 @@ export function GET() {
       "records:write",
     ],
     code_challenge_methods_supported: ["S256"],
+    agent_auth: {
+      register_uri: `${origin}/developer-access`,
+      claim_uri: `${origin}/onboard`,
+      revocation_uri: `${origin}/developer-access`,
+      supported_identity_types: ["wallet", "email_workspace", "mcp_bearer_key", "claim_code"],
+      credential_types: ["evm_wallet_signature", "mcp_bearer_token", "agent_claim_code"],
+      protected_resource_metadata: `${origin}/.well-known/oauth-protected-resource`,
+      instructions: `${origin}/auth.md`,
+    },
     service_documentation: `${origin}/docs/overview`,
   });
 }
