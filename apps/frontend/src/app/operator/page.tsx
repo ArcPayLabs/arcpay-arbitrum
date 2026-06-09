@@ -7,8 +7,17 @@ import { KeyRound, RadioTower, ShieldCheck } from "lucide-react";
 import { PageHeader } from "@/components/PageHeader";
 import { RecordTable } from "@/components/RecordTable";
 import { DEPTH_CONTRACTS_READY, agentIdFromSlug, hashText, operatorControlsContract, writeRecord } from "@arbitrum/lib/arbitrum";
+import { ProductAppShell } from "../product-render";
 
 export default function OperatorPage() {
+  return (
+    <ProductAppShell>
+      <OperatorContent />
+    </ProductAppShell>
+  );
+}
+
+function OperatorContent() {
   const [claim, setClaim] = useState({
     code: "claim-research-agent-001",
     agentSlug: "research-agent",

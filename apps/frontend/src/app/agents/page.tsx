@@ -1,5 +1,12 @@
-import { redirect } from "next/navigation";
+"use client";
+
+import { ProductAppShell, renderProductRoute } from "../product-render";
+import { Route } from "../../product-ui/routes/app.agents";
 
 export default function AgentsRedirectPage() {
-  redirect("/app/agents");
+  return (
+    <ProductAppShell>
+      {renderProductRoute(Route)}
+    </ProductAppShell>
+  );
 }

@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router";
 import { LogoIcon } from "@/components/brand/LogoIcon";
-import { FOOTER_VIDEO_URL } from "@/lib/marketing";
 import { siGithub, siX } from "simple-icons";
 
 const NAV = [
@@ -35,16 +34,8 @@ export function MarketingFooter() {
         <div className="grid grid-cols-1 lg:grid-cols-[420px_1fr] gap-4">
           {/* Left video card */}
           <div className="relative rounded-3xl overflow-hidden p-8 min-h-[340px] flex flex-col justify-between" style={{ background: "#0F1418" }}>
-            <video
-              className="absolute inset-0 w-full h-full object-cover pointer-events-none z-0"
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="auto"
-            >
-              <source src={FOOTER_VIDEO_URL} type="video/mp4" />
-            </video>
+            <div aria-hidden className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_20%_20%,rgba(249,115,22,0.28),transparent_28%),radial-gradient(circle_at_85%_70%,rgba(255,255,255,0.12),transparent_25%),linear-gradient(135deg,#090c0f,#1f1309_55%,#6b2c08)]" />
+            <div aria-hidden className="absolute inset-0 z-0 bg-[linear-gradient(115deg,rgba(255,255,255,0.08)_0_1px,transparent_1px_100%)] bg-[length:28px_28px] opacity-40" />
             <div className="relative z-10 inline-flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg bg-white/10 border border-white/30 backdrop-blur flex items-center justify-center">
                 <LogoIcon className="w-4 h-4 text-white" />

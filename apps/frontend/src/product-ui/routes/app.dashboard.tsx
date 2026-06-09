@@ -50,7 +50,7 @@ function DashboardRoute() {
             {wallet ? `${shortAddress(wallet)} has ${Number(balance || 0).toFixed(4)} ETH. Register an agent, set policy, then create an x402 or escrow order.` : "Connect an Arbitrum wallet to load live balance and start the agent treasury flow."}
           </div>
         </div>
-        <Link href={wallet ? "/app/agents" : "/wallet"} className="text-sm font-medium px-4 py-2 rounded-full bg-primary text-primary-foreground">
+        <Link href={wallet ? "/agents" : "/wallet"} className="text-sm font-medium px-4 py-2 rounded-full bg-primary text-primary-foreground">
           {wallet ? "Register agent" : "Connect wallet"}
         </Link>
       </div>
@@ -76,7 +76,7 @@ function DashboardRoute() {
                 icon={Workflow}
                 title="No treasury activity yet"
                 description="Start with a wallet, register an agent, then create an order, x402 payment, invoice, card, or privacy intent. Every signed action will appear here and in Audit."
-                actionHref="/app/agents"
+                actionHref="/agents"
                 actionLabel="Register first agent"
               />
             ) : null}

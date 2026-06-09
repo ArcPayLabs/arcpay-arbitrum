@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { LogoIcon } from "@/components/brand/LogoIcon";
-import { AUTH_VIDEO_URL } from "@/lib/marketing";
 
 type Step = { n: number; t: string };
 
@@ -22,16 +21,8 @@ export function AuthShell({
     <main className="flex min-h-screen w-full bg-black p-2 lg:h-screen lg:overflow-hidden lg:p-4">
       {/* Left hero */}
       <aside className="hidden lg:flex w-[52%] relative flex-col items-center justify-end pb-24 px-12 rounded-3xl overflow-hidden shadow-2xl h-full">
-        <video
-          className="absolute inset-0 w-full h-full object-cover"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-        >
-          <source src={AUTH_VIDEO_URL} type="video/mp4" />
-        </video>
+        <div aria-hidden className="absolute inset-0 bg-[radial-gradient(circle_at_25%_20%,rgba(249,115,22,0.32),transparent_24%),radial-gradient(circle_at_85%_70%,rgba(255,255,255,0.16),transparent_26%),linear-gradient(145deg,#090b0f,#1d120a_54%,#7c2d12)]" />
+        <div aria-hidden className="absolute inset-0 bg-[linear-gradient(120deg,rgba(255,255,255,0.09)_0_1px,transparent_1px_100%)] bg-[length:36px_36px] opacity-40" />
         <div className="relative z-10 w-full max-w-sm space-y-7">
           <Link to="/" className="inline-flex items-center gap-2 text-white">
             <LogoIcon className="w-6 h-6" />

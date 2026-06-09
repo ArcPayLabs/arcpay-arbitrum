@@ -9,16 +9,16 @@ import deployment from "../../deployment/arbitrum-sepolia.json";
 export const Route = { options: { component: DocsPage } };
 
 const MODULES = [
-  { icon: Bot, title: "Agent registry", body: "Publish agent capability metadata, endpoint URLs, ETH pricing, and active status on Arbitrum.", href: "/app/agents" },
-  { icon: Workflow, title: "Order book", body: "Escrow ETH for autonomous work and reconcile pending, processing, fulfilled, settled, refunded, or failed states.", href: "/app/orders" },
-  { icon: RadioTower, title: "x402 server", body: "Expose paid HTTP resources that quote exact Arbitrum requirements and unlock after on-chain fulfillment.", href: "/app/x402" },
-  { icon: WalletCards, title: "Invoices", body: "Create, pay, cancel, and sync ETH/USDC receivables through AgentInvoiceBook.", href: "/app/invoices" },
-  { icon: CreditCard, title: "USDC cards", body: "Give agents bounded token budgets with top-up, freeze, activate, and spend controls.", href: "/app/cards" },
-  { icon: ShieldCheck, title: "Policy engine", body: "Enforce time windows, allowlists, spend caps, approval thresholds, and emergency pause before treasury actions.", href: "/app/policies" },
-  { icon: Lock, title: "Privacy intents", body: "Commit encrypted payment metadata first, release later with recipient, nullifier, and audit evidence.", href: "/app/privacy" },
-  { icon: Gauge, title: "Risk oracle", body: "Quote the live Arbitrum agent requester deposit and store risk callback evidence for operator review.", href: "/app/oracle" },
+  { icon: Bot, title: "Agent registry", body: "Publish agent capability metadata, endpoint URLs, ETH pricing, and active status on Arbitrum.", href: "/agents" },
+  { icon: Workflow, title: "Order book", body: "Escrow ETH for autonomous work and reconcile pending, processing, fulfilled, settled, refunded, or failed states.", href: "/orders" },
+  { icon: RadioTower, title: "x402 server", body: "Expose paid HTTP resources that quote exact Arbitrum requirements and unlock after on-chain fulfillment.", href: "/x402" },
+  { icon: WalletCards, title: "Invoices", body: "Create, pay, cancel, and sync ETH/USDC receivables through AgentInvoiceBook.", href: "/invoices" },
+  { icon: CreditCard, title: "USDC cards", body: "Give agents bounded token budgets with top-up, freeze, activate, and spend controls.", href: "/cards" },
+  { icon: ShieldCheck, title: "Policy engine", body: "Enforce time windows, allowlists, spend caps, approval thresholds, and emergency pause before treasury actions.", href: "/policies" },
+  { icon: Lock, title: "Privacy intents", body: "Commit encrypted payment metadata first, release later with recipient, nullifier, and audit evidence.", href: "/privacy" },
+  { icon: Gauge, title: "Risk oracle", body: "Quote the live Arbitrum agent requester deposit and store risk callback evidence for operator review.", href: "/oracle" },
   { icon: KeyRound, title: "Wallet auth", body: "Challenge-sign EVM wallets into an ArcPay workspace. Email auth remains optional for team sync.", href: "/sign-in" },
-  { icon: ScrollText, title: "Audit mirror", body: "Azure worker indexes contract events into Supabase-backed records for dashboard and CSV export.", href: "/app/audit" },
+  { icon: ScrollText, title: "Audit mirror", body: "Azure worker indexes contract events into Supabase-backed records for dashboard and CSV export.", href: "/audit" },
   { icon: Terminal, title: "CLI and MCP", body: "Use the repo-local CLI now; npm packages are package-ready and can be published once npm auth is available.", href: "/proofs" },
   { icon: BookOpen, title: "MCP, starter kit, llms.txt", body: "Published MCP tools, x402 starter package, OpenAPI, and llms.txt help autonomous clients operate ArcPay.", href: "/proofs" },
 ];

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { getAddress } from "ethers";
+import { friendlyWalletError } from "@/components/primitives/AsyncButton";
 import { ARBITRUM_CHAIN_ID_HEX } from "@arbitrum/lib/arbitrum";
 
 type EthereumProvider = {
@@ -43,12 +44,15 @@ export function useWalletConnectAction(): WalletConnectAction {
   }, []);
 
   const connectWallet = useCallback(async (): Promise<WalletConnectResult> => {
+    if (connecting) throw new Error("A wallet request is already pending.");
+    if (address) return { address };
+
     try {
       setConnecting(true);
       setErrorMessage(null);
       const provider = getProvider();
       if (!provider) {
-        throw new Error("Install MetaMask, Rabby, or another EVM wallet to connect to Arbitrum.");
+        throw new Error("Install or unlock an EVM wallet to connect to Arbitrum.");
       }
 
       await provider.request({
@@ -90,14 +94,14 @@ export function useWalletConnectAction(): WalletConnectAction {
       setAddress(nextAddress);
       return { address: nextAddress, supabaseAuth: verifiedBody.supabaseAuth };
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Arbitrum wallet connection failed.";
+      const message = friendlyWalletError(error);
       setErrorMessage(message);
       console.warn("Arbitrum wallet connection failed.", message);
       throw error instanceof Error ? error : new Error(message);
     } finally {
       setConnecting(false);
     }
-  }, []);
+  }, [address, connecting]);
 
   return {
     connectWallet,
