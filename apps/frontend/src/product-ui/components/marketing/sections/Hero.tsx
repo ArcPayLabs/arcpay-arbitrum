@@ -9,15 +9,15 @@ export function Hero() {
 
   return (
     <section className="relative bg-background">
-      <div className="h-screen flex flex-col overflow-hidden">
+      <div className="min-h-[720px] flex flex-col overflow-hidden">
         <MarketingNav tone="light" absolute />
-        <div className="flex-1 px-4 md:px-6 pt-20 pb-6 flex items-end">
+        <div className="flex-1 px-4 md:px-6 pt-20 pb-6 flex items-start">
           <div
-            className="relative w-full rounded-3xl overflow-hidden max-w-[88rem] mx-auto"
-            style={{ height: "calc(100vh - 96px)" }}
+            className="relative w-full rounded-3xl overflow-hidden max-w-[88rem] mx-auto bg-[radial-gradient(circle_at_75%_25%,rgba(255,122,34,0.28),transparent_32%),linear-gradient(135deg,#101820_0%,#4f351d_48%,#f97316_100%)]"
+            style={{ height: "min(760px, calc(100vh - 96px))", minHeight: "620px" }}
           >
             <video
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-cover opacity-70"
               autoPlay
               muted
               loop
@@ -26,7 +26,8 @@ export function Hero() {
             >
               <source src={HERO_VIDEO_URL} type="video/mp4" />
             </video>
-            <div className="absolute inset-0 bg-gradient-to-b from-black/0 via-black/0 to-black/20" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/35 to-black/10" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-black/10" />
             <div className="relative z-10 flex flex-col items-start justify-end h-full p-8 md:p-14">
               <div className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur border border-white/20 px-3 py-1 text-xs text-white/85 mb-6">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" /> Arbitrum Sepolia live

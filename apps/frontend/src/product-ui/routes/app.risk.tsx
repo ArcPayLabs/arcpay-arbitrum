@@ -54,7 +54,7 @@ function RiskPage() {
         icon={ShieldAlert}
         eyebrow="Treasury intelligence"
         title="Risk"
-        description="Score a Arbitrum counterparty wallet with the agent risk model before allowing treasury payments, cards, or order settlement."
+        description="Score an Arbitrum counterparty wallet with the agent risk model before allowing treasury payments, cards, or order settlement."
       />
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -79,7 +79,7 @@ function RiskPage() {
               onKeyDown={(event) => {
                 if (event.key === "Enter") runLookup();
               }}
-              placeholder="Paste a Arbitrum EVM address"
+              placeholder="Paste an Arbitrum EVM address"
               className="w-full rounded-full border border-white/10 bg-white/5 py-3 pl-10 pr-4 font-mono text-sm outline-none placeholder:text-white/30 focus:border-primary"
             />
           </div>
@@ -120,7 +120,7 @@ function RiskPage() {
               <EmptyState
                 icon={ShieldAlert}
                 title="No scored wallets"
-                description="Paste a Arbitrum address to generate a policy-aware counterparty score before payments, cards, invoices, or order settlement."
+                description="Paste an Arbitrum address to generate a policy-aware counterparty score before payments, cards, invoices, or order settlement."
               />
             </div>
           ) : null}

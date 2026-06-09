@@ -104,7 +104,7 @@ export function useWalletConnectAction(): WalletConnectAction {
     connected: Boolean(address),
     connecting,
     errorMessage,
-    label: address ? short(address) : connecting ? "Connecting..." : "Connect Arbitrum wallet",
+    label: address ? short(address) : connecting ? "Connecting..." : "Connect wallet",
     publicKeyBase58: address,
     selectedWalletName: "Arbitrum EVM",
   };

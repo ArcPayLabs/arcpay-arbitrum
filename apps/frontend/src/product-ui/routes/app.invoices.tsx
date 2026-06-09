@@ -75,7 +75,7 @@ function InvoicesPage() {
   const [open, setOpen] = useState(false);
   const [review, setReview] = useState<Form | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
-  const [message, setMessage] = useState("Connect a Arbitrum wallet to create or pay invoices.");
+  const [message, setMessage] = useState("Connect an Arbitrum wallet to create or pay invoices.");
   const [loading, setLoading] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
 
@@ -309,7 +309,7 @@ function InvoicesPage() {
               <EmptyState
                 icon={FileText}
                 title="No invoices yet"
-                description="Create a ETH or USDC invoice, attach client metadata, then settle it with a wallet signature and explorer-backed evidence."
+                description="Create an ETH or USDC invoice, attach client metadata, then settle it with a wallet signature and explorer-backed evidence."
                 actionLabel="Create invoice"
                 onAction={() => setOpen(true)}
               />

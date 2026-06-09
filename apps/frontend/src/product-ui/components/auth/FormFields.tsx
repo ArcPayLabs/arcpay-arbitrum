@@ -60,7 +60,7 @@ export function WalletConnectButton({ redirectTo }: { redirectTo?: string }) {
 
   const label = useMemo(() => {
     if (loading || wallet.connecting) return "Verifying wallet...";
-    return wallet.connected && wallet.publicKeyBase58 ? wallet.label : "Connect Arbitrum wallet";
+    return wallet.connected && wallet.publicKeyBase58 ? wallet.label : "Connect wallet";
   }, [loading, wallet.connected, wallet.connecting, wallet.label, wallet.publicKeyBase58]);
 
   async function connectAndSignIn() {

@@ -21,7 +21,7 @@ const FAQS = [
   },
   {
     q: "Can I export an audit report?",
-    a: "Yes. The audit page exports local and mirrored action records, including transaction hashes where a Arbitrum contract write happened.",
+    a: "Yes. The audit page exports local and mirrored action records, including transaction hashes where an Arbitrum contract write happened.",
   },
 ];
 

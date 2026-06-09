@@ -48,7 +48,7 @@ function SolutionsPage() {
             align="center"
             eyebrow="Solutions"
             title={<>Built for teams running <span className="text-primary">autonomous work</span>.</>}
-            description="ArcPay is a Arbitrum product surface for agent operators, builders, and treasury teams that need controlled autonomous execution."
+            description="ArcPay is an Arbitrum product surface for agent operators, builders, and treasury teams that need controlled autonomous execution."
           />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-12">
             {SOLUTIONS.map((s) => (

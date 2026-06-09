@@ -47,7 +47,7 @@ function DashboardRoute() {
         <div className="flex-1 min-w-[240px]">
           <div className="text-sm font-semibold">Next best action</div>
           <div className="text-sm text-muted-foreground">
-            {wallet ? `${shortAddress(wallet)} has ${Number(balance || 0).toFixed(4)} ETH. Register an agent, set policy, then create an x402 or escrow order.` : "Connect a Arbitrum wallet to load live balance and start the agent treasury flow."}
+            {wallet ? `${shortAddress(wallet)} has ${Number(balance || 0).toFixed(4)} ETH. Register an agent, set policy, then create an x402 or escrow order.` : "Connect an Arbitrum wallet to load live balance and start the agent treasury flow."}
           </div>
         </div>
         <Link href={wallet ? "/app/agents" : "/wallet"} className="text-sm font-medium px-4 py-2 rounded-full bg-primary text-primary-foreground">

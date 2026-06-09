@@ -72,7 +72,7 @@ function SignUp() {
       heading="Spin up your workspace"
       subheading="Three steps to a treasury that thinks for your agents."
       steps={[
-        { n: 1, t: "Connect a Arbitrum wallet" },
+        { n: 1, t: "Connect an Arbitrum wallet" },
         { n: 2, t: "Create your workspace" },
         { n: 3, t: "Set your first policy" },
       ]}

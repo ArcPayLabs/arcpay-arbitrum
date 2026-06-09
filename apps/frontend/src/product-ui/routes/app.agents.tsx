@@ -195,7 +195,7 @@ function AgentsRoute() {
               <EmptyState
                 icon={Bot}
                 title="No agent loaded"
-                description="Register a Arbitrum service agent or load an existing slug to inspect its endpoint, price, capabilities, and registry owner."
+                description="Register an Arbitrum service agent or load an existing slug to inspect its endpoint, price, capabilities, and registry owner."
                 actionLabel="Load by slug"
                 onAction={() => void loadAgent()}
               />

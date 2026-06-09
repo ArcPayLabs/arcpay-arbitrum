@@ -35,7 +35,7 @@ const ITEMS = [
   {
     icon: FileSearch,
     title: "Action-level audit",
-    body: "Agent registry, order, card, payment, policy, privacy, and oracle actions are recorded with transaction hashes where a Arbitrum write occurred.",
+    body: "Agent registry, order, card, payment, policy, privacy, and oracle actions are recorded with transaction hashes where an Arbitrum write occurred.",
   },
   {
     icon: AlertTriangle,

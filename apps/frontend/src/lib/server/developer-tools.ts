@@ -111,7 +111,7 @@ export const developerTools: ToolDefinition[] = [
   },
   {
     name: "starter_kit",
-    description: "Return the recommended starter-kit files for a Arbitrum x402 agent.",
+    description: "Return the recommended starter-kit files for an Arbitrum x402 agent.",
     inputSchema: { type: "object", properties: {} },
   },
   {

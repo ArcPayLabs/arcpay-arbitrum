@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Bell, Search, Wallet, ChevronDown, Building2, UserRound, Settings, LogOut, ShieldCheck } from "lucide-react";
+import { Bell, Search, Wallet, ChevronDown, Building2, UserRound, Settings, LogOut, ShieldCheck, Plus } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import {
   DropdownMenu,
@@ -11,22 +11,36 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useNetwork } from "@/store/network";
-import { CommandPalette } from "./CommandPalette";
 import { getOptionalSupabaseClient } from "../../../app/supabase-client";
 import { useWalletConnectAction } from "@/hooks/use-wallet-connect-action";
 import { ensureCurrentUserAccount } from "@/lib/account";
 
+const QUICK_NAV = [
+  { label: "Overview", to: "/dashboard" },
+  { label: "Wallet", to: "/wallet" },
+  { label: "Agents", to: "/app/agents" },
+  { label: "x402", to: "/x402" },
+  { label: "Execution", to: "/execution" },
+  { label: "Payments", to: "/payments" },
+  { label: "Invoices", to: "/invoices" },
+  { label: "Contractors", to: "/contractors" },
+  { label: "Swaps", to: "/swaps" },
+  { label: "Yield", to: "/yield" },
+  { label: "Privacy", to: "/privacy" },
+  { label: "Risk", to: "/risk" },
+  { label: "Reputation", to: "/reputation" },
+  { label: "Policies", to: "/policies" },
+  { label: "Audit", to: "/audit" },
+  { label: "Status", to: "/status" },
+  { label: "Settings", to: "/settings" },
+];
+
 export function AppTopBar() {
   const router = useRouter();
-  const mode = useNetwork((s) => s.mode);
-  const setMode = useNetwork((s) => s.setMode);
-  const [openCmd, setOpenCmd] = useState(false);
   const [email, setEmail] = useState<string | null>(null);
   const [displayName, setDisplayName] = useState<string>("");
   const [workspaceName, setWorkspaceName] = useState("Multi-agent agency");
   const walletAction = useWalletConnectAction();
-  const walletAddress = walletAction.publicKeyBase58;
 
   useEffect(() => {
     const supabase = getOptionalSupabaseClient();
@@ -84,30 +98,29 @@ export function AppTopBar() {
       <header className="h-14 border-b border-border bg-background/80 backdrop-blur sticky top-0 z-20 flex items-center px-3 gap-3">
         <SidebarTrigger className="ml-1" />
 
-        {/* Workspace switcher */}
-        <button
-          type="button"
-          className="hidden sm:flex items-center gap-2 text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-muted transition-colors"
-        >
-          <Building2 className="w-4 h-4 text-muted-foreground" />
-          <span>{workspaceName}</span>
-          <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
-        </button>
+        <details className="group relative hidden sm:block">
+          <summary className="flex max-w-[260px] cursor-pointer list-none items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors hover:bg-muted [&::-webkit-details-marker]:hidden">
+            <Building2 className="h-4 w-4 shrink-0 text-muted-foreground" />
+            <span className="truncate">{workspaceName}</span>
+            <ChevronDown className="h-3.5 w-3.5 shrink-0 text-muted-foreground transition group-open:rotate-180" />
+          </summary>
+          <div className="absolute left-0 top-11 z-40 w-72 overflow-hidden rounded-2xl border border-border bg-popover p-2 shadow-xl">
+            <div className="px-3 py-2">
+              <div className="text-sm font-semibold">Workspace</div>
+              <div className="truncate text-xs text-muted-foreground">{workspaceName}</div>
+            </div>
+            <div className="my-1 h-px bg-border" />
+            <Link to="/settings" className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm transition hover:bg-muted">
+              <Settings className="h-4 w-4" /> Workspace settings
+            </Link>
+            <Link to="/sign-up" className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm transition hover:bg-muted">
+              <Plus className="h-4 w-4" /> Create workspace
+            </Link>
+          </div>
+        </details>
 
         <div className="flex-1" />
 
-        {/* Network switch */}
-        <div className="hidden md:inline-flex items-center bg-muted rounded-full p-1">
-          <button
-            type="button"
-            onClick={() => setMode("arbitrum")}
-            className="text-xs font-semibold px-3 py-1 rounded-full capitalize transition-all bg-warning text-warning-foreground"
-          >
-            Arbitrum Sepolia
-          </button>
-        </div>
-
-        {/* Wallet pill */}
         <button
           type="button"
           onClick={() => void walletAction.connectWallet()}
@@ -118,16 +131,23 @@ export function AppTopBar() {
           <span className="font-mono text-xs">{walletAction.label}</span>
         </button>
 
-        {/* Search */}
-        <button
-          type="button"
-          onClick={() => setOpenCmd(true)}
-          className="hidden lg:inline-flex items-center gap-2 text-sm text-muted-foreground bg-muted hover:bg-muted/70 px-3 py-1.5 rounded-lg"
-        >
-          <Search className="w-4 h-4" />
-          <span>Jump to…</span>
-          <kbd className="ml-2 text-[10px] font-mono bg-background border border-border px-1.5 py-0.5 rounded">⌘K</kbd>
-        </button>
+        <details className="group relative hidden lg:block">
+          <summary className="inline-flex cursor-pointer list-none items-center gap-2 rounded-lg bg-muted px-3 py-1.5 text-sm text-muted-foreground hover:bg-muted/70 [&::-webkit-details-marker]:hidden">
+            <Search className="w-4 h-4" />
+            <span>Jump to...</span>
+            <kbd className="ml-2 rounded border border-border bg-background px-1.5 py-0.5 font-mono text-[10px]">Ctrl K</kbd>
+          </summary>
+          <div className="absolute right-0 top-11 z-40 w-80 overflow-hidden rounded-2xl border border-border bg-popover p-2 shadow-xl">
+            <div className="px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Navigation</div>
+            <div className="grid max-h-[420px] gap-1 overflow-y-auto">
+              {QUICK_NAV.map((item) => (
+                <Link key={item.to} to={item.to} className="rounded-xl px-3 py-2 text-sm font-medium transition hover:bg-muted">
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </details>
 
         <button type="button" className="relative w-9 h-9 rounded-lg hover:bg-muted flex items-center justify-center">
           <Bell className="w-4 h-4 text-muted-foreground" />
@@ -173,7 +193,6 @@ export function AppTopBar() {
           </DropdownMenuContent>
         </DropdownMenu>
       </header>
-      <CommandPalette open={openCmd} onOpenChange={setOpenCmd} />
     </>
   );
 }

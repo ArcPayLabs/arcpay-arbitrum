@@ -28,7 +28,7 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<ProfileForm>(EMPTY_PROFILE);
   const [email, setEmail] = useState("");
   const [userId, setUserId] = useState("");
-  const [status, setStatus] = useState("Connect a Arbitrum wallet or sign in with email to sync profile details.");
+  const [status, setStatus] = useState("Connect an Arbitrum wallet or sign in with email to sync profile details.");
   const walletAddress = walletAction.publicKeyBase58 ?? "";
 
   useEffect(() => {

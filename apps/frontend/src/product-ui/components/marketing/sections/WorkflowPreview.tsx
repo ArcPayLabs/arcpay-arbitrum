@@ -32,7 +32,7 @@ export function WorkflowPreview() {
               description="Wallet balance, agent registry, order escrow, policy controls, spend cards, privacy intents, risk signals, and audit records stay in one operator view."
             />
             <span className="inline-flex items-center gap-2 self-start rounded-full border border-white/15 px-3 py-1.5 text-xs text-white/60">
-              <span className="h-1.5 w-1.5 rounded-full bg-primary" /> Connect a Arbitrum wallet for live contract writes
+              <span className="h-1.5 w-1.5 rounded-full bg-primary" /> Connect an Arbitrum wallet for live contract writes
             </span>
           </div>
 
