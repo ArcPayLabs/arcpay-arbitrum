@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 type AsyncButtonProps = {
   readonly children: ReactNode;
@@ -24,6 +25,7 @@ export function AsyncButton({ children, className, disabled, loadingLabel = "Wor
     } catch (error) {
       const message = friendlyWalletError(error);
       onError?.(message);
+      toast.error(message);
       if (!onError) console.warn(message);
     } finally {
       setPending(false);

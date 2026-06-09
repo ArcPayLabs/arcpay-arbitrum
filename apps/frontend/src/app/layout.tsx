@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { Providers } from "./providers";
 import { WebMcpProvider } from "./webmcp-provider";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://arcpay.app";
@@ -99,6 +100,7 @@ export default function RootLayout({
       <body>
         <WebMcpProvider />
         <Providers>{children}</Providers>
+        <Toaster richColors closeButton position="top-right" />
       </body>
     </html>
   );

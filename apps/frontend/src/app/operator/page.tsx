@@ -168,4 +168,4 @@ function shortHost(value: string) {
   }
 }
 
-const INPUT_CLASS = "h-12 w-full rounded-2xl border border-border bg-background px-4 text-sm font-medium outline-none transition focus:border-primary";
+const INPUT_CLASS = "ap-in";
