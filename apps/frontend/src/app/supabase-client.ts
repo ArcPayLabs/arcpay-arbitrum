@@ -98,6 +98,39 @@ type ArcPayDatabase = {
         };
         Relationships: [];
       };
+      arcpay_workspaces: {
+        Row: {
+          id: string;
+          user_id: string;
+          network: "somnia" | "mantle" | "arbitrum";
+          name: string;
+          is_active: boolean;
+          metadata: Record<string, unknown>;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          network: "somnia" | "mantle" | "arbitrum";
+          name: string;
+          is_active?: boolean;
+          metadata?: Record<string, unknown>;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          network?: "somnia" | "mantle" | "arbitrum";
+          name?: string;
+          is_active?: boolean;
+          metadata?: Record<string, unknown>;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       arcpay_payment_requests: {
         Row: {
           id: string;

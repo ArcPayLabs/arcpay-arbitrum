@@ -14,6 +14,7 @@ import {
 import { getOptionalSupabaseClient } from "../../../app/supabase-client";
 import { useWalletConnectAction } from "@/hooks/use-wallet-connect-action";
 import { ensureCurrentUserAccount } from "@/lib/account";
+import { activateWorkspace, createWorkspace as createCloudWorkspace, loadWorkspaces, type WorkspaceRecord } from "@/lib/workspaces";
 
 const QUICK_NAV = [
   { label: "Overview", to: "/dashboard" },
@@ -35,11 +36,14 @@ const QUICK_NAV = [
   { label: "Settings", to: "/settings" },
 ];
 
+const NETWORK = "arbitrum" as const;
+
 export function AppTopBar() {
   const router = useRouter();
   const [email, setEmail] = useState<string | null>(null);
   const [displayName, setDisplayName] = useState<string>("");
   const [workspaceName, setWorkspaceName] = useState("Multi-agent agency");
+  const [workspaceOptions, setWorkspaceOptions] = useState<WorkspaceRecord[]>([]);
   const [workspaceOpen, setWorkspaceOpen] = useState(false);
   const [workspaceDraft, setWorkspaceDraft] = useState("Arbitrum agent treasury");
   const [workspaceMessage, setWorkspaceMessage] = useState("");
@@ -57,11 +61,16 @@ export function AppTopBar() {
         setEmail(null);
         setDisplayName("");
         setWorkspaceName("Multi-agent agency");
+        setWorkspaceOptions([]);
         return;
       }
+      const workspaces = await loadWorkspaces(supabase, NETWORK, account.workspaceName);
+      if (!mounted) return;
+      const activeWorkspace = workspaces.find((workspace) => workspace.isActive) ?? workspaces[0];
       setEmail(account.email);
       setDisplayName(account.displayName);
-      setWorkspaceName(account.workspaceName);
+      setWorkspaceOptions(workspaces);
+      setWorkspaceName(activeWorkspace?.name ?? account.workspaceName);
     }
 
     void loadAccount();
@@ -71,6 +80,7 @@ export function AppTopBar() {
       if (!session?.user) {
         setDisplayName("");
         setWorkspaceName("Multi-agent agency");
+        setWorkspaceOptions([]);
       }
       else void loadAccount();
     }) ?? { data: { subscription: { unsubscribe: () => undefined } } };
@@ -88,6 +98,7 @@ export function AppTopBar() {
     setEmail(null);
     setDisplayName("");
     setWorkspaceName("Multi-agent agency");
+    setWorkspaceOptions([]);
     router.push("/");
   }
 
@@ -102,35 +113,39 @@ export function AppTopBar() {
       setWorkspaceMessage("Workspace name is required.");
       return;
     }
-    setWorkspaceName(nextName);
-    setWorkspaceMessage("Workspace created for this browser session.");
     const supabase = getOptionalSupabaseClient();
     if (!supabase) {
+      setWorkspaceName(nextName);
+      setWorkspaceMessage("Workspace created locally. Sign in to sync it across devices.");
       setWorkspaceOpen(false);
       return;
     }
     const account = await ensureCurrentUserAccount(supabase);
     if (!account) {
+      setWorkspaceMessage("Sign in first to save workspaces across devices.");
       setWorkspaceOpen(false);
       return;
     }
-    const { data: auth } = await supabase.auth.getUser();
-    const userId = auth.user?.id;
-    if (!userId) {
-      setWorkspaceOpen(false);
-      return;
-    }
-    await supabase.from("user_workspace_settings").upsert(
-      {
-        user_id: userId,
-        workspace_name: nextName,
-        default_network: "arbitrum",
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: "user_id" },
-    );
-    setWorkspaceMessage("Workspace saved.");
+    const workspace = await createCloudWorkspace(supabase, NETWORK, nextName);
+    const workspaces = await loadWorkspaces(supabase, NETWORK, workspace?.name ?? nextName);
+    const activeWorkspace = workspaces.find((item) => item.isActive) ?? workspace;
+    setWorkspaceOptions(workspaces);
+    setWorkspaceName(activeWorkspace?.name ?? nextName);
+    setWorkspaceMessage("Workspace saved to your ArcPay account.");
     setWorkspaceOpen(false);
+  }
+
+  async function switchWorkspace(workspace: WorkspaceRecord) {
+    const supabase = getOptionalSupabaseClient();
+    if (!supabase) return;
+    const switched = await activateWorkspace(supabase, NETWORK, workspace);
+    if (!switched) {
+      setWorkspaceMessage("Workspace switch failed. Try again.");
+      return;
+    }
+    const workspaces = await loadWorkspaces(supabase, NETWORK, workspace.name);
+    setWorkspaceOptions(workspaces);
+    setWorkspaceName(workspace.name);
   }
 
   return (
@@ -148,6 +163,20 @@ export function AppTopBar() {
             <div className="px-3 py-2">
               <div className="text-sm font-semibold">Workspace</div>
               <div className="truncate text-xs text-muted-foreground">{workspaceName}</div>
+            </div>
+            <div className="my-1 h-px bg-border" />
+            <div className="grid gap-1 p-1">
+              {workspaceOptions.map((workspace) => (
+                <button
+                  key={workspace.id}
+                  type="button"
+                  onClick={() => void switchWorkspace(workspace)}
+                  className="flex items-center justify-between gap-3 rounded-xl px-3 py-2 text-left text-sm transition hover:bg-muted"
+                >
+                  <span className="min-w-0 truncate">{workspace.name}</span>
+                  {workspace.isActive ? <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-primary">Active</span> : null}
+                </button>
+              ))}
             </div>
             <div className="my-1 h-px bg-border" />
             <Link to="/settings" className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm transition hover:bg-muted">
@@ -242,11 +271,11 @@ export function AppTopBar() {
             <div className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Workspace</div>
             <h2 className="mt-2 text-2xl font-semibold tracking-tight">Create workspace</h2>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
-              Name the workspace for this operator account. You can link email later from Profile if you want email login too.
+              Name the workspace for this operator account. Signed-in workspaces are saved to ArcPay and available across devices.
             </p>
             <label className="mt-6 block">
               <span className="mb-1.5 block text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Workspace name</span>
-              <input value={workspaceDraft} onChange={(event) => setWorkspaceDraft(event.target.value)} className="h-12 w-full rounded-2xl border border-border bg-background px-4 text-sm font-medium outline-none transition focus:border-primary" />
+              <input value={workspaceDraft} onChange={(event) => setWorkspaceDraft(event.target.value)} className="ap-in" />
             </label>
             {workspaceMessage ? <div className="mt-4 rounded-2xl bg-muted px-4 py-3 text-sm text-muted-foreground">{workspaceMessage}</div> : null}
             <div className="mt-6 flex flex-wrap gap-2">
