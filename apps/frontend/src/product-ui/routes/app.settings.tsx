@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/app/PageHeader";
 import { useNetwork } from "@/store/network";
 import { getOptionalSupabaseClient } from "../../app/supabase-client";
 import { ensureCurrentUserAccount } from "@/lib/account";
+import { createWorkspace as createCloudWorkspace, loadWorkspaces, type WorkspaceRecord } from "@/lib/workspaces";
 import {
   DEFAULT_WORKSPACE_SETTINGS,
   saveWorkspaceSettingsSnapshot,
@@ -41,11 +42,14 @@ const DEFAULT_INTEGRATIONS: Record<IntegrationKey, boolean> = {
   mcp: true,
 };
 
+const NETWORK = "arbitrum" as const;
+
 function SettingsPage() {
   const network = useNetwork((state) => state.mode);
   const setNetwork = useNetwork((state) => state.setMode);
   const [userId, setUserId] = useState<string | null>(null);
   const [workspaceName, setWorkspaceName] = useState("Multi-agent agency");
+  const [workspaceOptions, setWorkspaceOptions] = useState<WorkspaceRecord[]>([]);
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [riskAlerts, setRiskAlerts] = useState(true);
   const [autoYieldSweeps, setAutoYieldSweeps] = useState(false);
@@ -93,6 +97,11 @@ function SettingsPage() {
 
       if (!user) return;
       if (account?.workspaceName) setWorkspaceName(account.workspaceName);
+      const workspaces = await loadWorkspaces(supabase, NETWORK, account?.workspaceName ?? "Arbitrum agent treasury");
+      if (!mounted) return;
+      const activeWorkspace = workspaces.find((workspace) => workspace.isActive) ?? workspaces[0];
+      setWorkspaceOptions(workspaces);
+      if (activeWorkspace) setWorkspaceName(activeWorkspace.name);
 
       const { data, error } = await supabase
         .from("user_workspace_settings")
@@ -148,6 +157,7 @@ function SettingsPage() {
     }
 
     setSaving(true);
+    const activeWorkspace = await createCloudWorkspace(supabase, NETWORK, workspaceName);
     const { error } = await supabase
       .from("user_workspace_settings")
       .upsert(
@@ -177,7 +187,9 @@ function SettingsPage() {
       autoYieldSweeps,
       defaultNetwork: network,
     });
-    setStatus("Settings saved. Workspace preferences are synced.");
+    const workspaces = await loadWorkspaces(supabase, NETWORK, activeWorkspace?.name ?? workspaceName);
+    setWorkspaceOptions(workspaces);
+    setStatus("Settings saved. Workspace preferences are synced across devices.");
   }
 
   function toggleIntegration(key: IntegrationKey) {
@@ -216,11 +228,28 @@ function SettingsPage() {
           <label className="block">
             <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Workspace name</span>
             <input
-              className="mt-1.5 w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring"
+              className="ap-in mt-1.5"
               onChange={(event) => setWorkspaceName(event.target.value)}
               value={workspaceName}
             />
           </label>
+          <div className="mt-4 rounded-2xl border border-border bg-background p-3">
+            <div className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Saved workspaces</div>
+            {workspaceOptions.length ? (
+              <div className="grid gap-2">
+                {workspaceOptions.map((workspace) => (
+                  <div key={workspace.id} className="flex items-center justify-between gap-3 rounded-xl bg-muted/50 px-3 py-2 text-sm">
+                    <span className="min-w-0 truncate">{workspace.name}</span>
+                    <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] ${workspace.isActive ? "bg-primary/10 text-primary" : "bg-background text-muted-foreground"}`}>
+                      {workspace.isActive ? "Active" : workspace.source}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-sm text-muted-foreground">Sign in to save and switch workspaces across devices.</div>
+            )}
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-5">
             <Toggle label="Email notifications" description="Send payment, risk, and policy alerts." enabled={emailNotifications} onToggle={() => setEmailNotifications((v) => !v)} icon={Bell} />
