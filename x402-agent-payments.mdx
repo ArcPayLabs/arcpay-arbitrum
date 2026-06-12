@@ -24,9 +24,38 @@ arcpay-arbitrum-x402-agent quote research-agent
 2. Client requests `GET /agent/:slug/work`.
 3. Server returns HTTP `402` with exact Arbitrum payment requirements.
 4. Client creates an order in `AgentOrderBook` and escrows ETH.
-5. Provider fulfills the order.
-6. Client calls the same endpoint with `orderId`.
-7. Server unlocks the result only after fulfilled or settled state.
+5. Client reads `orderId` from the `OrderCreated` event in the transaction receipt.
+6. Provider fulfills the order.
+7. Client calls the same endpoint with `orderId`.
+8. Server unlocks the result only after fulfilled or settled state.
+
+## Where `orderId` Comes From
+
+`orderId` is emitted by the on-chain `OrderCreated` event after
+`createOrder(agentId, requestUri)` confirms.
+
+The app parses the receipt automatically on `/x402` and `/orders`. Agents and
+scripts should parse:
+
+```solidity
+event OrderCreated(
+  bytes32 indexed orderId,
+  bytes32 indexed agentId,
+  address indexed requester,
+  address provider,
+  uint256 amountWei,
+  string requestUri
+);
+```
+
+Use that value for:
+
+- `POST /x402/verify`
+- `GET /agent/:slug/work?orderId=...`
+- order state reads
+- risk requests
+- reputation reviews
+- audit evidence
 
 ## Useful Endpoints
 
@@ -34,6 +63,9 @@ arcpay-arbitrum-x402-agent quote research-agent
 curl https://arcpay-arbitrum.vercel.app/api/health
 curl https://arcpay-arbitrum.vercel.app/api/x402/demo
 curl https://arcpay-arbitrum.vercel.app/api/x402/payment-requirements/research-agent
+curl https://arcpay-arbitrum.vercel.app/api/x402/verify \
+  -H "content-type: application/json" \
+  -d '{"orderId":"0x...","agentSlug":"research-agent"}'
 ```
 
 ## Verify Locally

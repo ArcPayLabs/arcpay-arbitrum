@@ -1,0 +1,258 @@
+{
+  "base": "http://127.0.0.1:4332",
+  "routes": [
+    {
+      "route": "/",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    },
+    {
+      "route": "/solutions",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    },
+    {
+      "route": "/security",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    },
+    {
+      "route": "/pricing",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    },
+    {
+      "route": "/beta",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    },
+    {
+      "route": "/docs",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    },
+    {
+      "route": "/docs/overview",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    },
+    {
+      "route": "/sign-in",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    },
+    {
+      "route": "/sign-up",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    },
+    {
+      "route": "/onboard",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    },
+    {
+      "route": "/dashboard",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    },
+    {
+      "route": "/wallet",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    },
+    {
+      "route": "/agents",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    },
+    {
+      "route": "/orders",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    },
+    {
+      "route": "/cards",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    },
+    {
+      "route": "/payments",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    },
+    {
+      "route": "/invoices",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    },
+    {
+      "route": "/contractors",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    },
+    {
+      "route": "/swaps",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    },
+    {
+      "route": "/yield",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    },
+    {
+      "route": "/privacy",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    },
+    {
+      "route": "/risk",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    },
+    {
+      "route": "/reputation",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    },
+    {
+      "route": "/policies",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    },
+    {
+      "route": "/operator",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    },
+    {
+      "route": "/audit",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    },
+    {
+      "route": "/analytics",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    },
+    {
+      "route": "/developer-access",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    },
+    {
+      "route": "/settings",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    },
+    {
+      "route": "/profile",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    },
+    {
+      "route": "/status",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    },
+    {
+      "route": "/x402",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    },
+    {
+      "route": "/oracle",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    },
+    {
+      "route": "/execution",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    },
+    {
+      "route": "/proofs",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    },
+    {
+      "route": "/beta-admin",
+      "status": 200,
+      "overflow": 0,
+      "failedResources": 0,
+      "ok": true
+    }
+  ],
+  "failures": []
+}

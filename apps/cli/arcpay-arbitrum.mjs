@@ -27,6 +27,11 @@ Commands:
   arcpay-arbitrum privacy-guide          Print builder integration guide
   arcpay-arbitrum invoice-guide          Print invoice settlement guide
   arcpay-arbitrum x402-guide             Print x402 HTTP payment gate guide
+  arcpay-arbitrum order-id-guide         Explain how to obtain and test order ids
+  arcpay-arbitrum onboard-agent <slug>   Print BYO-agent onboarding payload
+  arcpay-arbitrum card-guide <slug>      Print USDC card setup plan
+  arcpay-arbitrum policy-guide <slug>    Print workspace + per-agent policy plan
+  arcpay-arbitrum evidence-template      Print audit evidence checklist
   arcpay-arbitrum execution-handoff      Print Arbitrum execution payload template
   arcpay-arbitrum gmx-plan               Print GMX execution plan template
   arcpay-arbitrum zerodev-policy         Print ZeroDev session policy template
@@ -110,10 +115,126 @@ try {
       "1. Register an agent slug in AgentRegistry.",
       "2. GET https://arcpay-arbitrum.vercel.app/api/agent/:slug/work returns HTTP 402 requirements.",
       "3. Payer calls AgentOrderBook.createOrder(agentId, requestUri) with quoted msg.value.",
-      "4. Provider fulfills the order.",
-      "5. GET /agent/:slug/work?orderId=... unlocks only after Fulfilled or Settled.",
+      "4. Read orderId from the OrderCreated event in the createOrder transaction receipt.",
+      "5. Provider fulfills the order.",
+      "6. GET /agent/:slug/work?orderId=... unlocks only after Fulfilled or Settled.",
       "",
       "Proof command: npm run smoke:x402",
+    ].join("\n"));
+  } else if (command === "order-id-guide") {
+    const info = deployment();
+    console.log([
+      "ArcPay Arbitrum order id guide",
+      "",
+      `OrderBook: ${info.contracts.AgentOrderBook}`,
+      "Function: createOrder(bytes32 agentId, string requestUri) payable returns (bytes32 orderId)",
+      "",
+      "How the id is generated on-chain:",
+      "orderId = keccak256(abi.encodePacked(block.chainid, address(orderBook), requester, agentId, orderNonce))",
+      "",
+      "How to get it in the app:",
+      "1. Quote x402 or open /orders.",
+      "2. Sign createOrder in the wallet.",
+      "3. Wait for the tx receipt.",
+      "4. Parse the OrderCreated(orderId, agentId, requester, provider, amountWei, requestUri) event.",
+      "5. Paste that orderId into /x402, /orders, /oracle, /reputation, or /audit.",
+      "",
+      "How to test it:",
+      "curl https://arcpay-arbitrum.vercel.app/api/x402/verify -H \"content-type: application/json\" -d \"{\\\"orderId\\\":\\\"0x...\\\",\\\"agentSlug\\\":\\\"research-agent\\\"}\"",
+      "curl \"https://arcpay-arbitrum.vercel.app/api/agent/research-agent/work?orderId=0x...\"",
+    ].join("\n"));
+  } else if (command === "onboard-agent") {
+    const info = deployment();
+    const slug = args[0] || "treasury-router";
+    const endpoint = args[1] || `https://arcpay-arbitrum.vercel.app/api/agent/${slug}/work`;
+    const priceEth = args[2] || "0.0005";
+    console.log(JSON.stringify({
+      protocol: "arcpay-arbitrum-agent-onboarding",
+      network: info.network,
+      chainId: info.chainId,
+      agentSlug: slug,
+      agentId: id(slug),
+      endpoint,
+      priceEth,
+      contracts: {
+        registry: info.contracts.AgentRegistry,
+        orderBook: info.contracts.AgentOrderBook,
+        policy: info.contracts.TreasuryPolicy,
+        operatorControls: info.contracts.OperatorControls,
+        spendCardVault: info.contracts.AgentSpendCardVault,
+        reputation: info.contracts.AgentReputationBook,
+        identity8004: info.contracts.AgentIdentity8004,
+        executionRouter: info.contracts.ArbitrumExecutionRouter,
+      },
+      dashboardPath: "https://arcpay-arbitrum.vercel.app/app/agents",
+      nextSteps: [
+        "Register the slug/capabilities on AgentRegistry and optional ERC-8004 identity.",
+        "Create or redeem a claim code in OperatorControls if the agent is external.",
+        "Attach workspace policy and optional per-agent allowlist/limits.",
+        "Quote the x402 endpoint, create an escrowed order, verify/fulfill, then record evidence in Audit.",
+      ],
+    }, null, 2));
+  } else if (command === "card-guide") {
+    const info = deployment();
+    const slug = args[0] || "treasury-router";
+    const agent = args[1] || "<agent-wallet-address>";
+    const limit = args[2] || "5";
+    const cardSlug = `${slug}-usdc-card`;
+    console.log(JSON.stringify({
+      protocol: "arcpay-arbitrum-usdc-card",
+      network: info.network,
+      chainId: info.chainId,
+      cardSlug,
+      cardId: keccak256(toUtf8Bytes(cardSlug)),
+      agent,
+      limitUsdc: limit,
+      contracts: {
+        spendCardVault: info.contracts.AgentSpendCardVault,
+        usdc: info.usdcToken,
+      },
+      calls: [
+        "USDC.approve(AgentSpendCardVault, amountBaseUnits)",
+        "AgentSpendCardVault.createCard(cardId, agent, USDC, limitBaseUnits, label)",
+        "AgentSpendCardVault.topUpCard(cardId, amountBaseUnits)",
+        "AgentSpendCardVault.setCardStatus(cardId, true|false)",
+        "AgentSpendCardVault.spendCard(cardId, recipient, amountBaseUnits, memo) by the assigned agent",
+      ],
+      proofRequired: ["cardId", "createCard tx hash", "approve tx hash", "topUpCard tx hash", "cards(cardId) state", "spend tx hash if used"],
+    }, null, 2));
+  } else if (command === "policy-guide") {
+    const slug = args[0] || "treasury-router";
+    const dailyLimit = args[1] || "10";
+    console.log(JSON.stringify({
+      protocol: "arcpay-arbitrum-policy-plan",
+      agentSlug: slug,
+      agentId: id(slug),
+      workspacePolicy: {
+        scope: "Global workspace controls",
+        enforcedAcross: ["payments", "orders", "x402", "cards", "invoices", "privacy", "GMX", "ZeroDev", "Dune", "Fhenix"],
+        defaultChecks: ["wallet required", "treasury pause", "allowed token", "allowed network", "risk floor", "per-transaction max", "daily max"],
+      },
+      agentPolicy: {
+        scope: "Per-agent controls",
+        dailyLimitEthOrUsdc: dailyLimit,
+        allowedActions: ["x402 work", "escrow order", "USDC card spend", "GMX intent", "ZeroDev sponsored action"],
+        evidenceRequired: ["tx hash", "x402 verification", "ArcPay order id", "GMX/ZeroDev/Dune/Fhenix evidence when applicable"],
+      },
+    }, null, 2));
+  } else if (command === "evidence-template") {
+    console.log([
+      "ArcPay Arbitrum Evidence Checklist",
+      "",
+      "- Wallet address and chain id 421614.",
+      "- Agent slug, agent id, ERC-8004 identity if used, registered endpoint, and capability metadata.",
+      "- Policy snapshot: global workspace policy plus per-agent limits.",
+      "- x402 quote response: HTTP status, payment requirements, request URI, amount.",
+      "- Order evidence: createOrder tx hash, order id, state before/after fulfill, settle/refund tx.",
+      "- Card evidence: card id, approve/top-up tx, card state, spend tx if used.",
+      "- Privacy evidence: commitment, encrypted memo URI, create/release tx, nullifier.",
+      "- Invoice evidence: invoice id, create/pay/cancel tx, payer and token state.",
+      "- GMX evidence: execution intent, router tx hash, before/after balance, Dune/Arbiscan link.",
+      "- ZeroDev evidence: userOp hash, sponsorship decision, transaction hash.",
+      "- Audit page screenshot and Arbiscan links for every tx hash.",
     ].join("\n"));
   } else if (command === "execution-handoff") {
     const info = deployment();

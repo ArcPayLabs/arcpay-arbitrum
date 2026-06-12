@@ -34,6 +34,10 @@ Restart Claude Desktop after editing the config.
 - `privacy_intent_guide`
 - `invoice_guide`
 - `x402_guide`
+- `agent_onboarding_payload`
+- `usdc_card_plan`
+- `policy_plan`
+- `evidence_template`
 - `execution_handoff`
 - `gmx_execution_plan`
 - `zerodev_session_policy`
@@ -51,3 +55,13 @@ Restart Claude Desktop after editing the config.
 - x402: https://arcpay-arbitrum.vercel.app/api
 
 The MCP server makes ArcPay usable by agents directly, not only by humans clicking a dashboard. It does not sign transactions or mutate treasury state; it returns deterministic IDs, integration guidance, handoff payloads, and public deployment metadata that an operator can verify before execution.
+
+## Agent-Native Flows
+
+`agent_onboarding_payload` lets Claude/Codex/custom agents request the same onboarding payload a dashboard user gets: agent id, x402 endpoint, contract map, policy requirements, optional ERC-8004 identity context, and claim-code steps.
+
+`usdc_card_plan` lets an agent or developer prepare card issuance without touching the dashboard. It returns the card id, vault/token contracts, call sequence, and proof requirements for create/top-up/spend.
+
+`policy_plan` returns both global workspace controls and per-agent controls, so an agent can explain what it is allowed to do before attempting any paid, sponsored, GMX, or money-moving action.
+
+`evidence_template` is the guardrail: it tells the agent exactly what hashes, API responses, GMX/ZeroDev/Dune/Fhenix evidence, and screenshots are required before it can claim completion.

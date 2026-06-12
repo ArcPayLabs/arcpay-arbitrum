@@ -1,6 +1,6 @@
 {
   "name": "@arcpaylabs/arbitrum-mcp",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "private": false,
   "description": "MCP server for ArcPay Arbitrum contracts, x402, privacy intents, invoices, and demo flows.",
   "type": "module",

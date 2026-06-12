@@ -257,6 +257,35 @@ npm run x402
 
 ArcPay's x402 rail follows the HTTP `402 Payment Required` pattern: request a protected agent resource, receive exact payment requirements, pay on-chain, retry with payment proof, and unlock the resource. On Arbitrum Sepolia the proof is a fulfilled `AgentOrderBook` escrow order ID.
 
+## How To Get An Order ID
+
+`orderId` is emitted by the `OrderCreated` event after a wallet signs
+`AgentOrderBook.createOrder(agentId, requestUri)` and the transaction confirms.
+It is not manually invented by the user.
+
+The contract computes it as:
+
+```solidity
+keccak256(abi.encodePacked(block.chainid, address(this), msg.sender, agentId, orderNonce))
+```
+
+In the app, `/orders` and `/x402` parse the transaction receipt and fill the
+order ID automatically. For scripts and agents, parse this event:
+
+```solidity
+event OrderCreated(
+  bytes32 indexed orderId,
+  bytes32 indexed agentId,
+  address indexed requester,
+  address provider,
+  uint256 amountWei,
+  string requestUri
+);
+```
+
+Use the resulting `orderId` in `/x402`, `/orders`, `/oracle`, `/reputation`, and
+the audit evidence package.
+
 ## Persistence
 
 Wallet sessions work without Supabase. To persist audit records in Vercel, run the Supabase migrations in `supabase/migrations` and set:
