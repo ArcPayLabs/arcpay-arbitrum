@@ -123,16 +123,25 @@ async function loadLegacyWorkspace(supabase: SupabaseClient, network: ArcPayNetw
   return [{ id: `legacy-${network}`, name, network, isActive: true, source: "legacy" }];
 }
 
-async function syncLegacyWorkspace(supabase: SupabaseClient, userId: string, network: ArcPayNetwork, name: string) {
-  await supabase.from("user_workspace_settings").upsert(
-    {
-      user_id: userId,
-      workspace_name: name,
-      default_network: network as never,
-      updated_at: new Date().toISOString(),
-    },
-    { onConflict: "user_id" },
-  );
+export async function syncLegacyWorkspace(supabase: SupabaseClient, userId: string, network: ArcPayNetwork, name: string) {
+  const payload = {
+    user_id: userId,
+    workspace_name: name,
+    default_network: network as never,
+    updated_at: new Date().toISOString(),
+  };
+  const { data } = await supabase
+    .from("user_workspace_settings")
+    .select("user_id")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (data) {
+    await supabase.from("user_workspace_settings").update(payload).eq("user_id", userId);
+    return;
+  }
+
+  await supabase.from("user_workspace_settings").insert(payload);
 }
 
 async function getUserId(supabase: SupabaseClient) {

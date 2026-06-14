@@ -6,7 +6,7 @@ import { Play, RefreshCcw, Workflow } from "lucide-react";
 import { EmptyState } from "@/components/app/EmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
 import { StatCard } from "@/components/primitives/StatCard";
-import { agentIdFromSlug, fromWei, orderBookContract, shortAddress, toWei, writeRecord } from "@arbitrum/lib/arbitrum";
+import { agentIdFromSlug, fromWei, orderBookContract, shortAddress, toWei, txOverrides, writeRecord } from "@arbitrum/lib/arbitrum";
 
 export const Route = { options: { component: OrdersRoute } };
 
@@ -18,7 +18,7 @@ function OrdersRoute() {
   async function createOrder() {
     setStatus("Creating order on Arbitrum...");
     const contract = await orderBookContract() as any;
-    const tx = await contract.createOrder(agentIdFromSlug(form.agentSlug), form.requestUri, { value: toWei(form.amount) });
+    const tx = await contract.createOrder(agentIdFromSlug(form.agentSlug), form.requestUri, await txOverrides({ value: toWei(form.amount) }));
     const receipt = await tx.wait();
     const parsed = receipt.logs
       ?.map((log: unknown) => {

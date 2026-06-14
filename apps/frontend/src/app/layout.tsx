@@ -6,8 +6,6 @@ import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://arcpay.app";
-const heroVideoUrl =
-  "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260423_161253_c72b1869-400f-45ed-ac0c-52f68c2ed5bd.mp4";
 const description =
   "ArcPay is a private, policy-controlled treasury OS for AI agents on Arbitrum: register agents, escrow work, enforce limits, issue USDC cards, create privacy intents, and export audits.";
 
@@ -102,7 +100,6 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://d8j0ntlcm91z4.cloudfront.net" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://d8j0ntlcm91z4.cloudfront.net" />
-        <link rel="preload" as="video" href={heroVideoUrl} type="video/mp4" />
       </head>
       <body>
         <WebMcpProvider />

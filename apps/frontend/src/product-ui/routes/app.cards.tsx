@@ -4,7 +4,7 @@ import { useState } from "react";
 import { CreditCard, Pause, Plus, WalletCards } from "lucide-react";
 import { PageHeader } from "@/components/app/PageHeader";
 import { StatCard } from "@/components/primitives/StatCard";
-import { connectedAddress, erc20Contract, hashText, shortAddress, USDC_TOKEN_ADDRESS, spendCardVaultContract, toUnits, writeRecord } from "@arbitrum/lib/arbitrum";
+import { connectedAddress, erc20Contract, hashText, shortAddress, USDC_TOKEN_ADDRESS, spendCardVaultContract, toUnits, txOverrides, writeRecord } from "@arbitrum/lib/arbitrum";
 
 export const Route = { options: { component: CardsRoute } };
 
@@ -15,7 +15,7 @@ function CardsRoute() {
   async function createCard() {
     const vault = await spendCardVaultContract() as any;
     const agent = form.agent.trim() || await connectedAddress();
-    const tx = await vault.createCard(hashText(form.slug), agent, USDC_TOKEN_ADDRESS, toUnits(form.limit), form.label);
+    const tx = await vault.createCard(hashText(form.slug), agent, USDC_TOKEN_ADDRESS, toUnits(form.limit), form.label, await txOverrides());
     await tx.wait();
     writeRecord({ id: crypto.randomUUID(), type: "card", title: `Created ${form.label}`, status: "created", amount: form.limit, txHash: tx.hash });
     setStatus(`Card created: ${tx.hash}`);
@@ -25,9 +25,9 @@ function CardsRoute() {
     const amount = toUnits(form.topUp);
     const token = await erc20Contract(USDC_TOKEN_ADDRESS) as any;
     const vault = await spendCardVaultContract() as any;
-    const approve = await token.approve(vault.target, amount);
+    const approve = await token.approve(vault.target, amount, await txOverrides());
     await approve.wait();
-    const tx = await vault.topUpCard(hashText(form.slug), amount);
+    const tx = await vault.topUpCard(hashText(form.slug), amount, await txOverrides());
     await tx.wait();
     writeRecord({ id: crypto.randomUUID(), type: "card", title: `Topped up ${form.slug}`, status: "funded", amount: form.topUp, txHash: tx.hash });
     setStatus(`Card topped up: ${tx.hash}`);
@@ -35,7 +35,7 @@ function CardsRoute() {
 
   async function setActive(active: boolean) {
     const vault = await spendCardVaultContract() as any;
-    const tx = await vault.setCardStatus(hashText(form.slug), active);
+    const tx = await vault.setCardStatus(hashText(form.slug), active, await txOverrides());
     await tx.wait();
     setStatus(active ? `Card activated: ${tx.hash}` : `Card frozen: ${tx.hash}`);
   }

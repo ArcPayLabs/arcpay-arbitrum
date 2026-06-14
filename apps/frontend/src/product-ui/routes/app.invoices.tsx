@@ -23,6 +23,7 @@ import {
   shortAddress,
   toUnits,
   toWei,
+  txOverrides,
   txUrl,
   writeRecord,
 } from "@arbitrum/lib/arbitrum";
@@ -145,7 +146,7 @@ function InvoicesPage() {
     const metadataUri = buildMetadataUri(publicId, review);
     const book = await invoiceBookContract();
 
-    const tx = await book.createInvoice(onchainId, payer, tokenAddress, amountUnits, metadataUri);
+    const tx = await book.createInvoice(onchainId, payer, tokenAddress, amountUnits, metadataUri, await txOverrides());
     const receipt = await tx.wait();
     const txHash = receipt?.hash ?? tx.hash;
     const paymentUrl = `${window.location.origin}/pay/${publicId}`;
@@ -190,11 +191,11 @@ function InvoicesPage() {
       const book = await invoiceBookContract();
       let tx;
       if (invoice.token === "ETH") {
-        tx = await book.payNativeInvoice(invoice.onchainId, { value: BigInt(invoice.amountUnits) });
+        tx = await book.payNativeInvoice(invoice.onchainId, await txOverrides({ value: BigInt(invoice.amountUnits) }));
       } else {
         const token = await erc20Contract(USDC_TOKEN_ADDRESS);
-        await (await token.approve(CONTRACTS.AgentInvoiceBook, BigInt(invoice.amountUnits))).wait();
-        tx = await book.payTokenInvoice(invoice.onchainId);
+        await (await token.approve(CONTRACTS.AgentInvoiceBook, BigInt(invoice.amountUnits), await txOverrides())).wait();
+        tx = await book.payTokenInvoice(invoice.onchainId, await txOverrides());
       }
       const receipt = await tx.wait();
       updateInvoice(invoice.publicId, { status: "paid", settlementTxHash: receipt?.hash ?? tx.hash });
@@ -218,7 +219,7 @@ function InvoicesPage() {
     setBusyId(invoice.publicId);
     try {
       const book = await invoiceBookContract();
-      const tx = await book.cancelInvoice(invoice.onchainId);
+      const tx = await book.cancelInvoice(invoice.onchainId, await txOverrides());
       const receipt = await tx.wait();
       updateInvoice(invoice.publicId, { status: "cancelled", cancelTxHash: receipt?.hash ?? tx.hash });
       writeRecord({

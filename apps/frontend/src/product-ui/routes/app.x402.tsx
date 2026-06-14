@@ -6,7 +6,7 @@ import { CheckCircle2, Copy, ExternalLink, LockKeyhole, RadioTower, RefreshCcw, 
 import { EmptyState } from "@/components/app/EmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
 import { StatCard } from "@/components/primitives/StatCard";
-import { agentIdFromSlug, orderBookContract, shortAddress, writeRecord } from "@arbitrum/lib/arbitrum";
+import { agentIdFromSlug, orderBookContract, shortAddress, txOverrides, writeRecord } from "@arbitrum/lib/arbitrum";
 
 export const Route = { options: { component: X402Route } };
 
@@ -131,7 +131,7 @@ function X402Route() {
       const contract = await orderBookContract() as any;
       const agentId = accept.args?.agentId || agentIdFromSlug(form.agentSlug);
       const requestUri = accept.args?.requestUri || protectedUrl;
-      const tx = await contract.createOrder(agentId, requestUri, { value: BigInt(accept.amountWei) });
+      const tx = await contract.createOrder(agentId, requestUri, await txOverrides({ value: BigInt(accept.amountWei) }));
       const receipt = await tx.wait();
       const parsed = receipt.logs
         ?.map((log: unknown) => {

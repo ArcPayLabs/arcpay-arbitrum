@@ -9,7 +9,7 @@ import { ReviewModal, type ReviewRow } from "@/components/primitives/ReviewModal
 import { StatCard } from "@/components/primitives/StatCard";
 import { readLocalJson, writeLocalJson } from "@/lib/browser-cache";
 import { checkActionPolicies } from "@/lib/policy";
-import { connectedAddress, CONTRACTS, erc20Contract, hashText, privacyVaultContract, shortAddress, USDC_TOKEN_ADDRESS, toUnits, toWei, txUrl, writeRecord } from "@arbitrum/lib/arbitrum";
+import { connectedAddress, CONTRACTS, erc20Contract, hashText, privacyVaultContract, shortAddress, USDC_TOKEN_ADDRESS, toUnits, toWei, txOverrides, txUrl, writeRecord } from "@arbitrum/lib/arbitrum";
 import { FHENIX_ARBITRUM_SEPOLIA } from "@arbitrum/lib/fhenix";
 
 export const Route = { options: { component: PrivacyPage } };
@@ -86,11 +86,11 @@ function PrivacyPage() {
     if (review.token === "USDC") {
       const token = await erc20Contract(USDC_TOKEN_ADDRESS) as any;
       const units = toUnits(review.amount);
-      const approve = await token.approve(CONTRACTS.ArbitrumPrivacyVault, units);
+      const approve = await token.approve(CONTRACTS.ArbitrumPrivacyVault, units, await txOverrides());
       await approve.wait();
-      tx = await contract.createTokenIntent(review.commitment, USDC_TOKEN_ADDRESS, units, review.memoUri);
+      tx = await contract.createTokenIntent(review.commitment, USDC_TOKEN_ADDRESS, units, review.memoUri, await txOverrides());
     } else {
-      tx = await contract.createNativeIntent(review.commitment, review.memoUri, { value: toWei(review.amount) });
+      tx = await contract.createNativeIntent(review.commitment, review.memoUri, await txOverrides({ value: toWei(review.amount) }));
     }
     await tx.wait();
     const next = [{ ...review, status: "Submitted" as const, txHash: tx.hash }, ...items].slice(0, 50);
@@ -110,7 +110,7 @@ function PrivacyPage() {
 
     const contract = await privacyVaultContract() as any;
     const nullifier = hashText(`${item.id}:${form.nullifier}:${Date.now()}`);
-    const tx = await contract.releaseIntent(item.commitment, nullifier, recipient);
+    const tx = await contract.releaseIntent(item.commitment, nullifier, recipient, await txOverrides());
     await tx.wait();
     const next = items.map((current) => current.id === item.id ? { ...current, status: "Disclosure ready" as const, releaseTxHash: tx.hash, nullifier } : current);
     persist(next);
@@ -121,7 +121,7 @@ function PrivacyPage() {
 
   async function cancelIntent(item: PrivacyIntent) {
     const contract = await privacyVaultContract() as any;
-    const tx = await contract.cancelIntent(item.commitment);
+    const tx = await contract.cancelIntent(item.commitment, await txOverrides());
     await tx.wait();
     const next = items.map((current) => current.id === item.id ? { ...current, status: "Cancelled" as const, cancelTxHash: tx.hash } : current);
     persist(next);

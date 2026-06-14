@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Bot, CheckCircle2, ClipboardCopy, DatabaseZap, ExternalLink, Gauge, KeyRound, Route as RouteIcon, ShieldCheck, Sparkles, WalletCards, Workflow, Zap } from "lucide-react";
 import { PageHeader } from "@/components/app/PageHeader";
 import { StatCard } from "@/components/primitives/StatCard";
-import { CONTRACTS, EXECUTION_ADAPTERS, executionRouterContract, hashText, shortAddress, toWei, txUrl, writeRecord } from "@arbitrum/lib/arbitrum";
+import { CONTRACTS, EXECUTION_ADAPTERS, executionRouterContract, hashText, shortAddress, toWei, txOverrides, txUrl, writeRecord } from "@arbitrum/lib/arbitrum";
 
 export const Route = { options: { component: ExecutionRoute } };
 
@@ -179,6 +179,7 @@ function ExecutionRoute() {
       toWei(form.budgetEth),
       hashText(form.calldataSummary),
       form.policyUri,
+      await txOverrides(),
     );
     const receipt = await tx.wait();
     const event = receipt?.logs
@@ -209,7 +210,7 @@ function ExecutionRoute() {
       return;
     }
     const contract = await executionRouterContract() as any;
-    const tx = await contract.approveIntent(intentId, form.evidenceUri);
+    const tx = await contract.approveIntent(intentId, form.evidenceUri, await txOverrides());
     await tx.wait();
     writeRecord({
       id: crypto.randomUUID(),
@@ -232,7 +233,7 @@ function ExecutionRoute() {
       return;
     }
     const contract = await executionRouterContract() as any;
-    const tx = await contract.recordExecution(intentId, hashText(form.txHashOrReceipt), form.evidenceUri);
+    const tx = await contract.recordExecution(intentId, hashText(form.txHashOrReceipt), form.evidenceUri, await txOverrides());
     await tx.wait();
     writeRecord({
       id: crypto.randomUUID(),

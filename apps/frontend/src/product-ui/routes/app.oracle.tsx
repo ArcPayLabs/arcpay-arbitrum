@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { CheckCircle2, Gauge, Sparkles, Wand2 } from "lucide-react";
 import { PageHeader } from "@/components/app/PageHeader";
 import { StatCard } from "@/components/primitives/StatCard";
-import { fromWei, hashText, riskOracleContract, riskOracleQuote, shortAddress, txUrl, writeRecord } from "@arbitrum/lib/arbitrum";
+import { fromWei, hashText, riskOracleContract, riskOracleQuote, shortAddress, txOverrides, txUrl, writeRecord } from "@arbitrum/lib/arbitrum";
 
 export const Route = { options: { component: OracleRoute } };
 
@@ -28,7 +28,7 @@ function OracleRoute() {
   async function requestRisk() {
     const oracle = await riskOracleContract() as any;
     const nextQuote = quote ?? await riskOracleQuote();
-    const tx = await oracle.requestRisk(orderId, prompt, { value: nextQuote.totalWei });
+    const tx = await oracle.requestRisk(orderId, prompt, await txOverrides({ value: nextQuote.totalWei }));
     const receipt = await tx.wait();
     const parsed = receipt.logs
       ?.map((log: unknown) => {
@@ -53,7 +53,7 @@ function OracleRoute() {
       return;
     }
     const oracle = await riskOracleContract() as any;
-    const tx = await oracle.ownerFulfillForDemo(BigInt(requestId), 88, "APPROVE", "ipfs://arcpay-risk-evidence");
+    const tx = await oracle.ownerFulfillForDemo(BigInt(requestId), 88, "APPROVE", "ipfs://arcpay-risk-evidence", await txOverrides());
     await tx.wait();
     const loaded = await oracle.results(BigInt(requestId));
     setResult({ score: loaded.score.toString(), verdict: loaded.verdict, evidenceUri: loaded.evidenceUri, txHash: tx.hash });

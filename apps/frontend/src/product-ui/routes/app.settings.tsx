@@ -6,7 +6,7 @@ import { PageHeader } from "@/components/app/PageHeader";
 import { useNetwork } from "@/store/network";
 import { getOptionalSupabaseClient } from "../../app/supabase-client";
 import { ensureCurrentUserAccount } from "@/lib/account";
-import { createWorkspace as createCloudWorkspace, loadWorkspaces, type WorkspaceRecord } from "@/lib/workspaces";
+import { createWorkspace as createCloudWorkspace, loadWorkspaces, syncLegacyWorkspace, type WorkspaceRecord } from "@/lib/workspaces";
 import {
   DEFAULT_WORKSPACE_SETTINGS,
   saveWorkspaceSettingsSnapshot,
@@ -158,21 +158,20 @@ function SettingsPage() {
 
     setSaving(true);
     const activeWorkspace = await createCloudWorkspace(supabase, NETWORK, workspaceName);
+    await syncLegacyWorkspace(supabase, userId, NETWORK, workspaceName);
     const { error } = await supabase
       .from("user_workspace_settings")
-      .upsert(
-        {
-          user_id: userId,
-          workspace_name: workspaceName,
-          default_network: network,
-          email_notifications: emailNotifications,
-          risk_alerts: riskAlerts,
-          auto_yield_sweeps: autoYieldSweeps,
-          require_wallet_for_actions: requireWallet,
-          enabled_integrations: integrations,
-        },
-        { onConflict: "user_id" },
-      );
+      .update({
+        workspace_name: workspaceName,
+        default_network: network,
+        email_notifications: emailNotifications,
+        risk_alerts: riskAlerts,
+        auto_yield_sweeps: autoYieldSweeps,
+        require_wallet_for_actions: requireWallet,
+        enabled_integrations: integrations,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("user_id", userId);
     setSaving(false);
 
     if (error) {

@@ -5,7 +5,7 @@ import { Bot, CheckCircle2, Copy, DatabaseZap, ExternalLink, PlugZap, Plus, Spar
 import { EmptyState } from "@/components/app/EmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
 import { StatCard } from "@/components/primitives/StatCard";
-import { agentIdFromSlug, fromWei, registryContract, shortAddress, toWei, writeRecord } from "@arbitrum/lib/arbitrum";
+import { agentIdFromSlug, fromWei, registryContract, shortAddress, toWei, txOverrides, writeRecord } from "@arbitrum/lib/arbitrum";
 
 export const Route = { options: { component: AgentsRoute } };
 
@@ -28,7 +28,7 @@ function AgentsRoute() {
   async function registerAgent() {
     setStatus("Submitting agent registry transaction...");
     const contract = await registryContract() as any;
-    const tx = await contract.registerAgent(agentId, form.name, form.endpoint, form.capabilities, toWei(form.price));
+    const tx = await contract.registerAgent(agentId, form.name, form.endpoint, form.capabilities, toWei(form.price), await txOverrides());
     await tx.wait();
     writeRecord({ id: crypto.randomUUID(), type: "agent", title: `Registered ${form.name}`, status: "confirmed", txHash: tx.hash });
     setStatus(`Agent registered on Arbitrum: ${tx.hash}`);

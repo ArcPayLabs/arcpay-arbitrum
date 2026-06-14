@@ -264,6 +264,29 @@ export async function signerProvider() {
   return provider.getSigner();
 }
 
+export async function txOverrides(extra: Record<string, bigint> = {}) {
+  if (!window.ethereum) return extra;
+  const provider = new BrowserProvider(window.ethereum);
+  const [feeData, latestBlock] = await Promise.all([
+    provider.getFeeData(),
+    provider.getBlock("latest").catch(() => null),
+  ]);
+  const baseFee = latestBlock?.baseFeePerGas ?? 0n;
+  const priority = feeData.maxPriorityFeePerGas && feeData.maxPriorityFeePerGas > 0n
+    ? feeData.maxPriorityFeePerGas * 2n
+    : 50_000_000n;
+  const walletMax = feeData.maxFeePerGas && feeData.maxFeePerGas > 0n ? feeData.maxFeePerGas * 2n : 0n;
+  const baseBuffered = baseFee > 0n ? (baseFee * 3n) + priority : 0n;
+  const maxFeePerGas = walletMax > baseBuffered ? walletMax : baseBuffered;
+
+  if (!maxFeePerGas) return extra;
+  return {
+    ...extra,
+    maxFeePerGas,
+    maxPriorityFeePerGas: priority,
+  };
+}
+
 export async function connectedAddress() {
   const signer = await signerProvider();
   return signer.getAddress();

@@ -5,7 +5,7 @@ import { Award, BarChart3, CheckCircle2, MessageSquareWarning, Star, Trophy } fr
 import { EmptyState } from "@/components/app/EmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
 import { StatCard } from "@/components/primitives/StatCard";
-import { agentIdFromSlug, reputationBookContract, shortAddress, writeRecord } from "@arbitrum/lib/arbitrum";
+import { agentIdFromSlug, reputationBookContract, shortAddress, txOverrides, writeRecord } from "@arbitrum/lib/arbitrum";
 
 export const Route = { options: { component: ReputationRoute } };
 
@@ -61,7 +61,7 @@ function ReputationRoute() {
 
     setStatus("Submitting reputation review...");
     const contract = await reputationBookContract() as any;
-    const tx = await contract.recordReview(form.orderId.trim(), agentId, score, form.disputed, form.evidenceUri.trim());
+    const tx = await contract.recordReview(form.orderId.trim(), agentId, score, form.disputed, form.evidenceUri.trim(), await txOverrides());
     await tx.wait();
     writeRecord({ id: crypto.randomUUID(), type: "reputation", title: `Reviewed ${form.agentSlug}`, status: form.disputed ? "disputed" : "recorded", amount: form.score, txHash: tx.hash });
     setStatus(`Reputation review recorded: ${tx.hash}`);

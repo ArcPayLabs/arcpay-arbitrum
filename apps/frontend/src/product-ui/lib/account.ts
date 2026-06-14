@@ -1,4 +1,5 @@
 import { getOptionalSupabaseClient } from "../../app/supabase-client";
+import { syncLegacyWorkspace } from "./workspaces";
 
 type SupabaseClient = NonNullable<ReturnType<typeof getOptionalSupabaseClient>>;
 
@@ -57,13 +58,7 @@ export async function ensureCurrentUserAccount(supabase: SupabaseClient): Promis
     .maybeSingle();
 
   if (!workspace) {
-    await supabase.from("user_workspace_settings").upsert(
-      {
-        user_id: user.id,
-        workspace_name: workspaceName,
-      },
-      { onConflict: "user_id" },
-    );
+    await syncLegacyWorkspace(supabase, user.id, "arbitrum", workspaceName);
   }
 
   return {
