@@ -13,7 +13,7 @@ export const Route = { options: { component: OrdersRoute } };
 function OrdersRoute() {
   const [form, setForm] = useState({ agentSlug: "research-agent", requestUri: "ipfs://arcpay/demo-request.json", amount: "0.01", orderId: "" });
   const [order, setOrder] = useState<Record<string, string> | null>(null);
-  const [status, setStatus] = useState("Create and reconcile agent orders through the Arbitrum order book.");
+  const [status, setStatus] = useState("Create a new escrowed order, then ArcPay auto-fills the order ID from the on-chain OrderCreated event.");
 
   async function createOrder() {
     setStatus("Creating order on Arbitrum...");
@@ -55,7 +55,7 @@ function OrdersRoute() {
 
   return (
     <div className="space-y-6">
-      <PageHeader icon={Workflow} eyebrow="Order state machine" title="Orders" description="Create, load, and reconcile Arbitrum agent orders with escrowed ETH and state-machine evidence." />
+      <PageHeader icon={Workflow} eyebrow="Order state machine" title="Orders" description="Create, load, and reconcile Arbitrum agent orders with escrowed ETH. New orders generate the order ID automatically; paste an ID only when inspecting an existing order." />
       <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
         <StatCard icon={Workflow} label="Lifecycle" value="7 states" hint="Pending to failed" />
         <StatCard label="Escrow" value={`${form.amount} ETH`} hint="Native value" />
@@ -67,7 +67,10 @@ function OrdersRoute() {
           <Field label="Agent slug"><input className="ap-in" value={form.agentSlug} onChange={(event) => setForm({ ...form, agentSlug: event.target.value })} /></Field>
           <Field label="Amount ETH"><input className="ap-in" value={form.amount} onChange={(event) => setForm({ ...form, amount: event.target.value })} /></Field>
           <Field label="Request URI"><input className="ap-in" value={form.requestUri} onChange={(event) => setForm({ ...form, requestUri: event.target.value })} /></Field>
-          <Field label="Order id"><input className="ap-in" value={form.orderId} onChange={(event) => setForm({ ...form, orderId: event.target.value })} /></Field>
+          <Field label="Order id optional">
+            <input className="ap-in" value={form.orderId} onChange={(event) => setForm({ ...form, orderId: event.target.value })} placeholder="Auto-filled after Create order" />
+            <p className="mt-1.5 text-xs text-muted-foreground">Leave blank to create a new order. Paste an existing order ID only when using Load order.</p>
+          </Field>
         </div>
         <div className="mt-5 flex flex-wrap gap-2">
           <button onClick={() => void createOrder()} className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground"><Play className="h-4 w-4" /> Create order</button>

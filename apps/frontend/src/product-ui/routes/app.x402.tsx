@@ -69,7 +69,7 @@ function X402Route() {
     resultUri: "ipfs://arcpay-x402-result/research-agent",
     adminSecret: "",
   });
-  const [status, setStatus] = useState("Quote an x402 protected Arbitrum agent endpoint, pay through the order book, verify, fulfill, and unlock work.");
+  const [status, setStatus] = useState("Run the x402 demo in order: quote, check 402, pay order, verify, provider fulfill, then unlock. The order ID auto-fills after payment.");
   const [quote, setQuote] = useState<PaymentRequirement | null>(null);
   const [verification, setVerification] = useState<Verification | null>(null);
   const [unlock, setUnlock] = useState<UnlockResult | null>(null);
@@ -225,7 +225,7 @@ function X402Route() {
         icon={RadioTower}
         eyebrow="Agent payment protocol"
         title="x402"
-        description="Expose paid Arbitrum agent work over HTTP 402: quote requirements, escrow ETH on-chain, verify order status, fulfill, and unlock the protected result."
+        description="Expose paid Arbitrum agent work over HTTP 402: quote requirements, escrow ETH on-chain, auto-capture the order ID, verify status, fulfill, and unlock the protected result."
         actions={
           <button disabled={busy} onClick={() => void quoteEndpoint()} className="inline-flex items-center gap-2 rounded-full bg-foreground px-4 py-2.5 text-sm font-medium text-background disabled:opacity-50">
             <RefreshCcw className="h-4 w-4" /> Quote endpoint
@@ -260,9 +260,10 @@ function X402Route() {
         <div className="grid gap-4 lg:grid-cols-2">
           <Field label="x402 server URL"><input className="ap-in" value={form.serverUrl} onChange={(event) => setForm({ ...form, serverUrl: event.target.value })} /></Field>
           <Field label="Agent slug"><input className="ap-in" value={form.agentSlug} onChange={(event) => setForm({ ...form, agentSlug: event.target.value })} /></Field>
-          <Field label="Order ID"><input className="ap-in font-mono" value={form.orderId} onChange={(event) => setForm({ ...form, orderId: event.target.value })} /></Field>
-          <Field label="Provider result URI"><input className="ap-in" value={form.resultUri} onChange={(event) => setForm({ ...form, resultUri: event.target.value })} /></Field>
-          <Field label="Provider admin secret"><input className="ap-in" type="password" value={form.adminSecret} onChange={(event) => setForm({ ...form, adminSecret: event.target.value })} /></Field>
+          <Field label="Order ID">
+            <input className="ap-in font-mono" value={form.orderId} onChange={(event) => setForm({ ...form, orderId: event.target.value })} placeholder="Auto-filled after Pay order" />
+            <p className="mt-1.5 text-xs text-muted-foreground">Leave blank for a new demo. ArcPay fills this from the on-chain OrderCreated event after payment.</p>
+          </Field>
           <div className="rounded-2xl bg-muted/50 p-4 text-sm text-muted-foreground">
             <div className="mb-1 font-semibold text-foreground">Protected URL</div>
             <div className="break-all font-mono text-xs">{protectedUrl}</div>
@@ -279,6 +280,16 @@ function X402Route() {
           <button disabled={busy} onClick={() => void fulfillOrder()} className="rounded-full bg-muted px-5 py-2.5 text-sm font-semibold disabled:opacity-50">Provider fulfill</button>
           <button disabled={busy} onClick={() => void unlockResource()} className="rounded-full bg-success px-5 py-2.5 text-sm font-semibold text-success-foreground disabled:opacity-50">Unlock</button>
         </div>
+        <details className="mt-5 rounded-2xl border border-border bg-muted/30 p-4">
+          <summary className="cursor-pointer text-sm font-semibold">Provider fulfillment settings</summary>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Judges do not need an admin secret for the main x402 proof. This section is only for the service provider account that marks work fulfilled.
+          </p>
+          <div className="mt-4 grid gap-4 lg:grid-cols-2">
+            <Field label="Provider result URI"><input className="ap-in" value={form.resultUri} onChange={(event) => setForm({ ...form, resultUri: event.target.value })} /></Field>
+            <Field label="Provider admin secret optional"><input className="ap-in" type="password" value={form.adminSecret} onChange={(event) => setForm({ ...form, adminSecret: event.target.value })} placeholder="Only if provider auth is enabled" /></Field>
+          </div>
+        </details>
       </section>
 
       <div className="grid gap-4 xl:grid-cols-2">
