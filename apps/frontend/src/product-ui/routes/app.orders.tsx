@@ -6,7 +6,7 @@ import { Play, RefreshCcw, Workflow } from "lucide-react";
 import { EmptyState } from "@/components/app/EmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
 import { StatCard } from "@/components/primitives/StatCard";
-import { agentIdFromSlug, fromWei, orderBookContract, shortAddress, toWei, txOverrides, writeRecord } from "@arbitrum/lib/arbitrum";
+import { agentIdFromSlug, connectedAddress, fromWei, orderBookContract, registryContract, shortAddress, toWei, txOverrides, writeRecord } from "@arbitrum/lib/arbitrum";
 
 export const Route = { options: { component: OrdersRoute } };
 
@@ -17,8 +17,17 @@ function OrdersRoute() {
 
   async function createOrder() {
     setStatus("Creating order on Arbitrum...");
+    const agentId = agentIdFromSlug(form.agentSlug);
+    const registry = await registryContract() as any;
+    const agent = await registry.agents(agentId);
+    const requester = (await connectedAddress()).toLowerCase();
+    const provider = String(agent[0] || "").toLowerCase();
+    if (provider && provider === requester) {
+      setStatus("This connected wallet owns the registered agent. Switch to a different funded buyer wallet before creating the order; ArcPay blocks self-orders so agent revenue cannot be faked.");
+      return;
+    }
     const contract = await orderBookContract() as any;
-    const tx = await contract.createOrder(agentIdFromSlug(form.agentSlug), form.requestUri, await txOverrides({ value: toWei(form.amount) }));
+    const tx = await contract.createOrder(agentId, form.requestUri, await txOverrides({ value: toWei(form.amount) }));
     const receipt = await tx.wait();
     const parsed = receipt.logs
       ?.map((log: unknown) => {

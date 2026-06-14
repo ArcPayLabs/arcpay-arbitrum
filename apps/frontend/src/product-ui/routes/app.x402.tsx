@@ -6,7 +6,7 @@ import { CheckCircle2, Copy, ExternalLink, LockKeyhole, RadioTower, RefreshCcw, 
 import { EmptyState } from "@/components/app/EmptyState";
 import { PageHeader } from "@/components/app/PageHeader";
 import { StatCard } from "@/components/primitives/StatCard";
-import { agentIdFromSlug, orderBookContract, shortAddress, txOverrides, writeRecord } from "@arbitrum/lib/arbitrum";
+import { agentIdFromSlug, connectedAddress, orderBookContract, shortAddress, txOverrides, writeRecord } from "@arbitrum/lib/arbitrum";
 
 export const Route = { options: { component: X402Route } };
 
@@ -128,6 +128,12 @@ function X402Route() {
     setStatus("Creating escrowed Arbitrum order from wallet...");
     try {
       const accept = quotedPayment;
+      const requester = (await connectedAddress()).toLowerCase();
+      const provider = quote?.agent.owner?.toLowerCase();
+      if (provider && requester === provider) {
+        setStatus("This connected wallet owns the registered agent. Switch to a different funded buyer wallet before paying; ArcPay blocks self-orders so agent revenue cannot be faked.");
+        return;
+      }
       const contract = await orderBookContract() as any;
       const agentId = accept.args?.agentId || agentIdFromSlug(form.agentSlug);
       const requestUri = accept.args?.requestUri || protectedUrl;
