@@ -1,7 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { MarketingNav } from "../MarketingNav";
-import { PARTNERS } from "@/lib/marketing";
+import { HERO_VIDEO_URL, PARTNERS } from "@/lib/marketing";
 import { useAppAccess } from "@/hooks/use-app-access";
 
 export function Hero() {
@@ -16,12 +16,17 @@ export function Hero() {
             className="relative w-full rounded-3xl overflow-hidden max-w-[88rem] mx-auto bg-[radial-gradient(circle_at_75%_25%,rgba(255,122,34,0.28),transparent_32%),linear-gradient(135deg,#101820_0%,#4f351d_48%,#f97316_100%)]"
             style={{ height: "min(760px, calc(100vh - 96px))", minHeight: "620px" }}
           >
-            <div aria-hidden className="absolute inset-0 opacity-90">
-              <div className="absolute -right-24 top-16 h-[34rem] w-[34rem] rounded-full bg-primary/35 blur-3xl" />
-              <div className="absolute bottom-0 right-1/4 h-80 w-80 rounded-full bg-amber-400/20 blur-3xl" />
-              <div className="absolute left-1/2 top-1/2 h-[42rem] w-[42rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/10" />
-              <div className="absolute inset-0 bg-[linear-gradient(110deg,rgba(255,255,255,0.08)_0_1px,transparent_1px_100%)] bg-[length:44px_44px]" />
-            </div>
+            <video
+              className="absolute inset-0 w-full h-full object-cover opacity-70"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+              aria-hidden="true"
+            >
+              <source src={HERO_VIDEO_URL} type="video/mp4" />
+            </video>
             <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/35 to-black/10" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-black/10" />
             <div className="relative z-10 flex flex-col items-start justify-end h-full p-8 md:p-14">
